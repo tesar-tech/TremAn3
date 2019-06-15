@@ -24,5 +24,16 @@
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
         </Grid>
+        <MediaPlayerElement
+Grid.Row="1"
+            x:Name="mpe"
+                            AutoPlay="True"
+                            AreTransportControlsEnabled="True"
+                           
+                            Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
+            <MediaPlayerElement.TransportControls>
+                <MediaTransportControls IsCompact="False"/>
+            </MediaPlayerElement.TransportControls>
+        </MediaPlayerElement>
     </Grid>
 </Page>

@@ -18,7 +18,7 @@ namespace TremAn3.ViewModels
         {
             SimpleIoc.Default.Register(() => new NavigationServiceEx());
             Register<MainViewModel, MainPage>();
-            Register<MediaPlayerViewModel, MediaPlayerPage>();
+            //Register<MediaPlayerViewModel, MediaPlayerPage>();
             Register<SettingsViewModel, SettingsPage>();
             Register<SchemeActivationSampleViewModel, SchemeActivationSamplePage>();
         }
