@@ -14,10 +14,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock
-            Grid.Row="0"
-            x:Uid="Main_Title"
-            Style="{StaticResource PageTitleStyle}" />
+        <StackPanel Orientation="Horizontal">
+            <Button Click="{x:Bind ViewModel.GetFrameClickAsync}" > Get curent frame</Button>
+            <Image Source="{x:Bind ViewModel.CurrentFrameSource, Mode=OneWay}" ></Image>
+        </StackPanel>
         <Grid
             Grid.Row="1" 
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
