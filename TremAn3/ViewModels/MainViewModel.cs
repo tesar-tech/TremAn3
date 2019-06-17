@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Diagnostics;
+using System.Linq;
 using GalaSoft.MvvmLight;
 using TremAn3.Services;
 using Windows.Storage;
@@ -36,7 +37,25 @@ namespace TremAn3.ViewModels
 
             FramesGrabber grabber = new FramesGrabber();
             await grabber.ChangeStorageFileAsync(file);
-            await grabber.GrabGrayFrameInPositionAsync();
+            bool stillSomeFrame = true;
+            byte[] frame2 = new byte[] { };
+            byte[] frame1 = new byte[] { };
+            int[] diff = new int[] { };
+            grabber.batchSize = 1000;
+            Stopwatch s = new Stopwatch();
+            s.Start();
+            while (frame2 != null)
+            {
+                if (frame2.Length == 0)//na zacatku
+                    frame1 = await grabber.GrabGrayFrameInCurrentIndexAsync();
+                else
+                    frame1 = frame2;//because of diff
+
+                frame2 = await grabber.GrabGrayFrameInCurrentIndexAsync();
+                if (frame2 != null)
+                    diff = frame2.Zip(frame1, (f2, f1) => f2 - f1).ToArray();
+            }
+            Debug.WriteLine(s.ElapsedMilliseconds);
         }
 
 

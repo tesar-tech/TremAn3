@@ -27,7 +27,7 @@
         <MediaPlayerElement
 Grid.Row="1"
             x:Name="mpe"
-                            AutoPlay="True"
+                            AutoPlay="False"
                             AreTransportControlsEnabled="True"
                            
                             Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
