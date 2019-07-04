@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using MathNet.Numerics.IntegralTransforms;
 using MathNet.Numerics;
+using System.Linq;
 
 namespace TremAn3.Core
 {
@@ -43,7 +44,7 @@ namespace TremAn3.Core
             FftResult res = new FftResult
             {
                 Frequencies = new List<double>(),
-                Values = new List<double>(),
+                Values = new List<double>()
 
             };
 
