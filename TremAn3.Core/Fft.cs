@@ -4,6 +4,7 @@ using System.Text;
 using MathNet.Numerics.IntegralTransforms;
 using MathNet.Numerics;
 using System.Linq;
+//using System.Numerics;
 
 namespace TremAn3.Core
 {
@@ -48,8 +49,9 @@ namespace TremAn3.Core
 
             };
 
-            int l = (int)Math.Round((double)vec.Length / 2);
-            var k = Generate.LinearSpaced(l, 0, fs / 2);
+            int l = (int)Math.Round((double)vec.Length / 2, MidpointRounding.AwayFromZero);
+            double konec = fs / 2;
+            var k = Generate.LinearSpaced(l, 0, konec);
 
 
             for (int p = 0; p < l; p++)
