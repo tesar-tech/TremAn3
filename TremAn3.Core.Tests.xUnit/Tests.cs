@@ -8,33 +8,11 @@ namespace TremAn3.Core.Tests.XUnit
     // TODO WTS: Add appropriate unit tests.
     public class Tests
     {
-        //List<double> Vector1 = new List<double>();
-        //List<double> Vector2 = new List<double>();
-
-        /*public Tests()
-        {
-            List<double> vector = new List<double>();
-            double fs = 100;
-            double xStep = 1 / fs;
-
-            double y;
-            double f = 13;
-            for (double xx = -10; xx <= 10; xx += xStep)
-            {
-                y = Math.Sin(2 * Math.PI * f * xx);
-                vector.Add(y);
-            }
-
-            Vector1 = vector;
-
-        }*/
-        public List<double> vytvorVektor(double fs)
+        public List<double> CreateVector(double fs, double f)
         {
             List<double> vector = new List<double>();
             double xStep = 1 / fs;
-
             double y;
-            double f = 13;
             for (double xx = -10; xx <= 10; xx += xStep)
             {
                 y = Math.Sin(2 * Math.PI * f * xx);
@@ -50,7 +28,7 @@ namespace TremAn3.Core.Tests.XUnit
                 Frequencies = new List<double>(),
                 Values = new List<double>()
             };
-            List<double> Vector = vytvorVektor(100);
+            List<double> Vector = CreateVector(100,13);
             result = Fft.GetAmpSpectrumAndMax(100, Vector);
             FftResult fft = null;
             Assert.Equal(result, fft);
@@ -64,7 +42,7 @@ namespace TremAn3.Core.Tests.XUnit
                 Frequencies = new List<double>(),
                 Values = new List<double>()
             };
-            List<double> Vector = vytvorVektor(1);
+            List<double> Vector = CreateVector(1,13);
             result = Fft.GetAmpSpectrumAndMax(1, Vector);
 
 
@@ -86,16 +64,27 @@ namespace TremAn3.Core.Tests.XUnit
         }
 
 
+        [Fact]
+        public void Test_GetAmpSpectrumAndMax_Freq()
+        {
+            FftResult result = new FftResult
+            {
+                Frequencies = new List<double>(),
+                Values = new List<double>()
+            };
+            List<double> freq_matlab = new List<double>();
+            List<double> freq_math_dotnet = new List<double>();
+            double f;
+            for (int i = 1; i <= 45; i++)
+            {
+                f = i * 20;
+                freq_matlab.Add(f);
+                List<double> Vector = CreateVector(100, i);
+                result = Fft.GetAmpSpectrumAndMax(i, Vector);
+                freq_math_dotnet.Add(result.MaxIndex);
+            }
 
-
-
-
-
-
-
-
-
-
-
+            Assert.Equal(freq_matlab, freq_math_dotnet);
+        }
     }
 }

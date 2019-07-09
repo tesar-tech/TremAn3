@@ -16,23 +16,6 @@ namespace TremAn3.Core
             {
                 throw new ArgumentNullException(nameof(v));
             }
-            //implementation goes here
-            /*
-            List<double> vector = new List<double>();
-            double FS = 100;
-            double xStep = 1 / FS;
-
-
-            double y;
-            double f = 13;
-            for (double xx = -10; xx <= 10; xx += xStep)
-            {
-                y = Math.Sin(2 * Math.PI * f * xx);
-                vector.Add(y);
-            }*/
-
-
-
             Complex32[] vec = new Complex32[v.Count];
             int i = 0;
             foreach (var ve in v)
@@ -48,12 +31,9 @@ namespace TremAn3.Core
                 Values = new List<double>()
 
             };
-
             int l = (int)Math.Round((double)vec.Length / 2, MidpointRounding.AwayFromZero);
             double konec = fs / 2;
             var k = Generate.LinearSpaced(l, 0, konec);
-
-
             for (int p = 0; p < l; p++)
             {
                 res.Frequencies.Add(k[p]);
@@ -61,18 +41,9 @@ namespace TremAn3.Core
             }
 
             res.MaxIndex = res.Values.FindIndex(n => n == (res.Values.Max()));
-
-
-
-
-
             return res;
         }
     }
-
-
-
-
 
     public class FftResult
     {
