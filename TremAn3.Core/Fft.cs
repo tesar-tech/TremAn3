@@ -12,9 +12,11 @@ namespace TremAn3.Core
     {
         public static FftResult GetAmpSpectrumAndMax(double fs, List<double> v)
         {
+            FftResult res = new FftResult();
             if (v == null)
             {
-                throw new ArgumentNullException(nameof(v));
+                res = null;
+                return res;
             }
             Complex32[] vec = new Complex32[v.Count];
             int i = 0;
@@ -24,13 +26,8 @@ namespace TremAn3.Core
                 i++;
             }
             Fourier.Forward(vec, FourierOptions.Matlab);
-
-            FftResult res = new FftResult
-            {
-                Frequencies = new List<double>(),
-                Values = new List<double>()
-
-            };
+            res.Frequencies = new List<double>();
+            res.Values = new List<double>();
             int l = (int)Math.Round((double)vec.Length / 2, MidpointRounding.AwayFromZero);
             double konec = fs / 2;
             var k = Generate.LinearSpaced(l, 0, konec);

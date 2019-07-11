@@ -8,7 +8,7 @@ namespace TremAn3.Core.Tests.XUnit
     // TODO WTS: Add appropriate unit tests.
     public class Tests
     {
-        public List<double> CreateVector(double fs, double f)
+        private List<double> CreateVector(double fs, double f)
         {
             List<double> vector = new List<double>();
             double xStep = 1 / fs;
@@ -28,7 +28,7 @@ namespace TremAn3.Core.Tests.XUnit
                 Frequencies = new List<double>(),
                 Values = new List<double>()
             };
-            List<double> Vector = CreateVector(100,13);
+            List<double> Vector = null;
             result = Fft.GetAmpSpectrumAndMax(100, Vector);
             FftResult fft = null;
             Assert.Equal(result, fft);
@@ -37,15 +37,7 @@ namespace TremAn3.Core.Tests.XUnit
         [Fact]
         public void Test_GetAmpSpectrumAndMax_ShortVec()
         {
-            FftResult result = new FftResult
-            {
-                Frequencies = new List<double>(),
-                Values = new List<double>()
-            };
-            List<double> Vector = CreateVector(1,13);
-            result = Fft.GetAmpSpectrumAndMax(1, Vector);
-
-
+            List<double> Vector = CreateVector(1,13); 
             FftResult fft = new FftResult
             {
                 Frequencies = new List<double>(),
@@ -60,18 +52,15 @@ namespace TremAn3.Core.Tests.XUnit
             fft.Frequencies.Add(0.5);
             fft.MaxIndex = 1;
 
-            Assert.Equal(result, fft);
+            Assert.Equal(Fft.GetAmpSpectrumAndMax(1, Vector), fft);
+            /*Hodnoty nejsou přesně shodné s matlabem(Matlab zaokrouhluje jinak než Math.Net)
+              Math.Net počítá s větší přesností (e-21, matlab to zaokrouhlí na nulu)*/
         }
 
 
         [Fact]
-        public void Test_GetAmpSpectrumAndMax_Freq()
+        public void Test_GetAmpSpectrumAndMax_MaxIndexes()
         {
-            FftResult result = new FftResult
-            {
-                Frequencies = new List<double>(),
-                Values = new List<double>()
-            };
             List<double> freq_matlab = new List<double>();
             List<double> freq_math_dotnet = new List<double>();
             double f;
@@ -80,8 +69,7 @@ namespace TremAn3.Core.Tests.XUnit
                 f = i * 20;
                 freq_matlab.Add(f);
                 List<double> Vector = CreateVector(100, i);
-                result = Fft.GetAmpSpectrumAndMax(i, Vector);
-                freq_math_dotnet.Add(result.MaxIndex);
+                freq_math_dotnet.Add(Fft.GetAmpSpectrumAndMax(i, Vector).MaxIndex);
             }
 
             Assert.Equal(freq_matlab, freq_math_dotnet);
