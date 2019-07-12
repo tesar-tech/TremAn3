@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TremAn3.Core;
 using Xunit;
+using System.Linq;
 
 namespace TremAn3.Core.Tests.XUnit
 {
@@ -43,16 +44,28 @@ namespace TremAn3.Core.Tests.XUnit
                 Frequencies = new List<double>(),
                 Values = new List<double>()
             };
-            fft.Values.Add(0);fft.Values.Add(3.25386894911750e-13);fft.Values.Add(1.49260991996402e-13);
-            fft.Values.Add(1.59397837601688e-14);fft.Values.Add(1.36200267478192e-13);fft.Values.Add(1.26804825196142e-13);
-            fft.Values.Add(3.33681824285738e-15);fft.Values.Add(1.45999479203236e-13);fft.Values.Add(1.92014261124964e-13);
-            fft.Values.Add(1.31116947973350e-13);fft.Values.Add(5.36703654880356e-14);
+            FftResult result = new FftResult
+            {
+                Frequencies = new List<double>(),
+                Values = new List<double>()
+            };
+            result = Fft.GetAmpSpectrumAndMax(1, Vector);
+            for (int i = 0; i < result.Values.Count;i++)
+            {
+                result.Values[i] *= 1e13;
+                result.Values[i] = Math.Round(result.Values[i],2,MidpointRounding.AwayFromZero);
+            }
+            fft.Values.Add(0);fft.Values.Add(3.25);fft.Values.Add(1.49);
+            fft.Values.Add(0.16);fft.Values.Add(1.36);fft.Values.Add(1.27);
+            fft.Values.Add(0.03);fft.Values.Add(1.46);fft.Values.Add(1.92);
+            fft.Values.Add(1.31);fft.Values.Add(0.54);
             fft.Frequencies.Add(0);fft.Frequencies.Add(0.05);fft.Frequencies.Add(0.1);fft.Frequencies.Add(0.15);fft.Frequencies.Add(0.2);
             fft.Frequencies.Add(0.25);fft.Frequencies.Add(0.3);fft.Frequencies.Add(0.35);fft.Frequencies.Add(0.4);fft.Frequencies.Add(0.45);
             fft.Frequencies.Add(0.5);
             fft.MaxIndex = 1;
-
-            Assert.Equal(Fft.GetAmpSpectrumAndMax(1, Vector), fft);
+            Assert.Equal(result.Frequencies, fft.Frequencies);
+            Assert.Equal(result.Values,fft.Values);
+            Assert.Equal(result.MaxIndex, fft.MaxIndex);
             /*Hodnoty nejsou přesně shodné s matlabem(Matlab zaokrouhluje jinak než Math.Net)
               Math.Net počítá s větší přesností (e-21, matlab to zaokrouhlí na nulu)*/
         }
@@ -71,7 +84,6 @@ namespace TremAn3.Core.Tests.XUnit
                 List<double> Vector = CreateVector(100, i);
                 freq_math_dotnet.Add(Fft.GetAmpSpectrumAndMax(i, Vector).MaxIndex);
             }
-
             Assert.Equal(freq_matlab, freq_math_dotnet);
         }
     }

@@ -33,20 +33,18 @@ namespace TremAn3.Core
             var k = Generate.LinearSpaced(l, 0, konec);
             for (int p = 0; p < l; p++)
             {
+                k[p] = Math.Round(k[p], 10);
                 res.Frequencies.Add(k[p]);
                 res.Values.Add(Complex32.Abs(vec[p]));
             }
-
             res.MaxIndex = res.Values.FindIndex(n => n == (res.Values.Max()));
             return res;
         }
     }
-
     public class FftResult
     {
         public int MaxIndex { get; set; }
         public List<double> Frequencies { get; set; }
         public List<double> Values { get; set; }
-
     }
 }
