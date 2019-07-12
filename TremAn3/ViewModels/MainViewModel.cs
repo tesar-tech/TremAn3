@@ -37,6 +37,9 @@ namespace TremAn3.ViewModels
 
             FramesGrabber grabber = new FramesGrabber();
             await grabber.ChangeStorageFileAsync(file);
+            (int width, int height) = grabber.GetWidthAndHeight();
+            var vecOfx = Enumerable.Repeat(Enumerable.Range(0, width), height).SelectMany(x => x);
+            var vecOfy = Enumerable.Range(0, height).Select(x => Enumerable.Repeat(x, width)).SelectMany(x => x);
             bool stillSomeFrame = true;
             byte[] frame2 = new byte[] { };
             byte[] frame1 = new byte[] { };
@@ -54,6 +57,22 @@ namespace TremAn3.ViewModels
                 frame2 = await grabber.GrabGrayFrameInCurrentIndexAsync();
                 if (frame2 != null)
                     diff = frame2.Zip(frame1, (f2, f1) => f2 - f1).ToArray();
+                //normalize frames
+                var max = diff.Max();
+                var min = diff.Min();
+                var diffNorm = diff.Select(x => (x - min) / max);
+                //now "pixels" are in range from  0 to 1
+                var mean = diffNorm.Average();
+
+                var diffNormMultX = diffNorm.Zip(vecOfx, (di, vx) => di * vx);
+                var comX = diffNormMultX.Average() / mean;
+
+
+                var diffNormMultY = diffNorm.Zip(vecOfy, (di, vy) => di * vy);
+                var comY = diffNormMultX.Average() / mean;
+
+
+
             }
             Debug.WriteLine(s.ElapsedMilliseconds);
         }

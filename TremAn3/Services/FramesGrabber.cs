@@ -34,6 +34,11 @@ namespace TremAn3.Services
         uint videoHeight;
         uint videoWidth;
 
+        public (int width, int height) GetWidthAndHeight()
+        {
+            return ((int)videoWidth, (int)videoHeight);
+        }
+
         internal async Task ChangeStorageFileAsync(StorageFile file)
         {
             StorageFile = file;
