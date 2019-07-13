@@ -7,64 +7,54 @@ using System.Linq;
 namespace TremAn3.Core.Tests.XUnit
 {
     // TODO WTS: Add appropriate unit tests.
-    public class Tests
+    public class FftTests
     {
-        private List<double> CreateVector(double fs, double f)
+        /// <summary>
+        /// creates sin vector from time -10 to time 10s with expected sampling freq and frequency of sinus
+        /// </summary>
+        /// <param name="fs"></param>
+        /// <param name="frequency"></param>
+        /// <returns></returns>
+        private List<double> CreateVector(double fs, double frequency)
         {
             List<double> vector = new List<double>();
             double xStep = 1 / fs;
             double y;
             for (double xx = -10; xx <= 10; xx += xStep)
             {
-                y = Math.Sin(2 * Math.PI * f * xx);
+                y = Math.Sin(2 * Math.PI * frequency * xx);
                 vector.Add(y);
             }
             return vector;
         }
 
         [Fact]
-        public void Test_GetAmpSpectrumAndMax_Null()
+        public void GetAmpSpectrumAndMax_nullVector_returnsNull()
         {
-            FftResult result = new FftResult { 
-                Frequencies = new List<double>(),
-                Values = new List<double>()
-            };
-            List<double> Vector = null;
-            result = Fft.GetAmpSpectrumAndMax(100, Vector);
-            FftResult fft = null;
-            Assert.Equal(result, fft);
+            var  result = Fft.GetAmpSpectrumAndMax(100, null);
+            Assert.Null(result);
         }
 
         [Fact]
-        public void Test_GetAmpSpectrumAndMax_ShortVec()
+        public void GetAmpSpectrumAndMax_ShortVec_sameResult()
         {
             List<double> Vector = CreateVector(1,13); 
-            FftResult fft = new FftResult
-            {
-                Frequencies = new List<double>(),
-                Values = new List<double>()
-            };
-            FftResult result = new FftResult
-            {
-                Frequencies = new List<double>(),
-                Values = new List<double>()
-            };
-            result = Fft.GetAmpSpectrumAndMax(1, Vector);
+            FftResult fft = new FftResult();
+            FftResult result =  Fft.GetAmpSpectrumAndMax(1, Vector);
             for (int i = 0; i < result.Values.Count;i++)
             {
                 result.Values[i] *= 1e13;
                 result.Values[i] = Math.Round(result.Values[i],2,MidpointRounding.AwayFromZero);
             }
-            fft.Values.Add(0);fft.Values.Add(3.25);fft.Values.Add(1.49);
-            fft.Values.Add(0.16);fft.Values.Add(1.36);fft.Values.Add(1.27);
-            fft.Values.Add(0.03);fft.Values.Add(1.46);fft.Values.Add(1.92);
-            fft.Values.Add(1.31);fft.Values.Add(0.54);
-            fft.Frequencies.Add(0);fft.Frequencies.Add(0.05);fft.Frequencies.Add(0.1);fft.Frequencies.Add(0.15);fft.Frequencies.Add(0.2);
-            fft.Frequencies.Add(0.25);fft.Frequencies.Add(0.3);fft.Frequencies.Add(0.35);fft.Frequencies.Add(0.4);fft.Frequencies.Add(0.45);
-            fft.Frequencies.Add(0.5);
+            List<(double, double)> valFreqTuple = new List<(double, double)>() {
+                (0d,0d),(3.25,0.05),(1.49,0.1),(0.16,0.15),(1.36,0.2),(1.27,0.25),(0.03,0.3),(1.46,0.35),(1.92,0.4),(1.31,0.45),(0.54,0.5)
+            };
+
+            valFreqTuple.ForEach(x => { fft.Values.Add(x.Item1); fft.Frequencies.Add(x.Item2); });
             fft.MaxIndex = 1;
+
             Assert.Equal(result.Frequencies, fft.Frequencies);
-            Assert.Equal(result.Values,fft.Values);
+            Assert.Equal(result.Values, fft.Values);
             Assert.Equal(result.MaxIndex, fft.MaxIndex);
             /*Hodnoty nejsou přesně shodné s matlabem(Matlab zaokrouhluje jinak než Math.Net)
               Math.Net počítá s větší přesností (e-21, matlab to zaokrouhlí na nulu)*/
@@ -72,7 +62,7 @@ namespace TremAn3.Core.Tests.XUnit
 
 
         [Fact]
-        public void Test_GetAmpSpectrumAndMax_MaxIndexes()
+        public void GetAmpSpectrumAndMax_MultipleMaxIndexes_SameMaxIndexes()
         {
             List<double> freq_matlab = new List<double>();
             List<double> freq_math_dotnet = new List<double>();
@@ -85,6 +75,30 @@ namespace TremAn3.Core.Tests.XUnit
                 freq_math_dotnet.Add(Fft.GetAmpSpectrumAndMax(i, Vector).MaxIndex);
             }
             Assert.Equal(freq_matlab, freq_math_dotnet);
+        }
+        [Fact]
+        public void GetAmpSpectrumAndMax_EmptyInputList_returnsNull()
+        {
+            List<double> vector = new List<double>();
+            var result = Fft.GetAmpSpectrumAndMax(100, vector);
+            Assert.Null(result);
+        }
+        [Fact]
+        public void GetAmpSpectrumAndMax_FsNotValid0_ThrowsError()
+        {
+            //https://stackoverflow.com/questions/933613/how-do-i-use-assert-to-verify-that-an-exception-has-been-thrown
+            var vector = CreateVector(100, 10);
+            var res =  Fft.GetAmpSpectrumAndMax(0, vector);
+            Assert.True(false);// implementace
+        }
+
+        [Fact]
+        public void GetAmpSpectrumAndMax_FsNotValidLessThanZero_ThrowsError()
+        {
+            var vector = CreateVector(100, 10);
+            var res = Fft.GetAmpSpectrumAndMax(-10, vector);
+            Assert.True(false);// implementace
+
         }
     }
 }
