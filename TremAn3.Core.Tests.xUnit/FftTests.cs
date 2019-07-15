@@ -86,19 +86,15 @@ namespace TremAn3.Core.Tests.XUnit
         [Fact]
         public void GetAmpSpectrumAndMax_FsNotValid0_ThrowsError()
         {
-            //https://stackoverflow.com/questions/933613/how-do-i-use-assert-to-verify-that-an-exception-has-been-thrown
             var vector = CreateVector(100, 10);
-            var res =  Fft.GetAmpSpectrumAndMax(0, vector);
-            Assert.True(false);// implementace
+            Assert.Throws<ArgumentException>(() => Fft.GetAmpSpectrumAndMax(0, vector));
         }
 
         [Fact]
         public void GetAmpSpectrumAndMax_FsNotValidLessThanZero_ThrowsError()
         {
             var vector = CreateVector(100, 10);
-            var res = Fft.GetAmpSpectrumAndMax(-10, vector);
-            Assert.True(false);// implementace
-
+            Assert.Throws<ArgumentException>(() => Fft.GetAmpSpectrumAndMax(-10, vector));
         }
     }
 }

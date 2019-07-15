@@ -12,8 +12,11 @@ namespace TremAn3.Core
     {
         public static FftResult GetAmpSpectrumAndMax(double fs, List<double> vector)
         {
-            if (vector == null)
+            if (vector == null || !vector.Any())
                 return null;
+            if (fs <= 0)
+                throw new ArgumentException();
+                
             Complex32[] vec = new Complex32[vector.Count];
             int i = 0;
             foreach (var ve in vector)
