@@ -4,12 +4,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ViewModels="using.TremAn3.ViewModels"
+
+    
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
     <Grid
         x:Name="ContentArea"
         Margin="{StaticResource MediumLeftRightMargin}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -18,19 +22,20 @@
             Grid.Row="0"
             x:Uid="Main_Title"
             Style="{StaticResource PageTitleStyle}" />
+        <Button Grid.Row="1" Content="Load Video" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"/>
         <Grid
-            Grid.Row="1" 
+            Grid.Row="2"
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
         </Grid>
         <MediaPlayerElement
-Grid.Row="1"
+            Grid.Row="2"
             x:Name="mpe"
-                            AutoPlay="True"
-                            AreTransportControlsEnabled="True"
+            AutoPlay="True"
+            AreTransportControlsEnabled="True"
                            
-                            Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
+            Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
             <MediaPlayerElement.TransportControls>
                 <MediaTransportControls IsCompact="False"/>
             </MediaPlayerElement.TransportControls>

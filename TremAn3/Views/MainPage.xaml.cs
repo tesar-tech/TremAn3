@@ -1,5 +1,4 @@
 ﻿using System;
-
 using TremAn3.ViewModels;
 using Windows.Media.Playback;
 using Windows.System.Display;
