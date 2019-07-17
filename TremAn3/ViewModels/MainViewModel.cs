@@ -32,12 +32,6 @@ namespace TremAn3.ViewModels
             if (file != null)
             { 
                 MediaPlayerViewModel.Source = MediaSource.CreateFromStorageFile(file);
-                //MediaPlayerViewModel.MediaPlayer.Play();
-            }
-            else
-            {
-                var messageDialog = new MessageDialog("Unexpected Error");
-                await messageDialog.ShowAsync();
             }
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
