@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using GalaSoft.MvvmLight;
@@ -47,33 +48,58 @@ namespace TremAn3.ViewModels
             grabber.batchSize = 1000;
             Stopwatch s = new Stopwatch();
             s.Start();
+            var listComX = new List<double>();
+            var listComY = new List<double>();
+            int counter = 0;
             while (frame2 != null)
             {
+                Debug.WriteLine(counter++);
                 if (frame2.Length == 0)//na zacatku
                     frame1 = await grabber.GrabGrayFrameInCurrentIndexAsync();
                 else
                     frame1 = frame2;//because of diff
-
+                string ss = "";
+                foreach (var i in frame1)
+                {
+                     ss = $"{ss},{i}";
+                }
                 frame2 = await grabber.GrabGrayFrameInCurrentIndexAsync();
+
                 if (frame2 != null)
                     diff = frame2.Zip(frame1, (f2, f1) => f2 - f1).ToArray();
                 //normalize frames
                 var max = diff.Max();
                 var min = diff.Min();
+                if (max == 0 && min == 0)
+                {
+                    if (listComX.Count == 0)//first frame is same as second
+                    {
+                        listComX.Add(width / 2);//just add center of picture 
+                        listComY.Add(height / 2);
+                    }
+                    else
+                    {
+                        listComX.Add(listComX.Last());//just copy previous value
+                        listComY.Add(listComY.Last());
+                    }
+                    continue;//jump to next frame
+                }
                 var diffNorm = diff.Select(x => (x - min) / max);
                 //now "pixels" are in range from  0 to 1
                 var mean = diffNorm.Average();
 
                 var diffNormMultX = diffNorm.Zip(vecOfx, (di, vx) => di * vx);
                 var comX = diffNormMultX.Average() / mean;
-
+                listComX.Add(comX);
 
                 var diffNormMultY = diffNorm.Zip(vecOfy, (di, vy) => di * vy);
                 var comY = diffNormMultX.Average() / mean;
-
-
+                listComY.Add(comY);
 
             }
+
+          
+
             Debug.WriteLine(s.ElapsedMilliseconds);
         }
 
