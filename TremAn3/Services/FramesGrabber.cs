@@ -71,23 +71,26 @@ namespace TremAn3.Services
         public int FrameIndex { get; set; }
         //enable to grab frames in portions instead of one by one 
         IEnumerator<ImageStream> currentEnumerator;
-        public int batchSize = 1000;
+        public int batchSize = 1;
         // returns null if there is no frame left
         public async Task<byte[]> GrabGrayFrameInCurrentIndexAsync()
         {
             //get new portion of frames if there is nothing left.
             if (currentEnumerator == null || !currentEnumerator.MoveNext())
-                {
-                    var timesToFrames = frameTimes.Skip(FrameIndex + 1).Take(batchSize);
-                    if (timesToFrames.Count() == 0)
-                        return null;
-                    //get next portion of frames 
-                    var imageStreams = await composition.GetThumbnailsAsync(timesToFrames, (int)videoWidth, (int)videoHeight, VideoFramePrecision.NearestFrame);
+            {
+                var timesToFrames = frameTimes.Skip(FrameIndex + 1).Take(batchSize);
+                if (timesToFrames.Count() == 0)
+                    return null;
+                //get next portion of frames
 
-                    currentEnumerator = imageStreams.GetEnumerator();
-                    if (!currentEnumerator.MoveNext())
-                        return null;
-                }
+                var imageStreams = await composition.GetThumbnailsAsync(timesToFrames, 0, 0, VideoFramePrecision.NearestFrame);
+                //if the video resolution is not even- it will generate even resolution and adds black stripe
+                // why? dont know 
+                currentEnumerator = imageStreams.GetEnumerator();
+                if (!currentEnumerator.MoveNext())
+                    return null;
+            }
+        
             ImageStream imageStream = currentEnumerator.Current;
 
 

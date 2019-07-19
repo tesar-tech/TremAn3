@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight;
 using TremAn3.Services;
 using Windows.Storage;
 using Windows.UI.Xaml.Media;
+using FFmpegInterop;
 
 namespace TremAn3.ViewModels
 {
@@ -34,7 +35,9 @@ namespace TremAn3.ViewModels
 
         public async void GetFrameClickAsync()
         {
+        
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru.wmv"));
+            //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru_small.avi"));
 
             FramesGrabber grabber = new FramesGrabber();
             await grabber.ChangeStorageFileAsync(file);
@@ -44,8 +47,8 @@ namespace TremAn3.ViewModels
             bool stillSomeFrame = true;
             byte[] frame2 = new byte[] { };
             byte[] frame1 = new byte[] { };
-            int[] diff = new int[] { };
-            grabber.batchSize = 1000;
+            double[] diff = new double[] { };
+            grabber.batchSize = 1;
             Stopwatch s = new Stopwatch();
             s.Start();
             var listComX = new List<double>();
@@ -59,14 +62,14 @@ namespace TremAn3.ViewModels
                 else
                     frame1 = frame2;//because of diff
                 string ss = "";
-                foreach (var i in frame1)
-                {
-                     ss = $"{ss},{i}";
-                }
+                //foreach (var i in frame1)
+                //{
+                //     ss = $"{ss},{i}";
+                //}
                 frame2 = await grabber.GrabGrayFrameInCurrentIndexAsync();
 
                 if (frame2 != null)
-                    diff = frame2.Zip(frame1, (f2, f1) => f2 - f1).ToArray();
+                    diff = frame2.Zip(frame1, (f2, f1) => (double)f2 - f1).ToArray();
                 //normalize frames
                 var max = diff.Max();
                 var min = diff.Min();
@@ -84,7 +87,7 @@ namespace TremAn3.ViewModels
                     }
                     continue;//jump to next frame
                 }
-                var diffNorm = diff.Select(x => (x - min) / max);
+                var diffNorm = diff.Select(x => (x - min) / (max-min));
                 //now "pixels" are in range from  0 to 1
                 var mean = diffNorm.Average();
 
@@ -95,10 +98,18 @@ namespace TremAn3.ViewModels
                 var diffNormMultY = diffNorm.Zip(vecOfy, (di, vy) => di * vy);
                 var comY = diffNormMultX.Average() / mean;
                 listComY.Add(comY);
+                // this is state where algorithm works - compering to matlab
+                // but is slow and needs some clean up
+                // frame grabber is bad on small videos - no idea why
 
             }
 
-          
+            string ssd = "";
+            foreach (var i in listComX)
+            {
+                Debug.WriteLine(i);
+                ssd = $"{ssd},{i}";
+            }
 
             Debug.WriteLine(s.ElapsedMilliseconds);
         }
