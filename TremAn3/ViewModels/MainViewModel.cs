@@ -28,6 +28,7 @@ namespace TremAn3.ViewModels
             FileOpenPicker openPicker = new FileOpenPicker();
             openPicker.FileTypeFilter.Add(".mp4");
             openPicker.FileTypeFilter.Add(".wmv");
+            
             StorageFile file = await openPicker.PickSingleFileAsync();
             if (file != null)
             { 

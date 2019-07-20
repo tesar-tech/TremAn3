@@ -18,7 +18,7 @@ namespace TremAn3.ViewModels
         public IMediaPlaybackSource Source
         {
             get { return _source; }
-            set { Set(ref _source, value); }
+           private set { Set(ref _source, value); }
         }
 
         public MediaPlayerViewModel()
