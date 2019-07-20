@@ -35,7 +35,7 @@ namespace TremAn3.ViewModels
 
         public async void GetFrameClickAsync()
         {
-        
+
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru.wmv"));
             //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru_small.avi"));
 
@@ -48,7 +48,7 @@ namespace TremAn3.ViewModels
             byte[] frame2 = new byte[] { };
             byte[] frame1 = new byte[] { };
             double[] diff = new double[] { };
-            grabber.batchSize = 1;
+            grabber.batchSize = 1000;
             Stopwatch s = new Stopwatch();
             s.Start();
             var listComX = new List<double>();

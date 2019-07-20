@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,13 +24,17 @@ namespace TremAn3.Services
 
         private async Task GetVideoPropertiesAsync()
         {
-            VideoProperties videoProperties = await StorageFile.Properties.GetVideoPropertiesAsync();
-            IDictionary<string, object> encodingProperties = await videoProperties.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });
-            uint frameRateX1000 = (uint)encodingProperties["System.Video.FrameRate"];
-            frameRate = frameRateX1000 / 1000d;
-            videoHeight = videoProperties.Height;
-            videoWidth = videoProperties.Width;
-            duration = videoProperties.Duration;
+            //VideoProperties videoProperties = await StorageFile.Properties.GetVideoPropertiesAsync();
+            //IDictionary<string, object> encodingProperties = await videoProperties.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });
+            //uint frameRateX1000 = (uint)encodingProperties["System.Video.FrameRate"];
+            //frameRate = frameRateX1000 / 1000d;
+            //videoHeight = videoProperties.Height;
+            //videoWidth = videoProperties.Width;
+            //duration = videoProperties.Duration;
+            frameRate = 25;
+            videoHeight = 288;
+            videoWidth = 512;
+            duration = TimeSpan.FromSeconds(10);
         }
         uint videoHeight;
         uint videoWidth;
@@ -73,33 +78,54 @@ namespace TremAn3.Services
         IEnumerator<ImageStream> currentEnumerator;
         public int batchSize = 1;
         // returns null if there is no frame left
+        IReadOnlyList<ImageStream> imgsStreams;
         public async Task<byte[]> GrabGrayFrameInCurrentIndexAsync()
         {
             //get new portion of frames if there is nothing left.
-            if (currentEnumerator == null || !currentEnumerator.MoveNext())
-            {
-                var timesToFrames = frameTimes.Skip(FrameIndex + 1).Take(batchSize);
-                if (timesToFrames.Count() == 0)
-                    return null;
-                //get next portion of frames
+            //if (currentEnumerator == null || !currentEnumerator.MoveNext())
+            //{
+            //    var timesToFrames = frameTimes.Skip(FrameIndex + 1).Take(batchSize);
+            //    if (timesToFrames.Count() == 0)
+            //        return null;
+            //    //get next portion of frames
 
-                var imageStreams = await composition.GetThumbnailsAsync(timesToFrames, 0, 0, VideoFramePrecision.NearestFrame);
-                //if the video resolution is not even- it will generate even resolution and adds black stripe
-                // why? dont know 
-                currentEnumerator = imageStreams.GetEnumerator();
-                if (!currentEnumerator.MoveNext())
-                    return null;
-            }
-        
-            ImageStream imageStream = currentEnumerator.Current;
+            //    var imageStreams = await composition.GetThumbnailsAsync(timesToFrames, (int)videoWidth, (int)videoHeight, VideoFramePrecision.NearestFrame);
+            //    //if the video resolution is not even- it will generate even resolution and adds black stripe
+            //    // why? dont know 
+            //    currentEnumerator = imageStreams.GetEnumerator();
+            //    if (!currentEnumerator.MoveNext())
+            //        return null;
+            //}
+
+            //if(imgsStreams == null)
+            //    {
+               
+            //     frameTimes = Enumerable.Range(0, 299).Select(x => TimeSpan.FromSeconds(framePeriod * x)).ToList();
+
+            //    imgsStreams = await composition.GetThumbnailsAsync(frameTimes, 0,0, VideoFramePrecision.NearestFrame);
+            //}
+            if (FrameIndex >= frameTimes.Count)
+                return null;
+            //var isss = await composition.GetThumbnailAsync(frameTimes[FrameIndex], (int)videoWidth, (int)videoHeight, VideoFramePrecision.NearestFrame);
+
+            //ImageStream imageStream = isss;
+            //ImageStream imageStream = currentEnumerator.Current;
+            //ImageStream imageStream = imgsStreams[FrameIndex];
+            var imageStreamsSingle = await composition.GetThumbnailAsync(frameTimes[FrameIndex], 0, 0, VideoFramePrecision.NearestFrame);
 
 
-            var cosi = await BitmapDecoder.CreateAsync(imageStream);
-                var pixelss = await cosi.GetPixelDataAsync();
-                var bytes = pixelss.DetachPixelData();
-                // bytes is array with size = viedeoWidth * video Height * 4 ; (4 because of R G B and alpha).
-                //bytes[0] - R value of first pixel, bytes[1] - Green value of first pixel...
-                var grayBytes = new byte[bytes.Length / 4];
+
+                //var bytes = await GetBytesFromImageStreamAsync(imageStream);
+                var bytes = await GetBytesFromImageStreamAsync(imageStreamsSingle);
+            //var absDiff = bytes.Zip(bytesSingle, (m, s) => Math.Abs(m - s)).Sum();
+            //if (absDiff != 0)
+            //{
+            //    Debug.WriteLine(absDiff);
+
+            //}
+            // bytes is array with size = viedeoWidth * video Height * 4 ; (4 because of R G B and alpha).
+            //bytes[0] - R value of first pixel, bytes[1] - Green value of first pixel...
+            var grayBytes = new byte[bytes.Length / 4];
                 int grayBytrsIterator = 0;
                 for (int i = 0; i < bytes.Length; i += 4)
                 {
@@ -108,6 +134,14 @@ namespace TremAn3.Services
                 }
                 FrameIndex++;
                 return grayBytes;
+        }
+
+        async System.Threading.Tasks.Task<byte[]> GetBytesFromImageStreamAsync(ImageStream stream)
+        {
+            var deco = await BitmapDecoder.CreateAsync(stream);
+            var pixelss = await deco.GetPixelDataAsync();
+            var bytes = pixelss.DetachPixelData();
+            return bytes;
         }
 
 
