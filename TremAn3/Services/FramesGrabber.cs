@@ -24,20 +24,22 @@ namespace TremAn3.Services
 
         private async Task GetVideoPropertiesAsync()
         {
-            //VideoProperties videoProperties = await StorageFile.Properties.GetVideoPropertiesAsync();
-            //IDictionary<string, object> encodingProperties = await videoProperties.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });
-            //uint frameRateX1000 = (uint)encodingProperties["System.Video.FrameRate"];
-            //frameRate = frameRateX1000 / 1000d;
-            //videoHeight = videoProperties.Height;
-            //videoWidth = videoProperties.Width;
-            //duration = videoProperties.Duration;
-            frameRate = 25;
-            videoHeight = 288;
-            videoWidth = 512;
-            duration = TimeSpan.FromSeconds(10);
+            VideoProperties videoProperties = await StorageFile.Properties.GetVideoPropertiesAsync();
+            IDictionary<string, object> encodingProperties = await videoProperties.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });
+            uint frameRateX1000 = (uint)encodingProperties["System.Video.FrameRate"];
+            FrameRate = frameRateX1000 / 1000d;
+            videoHeight = videoProperties.Height;
+            videoWidth = videoProperties.Width;
+            duration = videoProperties.Duration;
+            //frameRate = 25;
+            //videoHeight = 288;
+            //videoWidth = 512;
+            //duration = TimeSpan.FromSeconds(10);
         }
         uint videoHeight;
         uint videoWidth;
+
+        public double FrameRate { get; set; }
 
         public (int width, int height) GetWidthAndHeight()
         {
@@ -52,8 +54,8 @@ namespace TremAn3.Services
              composition = new MediaComposition();
             composition.Clips.Add(clip);
 
-             framePeriod = 1 / frameRate;
-             var framesGaps = (int)Math.Round(duration.TotalSeconds * frameRate);
+             framePeriod = 1 / FrameRate;
+             var framesGaps = (int)Math.Round(duration.TotalSeconds * FrameRate);
              frameTimes = Enumerable.Range(0, framesGaps-1).Select(x => TimeSpan.FromSeconds(framePeriod * x)).ToList();
             //-1 is because there is no frame (but there should be), and it throws error about expected range (in generate thumbnail)
             //if (frameTimes.Last() < duration)
@@ -68,7 +70,6 @@ namespace TremAn3.Services
         MediaComposition composition;
 
         TimeSpan duration; 
-        double frameRate;
 
         public StorageFile   StorageFile { get; set; }
         public TimeSpan Position { get; set; }
