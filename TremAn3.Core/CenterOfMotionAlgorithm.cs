@@ -67,7 +67,7 @@ namespace TremAn3.Core
                 double avg = (fftX.Values[i] + fftY.Values[i])/2;
                 avgSpecList.Add(avg);
             }
-            int maxIndex = avgSpecList.FindIndex(n => n == (avgSpecList.Max()));
+            int maxIndex = avgSpecList.IndexOf( avgSpecList.Max());
             return fftX.Frequencies[maxIndex]; 
         }
     }
