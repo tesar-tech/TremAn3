@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight;
 
 using Windows.Media.Core;
 using Windows.Media.Playback;
+using Windows.Storage;
 
 namespace TremAn3.ViewModels
 {
@@ -19,6 +20,11 @@ namespace TremAn3.ViewModels
         {
             get { return _source; }
            private set { Set(ref _source, value); }
+        }
+
+        public void ChangeSource(IStorageFile file)
+        {
+            Source = MediaSource.CreateFromStorageFile(file);
         }
 
         public MediaPlayerViewModel()

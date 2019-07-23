@@ -8,6 +8,7 @@ using Windows.Storage.Pickers;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using TremAn3.ViewModels;
+using TremAn3.Services;
 
 namespace TremAn3.ViewModels
 {
@@ -19,22 +20,16 @@ namespace TremAn3.ViewModels
 
 
 
-        public async void OpenVideo_ButtonClickAsync(object sender, RoutedEventArgs e)
+        public async void OpenVideo_ButtonClickAsync()
         {
             //call service for openFileDialog
             //recieve video video file (StorageFile)
             // create method MediaPlayerViewModel.ChangeSource(StorageFile)
             // call for MediaSource.CreateFromStorageFile
-            FileOpenPicker openPicker = new FileOpenPicker();
-            openPicker.FileTypeFilter.Add(".mp4");
-            openPicker.FileTypeFilter.Add(".wmv");
-            
-            StorageFile file = await openPicker.PickSingleFileAsync();
-            if (file != null)
-            { 
-                MediaPlayerViewModel.Source = MediaSource.CreateFromStorageFile(file);
-            }
+             var file = await DataService.OpenFileDialogueAsync();
+            MediaPlayerViewModel.ChangeSource(file);
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
+        public DataService DataService { get; set; } = new DataService();
     }
 }
