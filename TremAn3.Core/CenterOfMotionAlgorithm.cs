@@ -56,16 +56,19 @@ namespace TremAn3.Core
 
         }
 
-        public double GetMainFreqFromComLists(List<double> listX, List<double> listY )
+        public double GetMainFreqFromComLists()
         {
             //returned value is max from average of two spectrums
-            double fs = frameRate;
-            FftResult fftX = Fft.GetAmpSpectrumAndMax(fs, listX);
-            FftResult fftY = Fft.GetAmpSpectrumAndMax(fs, listY);
-            double avgX = fftX.Values.Average();
-            double avgY = fftY.Values.Average();
-            //frameRate
-            return Math.Max(avgX, avgY); //just for testing ...
+            FftResult fftX = Fft.GetAmpSpectrumAndMax(frameRate, listComX);
+            FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listComY);
+            List<double> avgSpecList = new List<double>();
+            for (int i = 0; i < listComX.Count;i++)
+            {
+                double avg = (fftX.Values[i] + fftY.Values[i])/2;
+                avgSpecList.Add(avg);
+            }
+            int maxIndex = avgSpecList.FindIndex(n => n == (avgSpecList.Max()));
+            return fftX.Frequencies[maxIndex]; 
         }
     }
 }
