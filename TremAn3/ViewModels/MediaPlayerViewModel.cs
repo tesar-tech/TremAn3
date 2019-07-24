@@ -24,7 +24,10 @@ namespace TremAn3.ViewModels
 
         public void ChangeSource(IStorageFile file)
         {
-            Source = MediaSource.CreateFromStorageFile(file);
+            if (file != null)
+            {
+                Source = MediaSource.CreateFromStorageFile(file);
+            }
         }
 
         public MediaPlayerViewModel()

@@ -22,10 +22,6 @@ namespace TremAn3.ViewModels
 
         public async void OpenVideo_ButtonClickAsync()
         {
-            //call service for openFileDialog
-            //recieve video video file (StorageFile)
-            // create method MediaPlayerViewModel.ChangeSource(StorageFile)
-            // call for MediaSource.CreateFromStorageFile
              var file = await DataService.OpenFileDialogueAsync();
             MediaPlayerViewModel.ChangeSource(file);
         }

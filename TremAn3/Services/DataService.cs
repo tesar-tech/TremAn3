@@ -25,12 +25,6 @@ namespace TremAn3.Services
 
             StorageFile file = await openPicker.PickSingleFileAsync();
             return file;
-            /*
-             * if (file != null)
-            {
-                MediaPlayerViewModel.ChangeSource(file);
-                //MediaPlayerViewModel.Source = MediaSource.CreateFromStorageFile(file);
-            }*/
         }
 
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
