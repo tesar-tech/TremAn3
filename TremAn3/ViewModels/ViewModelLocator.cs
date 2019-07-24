@@ -17,6 +17,7 @@ namespace TremAn3.ViewModels
         private ViewModelLocator()
         {
             SimpleIoc.Default.Register(() => new NavigationServiceEx());
+            SimpleIoc.Default.Register(() => new MediaPlayerViewModel());
             Register<MainViewModel, MainPage>();
             //Register<MediaPlayerViewModel, MediaPlayerPage>();
             Register<SettingsViewModel, SettingsPage>();

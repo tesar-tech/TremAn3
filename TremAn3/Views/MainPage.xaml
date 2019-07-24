@@ -26,7 +26,11 @@
             Grid.Row="1"
             Content="Load Video"
             Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"/>
-        <Grid
+        <StackPanel Orientation="Horizontal">
+                <Button Click="{x:Bind ViewModel.GetFrameClickAsync}" >Get curent frame</Button>
+                <Image Source="{x:Bind ViewModel.CurrentFrameSource, Mode=OneWay}" ></Image>
+            </StackPanel>
+            <Grid
             Grid.Row="2"
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
@@ -35,8 +39,10 @@
         <MediaPlayerElement
             Grid.Row="2"
             x:Name="mpe"
-            AutoPlay="True"
-            AreTransportControlsEnabled="True"
+
+                            AutoPlay="False"
+                            AreTransportControlsEnabled="True"
+
                            
             Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
             <MediaPlayerElement.TransportControls>
