@@ -33,13 +33,13 @@ namespace TremAn3.ViewModels
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();
 
-        private ImageSource _CurrentFrameSource;
+        //private ImageSource _CurrentFrameSource;
 
-        public ImageSource CurrentFrameSource
-        {
-            get => _CurrentFrameSource;
-            set => Set(ref _CurrentFrameSource, value);
-        }
+        //public ImageSource CurrentFrameSource
+        //{
+        //    get => _CurrentFrameSource;
+        //    set => Set(ref _CurrentFrameSource, value);
+        //}
 
 
         public async void GetFrameClickAsync()

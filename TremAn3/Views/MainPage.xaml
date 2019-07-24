@@ -13,22 +13,14 @@
         x:Name="ContentArea"
         Margin="{StaticResource MediumLeftRightMargin}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="48"/>
-            <RowDefinition Height="48"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock
-            Grid.Row="0"
-            x:Uid="Main_Title"
-            Style="{StaticResource PageTitleStyle}" />
-        <Button
-            Grid.Row="1"
-            Content="Load Video"
-            Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"/>
         <StackPanel Orientation="Horizontal">
                 <Button Click="{x:Bind ViewModel.GetFrameClickAsync}" >Get curent frame</Button>
-                <Image Source="{x:Bind ViewModel.CurrentFrameSource, Mode=OneWay}" ></Image>
+            <Button Content="Load Video" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"/>
+            <!--<Image Source="{x:Bind ViewModel.CurrentFrameSource, Mode=OneWay}" ></Image>-->
             </StackPanel>
             <Grid
             Grid.Row="2"
@@ -37,13 +29,7 @@
                 Place your content here.-->
         </Grid>
         <MediaPlayerElement
-            Grid.Row="2"
-            x:Name="mpe"
-
-                            AutoPlay="False"
-                            AreTransportControlsEnabled="True"
-
-                           
+            Grid.Row="2" x:Name="mpe" AutoPlay="False" AreTransportControlsEnabled="True"
             Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
             <MediaPlayerElement.TransportControls>
                 <MediaTransportControls IsCompact="False"/>
