@@ -1,10 +1,17 @@
 ﻿using System;
+using System.IO;
+using System.Windows;
+using GalaSoft.MvvmLight;
+using Windows.Media.Core;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.UI.Popups;
+using Windows.UI.Xaml;
+using TremAn3.ViewModels;
+using TremAn3.Services;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using GalaSoft.MvvmLight;
-using TremAn3.Services;
-using Windows.Storage;
 using Windows.UI.Xaml.Media;
 using TremAn3.Core;
 
@@ -16,21 +23,23 @@ namespace TremAn3.ViewModels
         {
         }
 
-        public void OpenVideo_ButtonClick()
-        {
-            //call service for openFileDialog
-            //recieve video video file (StorageFile)
-            // create method MediaPlayerViewModel.ChangeSource(StorageFile)
-            // call for MediaSource.CreateFromStorageFile
-        }
 
-        private ImageSource _CurrentFrameSource;
 
-        public ImageSource CurrentFrameSource
+        public async void OpenVideo_ButtonClickAsync()
         {
-            get => _CurrentFrameSource;
-            set => Set(ref _CurrentFrameSource, value);
+            var file = await DataService.OpenFileDialogueAsync();
+            MediaPlayerViewModel.ChangeSource(file);
         }
+        public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
+        public DataService DataService { get; set; } = new DataService();
+
+        //private ImageSource _CurrentFrameSource;
+
+        //public ImageSource CurrentFrameSource
+        //{
+        //    get => _CurrentFrameSource;
+        //    set => Set(ref _CurrentFrameSource, value);
+        //}
 
 
         public async void GetFrameClickAsync()
@@ -44,27 +53,27 @@ namespace TremAn3.ViewModels
 
             await grabber.ChangeStorageFileAsync(file);
             (int width, int height) = grabber.GetWidthAndHeight();
-            CenterOfMotionAlgorithm comAlg = new CenterOfMotionAlgorithm(width, height,grabber.FrameRate);
+            CenterOfMotionAlgorithm comAlg = new CenterOfMotionAlgorithm(width, height, grabber.FrameRate);
 
             int counter = 0;
             while (true)
             {
                 Debug.WriteLine(counter++);
-                if (comAlg.Frame2 ==null)//on the beginning 
+                if (comAlg.Frame2 == null)//on the beginning 
                     comAlg.Frame1 = await grabber.GrabGrayFrameInCurrentIndexAsync();
                 else
-                     comAlg.Frame1 = comAlg.Frame2;//because of diff
+                    comAlg.Frame1 = comAlg.Frame2;//because of diff
 
                 comAlg.Frame2 = await grabber.GrabGrayFrameInCurrentIndexAsync();
 
                 if (comAlg.Frame2 == null)
                     break;
-               comAlg.GetComFromCurrentFrames();
-                
+                comAlg.GetComFromCurrentFrames();
+
                 // frame grabber is bad on small videos - no idea why
             }
 
-         
+
 
             VideoMainFreq = comAlg.GetMainFreqFromComLists();
         }
@@ -79,6 +88,6 @@ namespace TremAn3.ViewModels
 
 
 
-        public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = ViewModelLocator.Current.MediaPlayerViewModel;
+        //public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = ViewModelLocator.Current.MediaPlayerViewModel;
     }
 }

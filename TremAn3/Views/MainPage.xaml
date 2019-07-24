@@ -4,33 +4,33 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ViewModels="using.TremAn3.ViewModels"
+
+    
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
     <Grid
         x:Name="ContentArea"
         Margin="{StaticResource MediumLeftRightMargin}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="48"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal">
-            <Button Click="{x:Bind ViewModel.GetFrameClickAsync}" > Get curent frame</Button>
-            <Image Source="{x:Bind ViewModel.CurrentFrameSource, Mode=OneWay}" ></Image>
-        </StackPanel>
-        <Grid
-            Grid.Row="1" 
+                <Button Click="{x:Bind ViewModel.GetFrameClickAsync}" >Get curent frame</Button>
+            <Button Content="Load Video" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"/>
+            <!--<Image Source="{x:Bind ViewModel.CurrentFrameSource, Mode=OneWay}" ></Image>-->
+            </StackPanel>
+            <Grid
+            Grid.Row="2"
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
                 Place your content here.-->
         </Grid>
         <MediaPlayerElement
-Grid.Row="1"
-            x:Name="mpe"
-                            AutoPlay="False"
-                            AreTransportControlsEnabled="True"
-                           
-                            Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
+            Grid.Row="2" x:Name="mpe" AutoPlay="False" AreTransportControlsEnabled="True"
+            Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
             <MediaPlayerElement.TransportControls>
                 <MediaTransportControls IsCompact="False"/>
             </MediaPlayerElement.TransportControls>
