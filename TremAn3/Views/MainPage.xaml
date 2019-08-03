@@ -24,9 +24,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Button x:Name="btnShowPane" HorizontalAlignment="Right" VerticalAlignment="Top" Width="48" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" Click="btnShowPane_Click" />
-                <TextBlock Grid.Row="1" Text="VideoMainFreq: "/>
-                <TextBlock Grid.Row="2" Text="{x:Bind ViewModel.GenRanNum(), Mode=OneWay}"/>
-                <!--<TextBlock Grid.Row="2" Text="{x:Bind ViewModel.VideoMainFreq, Mode=OneWay}"/>-->
+                <TextBlock Grid.Row="1"><Run>VideoMainFreq:  </Run> <Run Text="{x:Bind ViewModel.VideoMainFreq, Mode=OneWay}"/></TextBlock>
             </Grid>
         </SplitView.Pane>
 
@@ -39,8 +37,9 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal">
-            <Button Click="{x:Bind ViewModel.GetFrameClickAsync}" >Get curent frame</Button>
-            <Button Content="Load Video" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"/>
+                <!--<Button Click="{x:Bind ViewModel.GetFrameClickAsync}" >Get curent frame</Button>-->
+                <Button Click="{x:Bind ViewModel.GenRanNum}" >Get curent frame</Button>
+                <Button Content="Load Video" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"/>
                 <!--<Image Source="{x:Bind ViewModel.CurrentFrameSource, Mode=OneWay}" ></Image>-->
         </StackPanel>
             <Grid

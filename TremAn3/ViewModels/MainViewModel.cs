@@ -77,20 +77,20 @@ namespace TremAn3.ViewModels
             VideoMainFreq = comAlg.GetMainFreqFromComLists();
         }
 
-        private double _VideoMainFreq;
+        private double? _VideoMainFreq = null;
 
-        public double VideoMainFreq
+        public double? VideoMainFreq
         {
             get => _VideoMainFreq;
             set => Set(ref _VideoMainFreq, value);
         }
 
-        public string GenRanNum()
-        {
-            Random random = new Random();
+        Random random = new Random();
+        public void GenRanNum()
+        { 
             int num = random.Next(100);
-            string str =num.ToString();
-            return str;
+            //string str =num.ToString();
+            VideoMainFreq = num;
         }
 
 
