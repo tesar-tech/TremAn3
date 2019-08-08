@@ -23,8 +23,8 @@ namespace TremAn3.Core
 
         readonly List<int> vecOfx;
         readonly List<int> vecOfy;
-        List<double> listComX = new List<double>();
-        List<double> listComY = new List<double>();
+        public List<double> listComX = new List<double>();
+        public List<double> listComY = new List<double>();
 
         double previousValueX;
         double previousValueY;
