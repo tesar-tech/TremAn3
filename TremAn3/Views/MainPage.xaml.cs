@@ -67,5 +67,9 @@ namespace TremAn3.Views
             ViewModel.MediaPlayerViewModel.DisposeSource();
         }
 
+        private void btnShowPane_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            MySplitView.IsPaneOpen = !MySplitView.IsPaneOpen;
+        }
     }
 }

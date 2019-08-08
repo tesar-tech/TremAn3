@@ -41,7 +41,6 @@ namespace TremAn3.ViewModels
         //    set => Set(ref _CurrentFrameSource, value);
         //}
 
-
         public async void GetFrameClickAsync()
         {
 
@@ -78,12 +77,20 @@ namespace TremAn3.ViewModels
             VideoMainFreq = comAlg.GetMainFreqFromComLists();
         }
 
-        private double _VideoMainFreq;
+        private double? _VideoMainFreq = null;
 
-        public double VideoMainFreq
+        public double? VideoMainFreq
         {
             get => _VideoMainFreq;
             set => Set(ref _VideoMainFreq, value);
+        }
+
+        Random random = new Random();
+        public void GenRanNum()
+        { 
+            int num = random.Next(100);
+            //string str =num.ToString();
+            VideoMainFreq = num;
         }
 
 
