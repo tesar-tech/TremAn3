@@ -11,19 +11,21 @@
     mc:Ignorable="d">
     <SplitView
             x:Name="MySplitView"
-           IsPaneOpen="False"
            DisplayMode="CompactInline"
            OpenPaneLength="200"
-           PanePlacement="Right">
+           PanePlacement="Right"
+           IsPaneOpen="{x:Bind ViewModel.IsFreqCounterOpen, Mode=OneWay}"
+        >
         <SplitView.Pane>
             <Grid
                 x:Name="SplitViewArea">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="btnShowPane" HorizontalAlignment="Right" VerticalAlignment="Top" Width="48" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" Click="btnShowPane_Click" />
+                <Button  Click="{x:Bind ViewModel.GenRanNum}" >Get curent frame</Button>
+
                 <TextBlock Grid.Row="1"><Run>VideoMainFreq:  </Run> <Run Text="{x:Bind ViewModel.VideoMainFreq, Mode=OneWay}"/></TextBlock>
             </Grid>
         </SplitView.Pane>
@@ -36,18 +38,14 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal">
+        <!--<StackPanel Orientation="Horizontal">-->
                 <!--<Button Click="{x:Bind ViewModel.GetFrameClickAsync}" >Get curent frame</Button>-->
-                <Button Click="{x:Bind ViewModel.GenRanNum}" >Get curent frame</Button>
-                <Button Content="Load Video" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"/>
+                <!--<Button Content="Load Video" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"/>-->
                 <!--<Image Source="{x:Bind ViewModel.CurrentFrameSource, Mode=OneWay}" ></Image>-->
-        </StackPanel>
-            <Grid
-            Grid.Row="2"
-            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-            <!--The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
-                Place your content here.-->
-        </Grid>
+                <!--<Button x:Name="btnShowPane" HorizontalAlignment="Right" VerticalAlignment="Top" Width="48" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" Click="btnShowPane_Click" />-->
+
+            <!--</StackPanel>-->
+          
 
         <MediaPlayerElement
             Grid.Row="2" x:Name="mpe" AutoPlay="False" AreTransportControlsEnabled="True"

@@ -43,6 +43,16 @@ namespace TremAn3.ViewModels
         {
         }
 
+        public void OpenNewFile()
+        {
+            ViewModelLocator.Current.MainViewModel.OpenVideo_ButtonClickAsync();
+        }
+
+        public void FreqCounter()
+        {
+            ViewModelLocator.Current.MainViewModel.IsFreqCounterOpen = !ViewModelLocator.Current.MainViewModel.IsFreqCounterOpen;
+        }
+
         public void Initialize(Frame shellFrame, SplitView splitView, Frame rightFrame, IList<KeyboardAccelerator> keyboardAccelerators)
         {
             NavigationService.Frame = shellFrame;
