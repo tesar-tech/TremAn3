@@ -51,7 +51,7 @@ namespace TremAn3.Core.Tests.xUnit
         public void GetComFromCurrentFrames_SameFrames_SameResult()
         {
             cOM1.GetComFromCurrentFrames();
-            Assert.Equal(127, cOM1.listComX[0]);//Matlab vyhodí taky 128.. ale má jiné indexování
+            Assert.Equal(127.5, cOM1.listComX[0]);//Matlab vyhodí taky 128.. ale má jiné indexování
         }
         [Fact]
         public void GetComFromCurrentFrames_DifferentFrames_SameResult()
