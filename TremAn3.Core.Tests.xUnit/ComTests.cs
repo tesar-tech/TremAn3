@@ -14,7 +14,7 @@ namespace TremAn3.Core.Tests.xUnit
         {
             cOM1.Frame1 = new byte[65536];cOM1.Frame2 = new byte[65536];
             cOM2.Frame1 = new byte[65536]; cOM2.Frame2 = new byte[65536];
-            for (int i = 1; i < 65536; i++)
+            for (int i = 0; i < 65536; i++)
             {
                 cOM1.Frame1[i] = 0;
                 cOM1.Frame2[i] = 0;
