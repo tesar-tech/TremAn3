@@ -62,7 +62,8 @@ Ethalon - Matlab code (Matlab has different indexing than C#)
     % toc
     vectors = [x_centers', y_centers'];
 
-GetComFromCurrentFrames_SameFrames_SameResult() 	This test is performed with same frames(full of zeros)
+GetComFromCurrentFrames_SameFrames_SameResult()	
+	This test is performed with same frames(full of zeros)
 Ethalon - Matlab code (Matlab has different indexing than C#)
 
     clear all;close all; clc;
