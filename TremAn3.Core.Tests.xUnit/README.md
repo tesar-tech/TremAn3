@@ -1,6 +1,6 @@
-<b>ComTests.cs_ </b>
+<h3>ComTests.cs </h3>
 
-GetComFromCurrentFrames_DifferentFrames_SameResult() <br />
+<b>GetComFromCurrentFrames_DifferentFrames_SameResult()</b> <br />
      This test is performed with frames from a chessboard video <br />
 Ethalon - Matlab code (Matlab has different indexing than C#) <br />
 
@@ -62,7 +62,7 @@ Ethalon - Matlab code (Matlab has different indexing than C#) <br />
     % toc
     vectors = [x_centers', y_centers'];
 
-GetComFromCurrentFrames_SameFrames_SameResult() <br />
+<b>GetComFromCurrentFrames_SameFrames_SameResult()</b> <br />
      This test is performed with same frames(full of zeros) <br />
 Ethalon - Matlab code (Matlab has different indexing than C#) <br />
 
