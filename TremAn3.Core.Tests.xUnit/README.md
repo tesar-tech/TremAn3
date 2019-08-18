@@ -1,4 +1,4 @@
-ComTests.cs_ 
+<b>ComTests.cs_ </b>
 
 GetComFromCurrentFrames_DifferentFrames_SameResult() <br />
      This test is performed with frames from a chessboard video <br />
