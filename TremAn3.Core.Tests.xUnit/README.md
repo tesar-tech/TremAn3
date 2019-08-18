@@ -1,8 +1,8 @@
 ComTests.cs_
 
-GetComFromCurrentFrames_DifferentFrames_SameResult()_
-	This test is performed with frames from a chessboard video_
-Ethalon - Matlab code (Matlab has different indexing than C#)_
+GetComFromCurrentFrames_DifferentFrames_SameResult()__
+	This test is performed with frames from a chessboard video__
+Ethalon - Matlab code (Matlab has different indexing than C#)__
 
     v = VideoReader('test_video.avi');
     fs = v.FrameRate;
