@@ -1,8 +1,8 @@
-ComTests.cs_
+ComTests.cs_ 
 
-GetComFromCurrentFrames_DifferentFrames_SameResult()__
-	This test is performed with frames from a chessboard video__
-Ethalon - Matlab code (Matlab has different indexing than C#)__
+GetComFromCurrentFrames_DifferentFrames_SameResult() 
+	This test is performed with frames from a chessboard video 
+Ethalon - Matlab code (Matlab has different indexing than C#) 
 
     v = VideoReader('test_video.avi');
     fs = v.FrameRate;
@@ -62,9 +62,9 @@ Ethalon - Matlab code (Matlab has different indexing than C#)__
     % toc
     vectors = [x_centers', y_centers'];
 
-GetComFromCurrentFrames_SameFrames_SameResult()	_
-	This test is performed with same frames(full of zeros)_
-Ethalon - Matlab code (Matlab has different indexing than C#)_
+GetComFromCurrentFrames_SameFrames_SameResult() 
+	This test is performed with same frames(full of zeros) 
+Ethalon - Matlab code (Matlab has different indexing than C#) 
 
     clear all;close all; clc;
     V3 = zeros(256,256,2);
