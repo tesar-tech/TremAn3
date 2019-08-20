@@ -32,6 +32,10 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
             <winui:MenuBar VerticalAlignment="Top">
                 <!--
                 TODO WTS: You can edit the text for the menu in String/en-US/Resources.resw
@@ -39,13 +43,22 @@
                 <winui:MenuBarItem x:Uid="ShellMenuBarItem_File">
                     <MenuFlyoutItem x:Uid="ShellMenuItem_File_Settings" Command="{x:Bind ViewModel.MenuFileSettingsCommand}" />
                     <MenuFlyoutItem x:Uid="ShellMenuItem_File_Exit" Command="{x:Bind ViewModel.MenuFileExitCommand}" />
+                    <MenuFlyoutItem  Text="Open File" x:Uid="ShellMenuItem_File_OpenNewChannels" Click="{x:Bind ViewModel.OpenNewFile}" >
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control"  Key="O" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
                 </winui:MenuBarItem>
-                <winui:MenuBarItem x:Uid="ShellMenuBarItem_Views">
+                    
+                <!--<winui:MenuBarItem Title="Freq Counter" Tapped="{x:Bind ViewModel.FreqCounter}"   />-->
+
+                <!--<winui:MenuBarItem x:Uid="ShellMenuBarItem_Views">
                     <MenuFlyoutItem x:Uid="ShellMenuItem_Views_Main" Command="{x:Bind ViewModel.MenuViewsMainCommand}" />
                     <MenuFlyoutItem x:Uid="ShellMenuItem_Views_MediaPlayer" Command="{x:Bind ViewModel.MenuViewsMediaPlayerCommand}" />
-                </winui:MenuBarItem>
+                </winui:MenuBarItem>-->
             </winui:MenuBar>
-            <Grid Grid.Row="1">
+            <Button Content="Freq Counter" Grid.Column="1" Click="{x:Bind ViewModel.FreqCounter}"/>
+            <Grid Grid.Row="1" Grid.ColumnSpan="2">
                 <Frame x:Name="shellFrame" />
             </Grid>
         </Grid>
