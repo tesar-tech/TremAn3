@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Linq;
 using Windows.UI.Xaml.Media;
 using TremAn3.Core;
+using Microsoft.Toolkit.Uwp.UI.Converters;
 
 namespace TremAn3.ViewModels
 {
@@ -21,6 +22,7 @@ namespace TremAn3.ViewModels
     {
         public MainViewModel()
         {
+            
         }
 
 
@@ -68,7 +70,7 @@ namespace TremAn3.ViewModels
                 if (comAlg.Frame2 == null)
                     break;
                 comAlg.GetComFromCurrentFrames();
-
+                ProgressPercentage = grabber.GetProgressPercentage();
                 // frame grabber is bad on small videos - no idea why
             }
 
@@ -76,6 +78,15 @@ namespace TremAn3.ViewModels
 
             VideoMainFreq = comAlg.GetMainFreqFromComLists();
         }
+
+        private double _ProgressPercentage;
+
+        public double ProgressPercentage
+        {
+            get => _ProgressPercentage;
+            set => Set(ref _ProgressPercentage, value);
+        }
+
 
         private double? _VideoMainFreq = null;
 

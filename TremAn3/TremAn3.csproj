@@ -110,6 +110,9 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp">
       <Version>5.1.1</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI">
+      <Version>5.1.1</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.0.181018004</Version>
     </PackageReference>

@@ -64,6 +64,12 @@ namespace TremAn3.Services
             FrameIndex = 0;
         }
         double framePeriod;
+
+        internal double GetProgressPercentage()
+        {
+            return FrameIndex + 1 / frameTimes.Count *100;
+        }
+
         int framesCount;
         List<TimeSpan> frameTimes;
 

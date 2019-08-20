@@ -70,5 +70,7 @@ namespace TremAn3.Core
             int maxIndex = avgSpecList.IndexOf( avgSpecList.Max());
             return fftX.Frequencies[maxIndex]; 
         }
+
+    
     }
 }

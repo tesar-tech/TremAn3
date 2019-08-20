@@ -5,10 +5,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ViewModels="using.TremAn3.ViewModels"
-
-    
+    xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
+    <Page.Resources>
+        <toolkitConverters:StringFormatConverter x:Key="StringFormatConverter"></toolkitConverters:StringFormatConverter>
+    </Page.Resources>
     <SplitView
             x:Name="MySplitView"
            IsPaneOpen="False"
@@ -20,11 +22,16 @@
                 x:Name="SplitViewArea">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Button x:Name="btnShowPane" HorizontalAlignment="Right" VerticalAlignment="Top" Width="48" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" Click="btnShowPane_Click" />
                 <TextBlock Grid.Row="1"><Run>VideoMainFreq:  </Run> <Run Text="{x:Bind ViewModel.VideoMainFreq, Mode=OneWay}"/></TextBlock>
+                <StackPanel Orientation="Horizontal" Grid.Row="2" >
+                    <TextBlock Text="{x:Bind ViewModel.ProgressPercentage, Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter='0:0.00' }" />
+                    <ProgressBar  HorizontalAlignment="Stretch" Value="{x:Bind ViewModel.ProgressPercentage, Mode=OneWay}" />
+                </StackPanel>
             </Grid>
         </SplitView.Pane>
 
