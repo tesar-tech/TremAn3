@@ -10,8 +10,8 @@ namespace TremAn3.Core
         public CenterOfMotionAlgorithm(int width, int height, double frameRate)
         {
             this.frameRate = frameRate;
-            previousValueX = width / 2d;//previous is set to half in case of first and second frame are same
-            previousValueY = height / 2d;
+            previousValueX = (width-1) / 2d;//previous is set to half in case of first and second frame are same
+            previousValueY = (height-1) / 2d;
             vecOfx = Enumerable.Repeat(Enumerable.Range(0, width), height).SelectMany(x => x).ToList();
             vecOfy = Enumerable.Range(0, height).Select(x => Enumerable.Repeat(x, width)).SelectMany(x => x).ToList();
         }
@@ -23,8 +23,8 @@ namespace TremAn3.Core
 
         readonly List<int> vecOfx;
         readonly List<int> vecOfy;
-        List<double> listComX = new List<double>();
-        List<double> listComY = new List<double>();
+        public List<double> listComX = new List<double>();
+        public List<double> listComY = new List<double>();
 
         double previousValueX;
         double previousValueY;
@@ -50,10 +50,8 @@ namespace TremAn3.Core
                 comY = diffNormMultX.Average() / mean;
                 previousValueY = comY;
             }
-
             listComX.Add(comX);
             listComY.Add(comY);
-
         }
 
         public double GetMainFreqFromComLists()
