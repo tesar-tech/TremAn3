@@ -104,6 +104,13 @@ namespace TremAn3.ViewModels
             VideoMainFreq = num;
         }
 
+        private bool _IsFreqCounterOpen =  false;
+
+        public bool IsFreqCounterOpen
+        {
+            get => _IsFreqCounterOpen;
+            set => Set(ref _IsFreqCounterOpen, value);
+        }
 
 
         //public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = ViewModelLocator.Current.MediaPlayerViewModel;

@@ -12,8 +12,8 @@ namespace TremAn3.Core
     {
         public static FftResult GetAmpSpectrumAndMax(double fs, List<double> vector)
         {
-            //if (vector == null || !vector.Any())
-            //    return null;
+            if (vector == null || !vector.Any())
+                return null;
             if (fs <= 0)
                 throw new ArgumentException("Fs cannot be less than or equal to zero", nameof(fs));
                 
