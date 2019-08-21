@@ -67,7 +67,7 @@ namespace TremAn3.Services
 
         internal double GetProgressPercentage()
         {
-            return FrameIndex + 1 / frameTimes.Count *100;
+            return (double)(FrameIndex) / frameTimes.Count *100;
         }
 
         int framesCount;

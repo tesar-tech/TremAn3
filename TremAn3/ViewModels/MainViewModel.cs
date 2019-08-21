@@ -26,6 +26,12 @@ namespace TremAn3.ViewModels
         }
 
 
+        public async void LoadedAsync()
+        {
+            await MediaPlayerViewModel.SetDefaultSourceAsync();
+        }
+
+
 
         public async void OpenVideo_ButtonClickAsync()
         {
@@ -35,24 +41,16 @@ namespace TremAn3.ViewModels
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();
 
-        //private ImageSource _CurrentFrameSource;
-
-        //public ImageSource CurrentFrameSource
-        //{
-        //    get => _CurrentFrameSource;
-        //    set => Set(ref _CurrentFrameSource, value);
-        //}
-
         public async void GetFrameClickAsync()
         {
 
-            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru.wmv"));
+            //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru.wmv"));
             //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru_small.avi"));
 
             FramesGrabber grabber = new FramesGrabber();
             grabber.batchSize = 1000;
 
-            await grabber.ChangeStorageFileAsync(file);
+            await grabber.ChangeStorageFileAsync(MediaPlayerViewModel.CurrentStorageFile);
             (int width, int height) = grabber.GetWidthAndHeight();
             CenterOfMotionAlgorithm comAlg = new CenterOfMotionAlgorithm(width, height, grabber.FrameRate);
 
@@ -97,12 +95,12 @@ namespace TremAn3.ViewModels
         }
 
         Random random = new Random();
-        public void GenRanNum()
-        { 
-            int num = random.Next(100);
-            //string str =num.ToString();
-            VideoMainFreq = num;
-        }
+        //public void GenRanNum()
+        //{ 
+        //    int num = random.Next(100);
+        //    //string str =num.ToString();
+        //    VideoMainFreq = num;
+        //}
 
         private bool _IsFreqCounterOpen =  false;
 

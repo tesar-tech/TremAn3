@@ -14,7 +14,7 @@ namespace TremAn3.Services
 {
     public class DataService
     {
-        public async Task<IStorageFile> OpenFileDialogueAsync()
+        public async Task<StorageFile> OpenFileDialogueAsync()
         {
             FileOpenPicker openPicker = new FileOpenPicker();
             openPicker.FileTypeFilter.Add(".mp4");

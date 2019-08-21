@@ -60,7 +60,7 @@ namespace TremAn3.Core
             FftResult fftX = Fft.GetAmpSpectrumAndMax(frameRate, listComX);
             FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listComY);
             List<double> avgSpecList = new List<double>();
-            for (int i = 0; i < listComX.Count;i++)
+            for (int i = 0; i < fftX.Values.Count;i++)
             {
                 double avg = (fftX.Values[i] + fftY.Values[i])/2;
                 avgSpecList.Add(avg);
