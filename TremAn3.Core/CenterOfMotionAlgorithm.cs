@@ -47,7 +47,7 @@ namespace TremAn3.Core
                 previousValueX = comX;
 
                 var diffNormMultY = diffNorm.Zip(vecOfy, (di, vy) => di * vy);
-                comY = diffNormMultX.Average() / mean;
+                comY = diffNormMultY.Average() / mean;
                 previousValueY = comY;
             }
             listComX.Add(comX);
@@ -56,9 +56,20 @@ namespace TremAn3.Core
 
         public double GetMainFreqFromComLists()
         {
+
+            //var lo = "";
+            //foreach (var v in listComY)
+            //{
+            //    lo += $",{v}";
+            //}
+            //remove mean from list
+            var avgX = listComX.Average();
+            var avgY = listComY.Average();
+            var listWithoutMeanX = listComX.Select(x => x - avgX).ToList();
+            var listWithoutMeanY = listComY.Select(x => x - avgY).ToList();
             //returned value is max from average of two spectrums
-            FftResult fftX = Fft.GetAmpSpectrumAndMax(frameRate, listComX);
-            FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listComY);
+            FftResult fftX = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanX);
+            FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanY);
             List<double> avgSpecList = new List<double>();
             for (int i = 0; i < fftX.Values.Count;i++)
             {
