@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
+using Windows.Media.Core;
 using Windows.Media.Editing;
+using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
@@ -118,7 +121,39 @@ namespace TremAn3.Services
             //ImageStream imageStream = isss;
             //ImageStream imageStream = currentEnumerator.Current;
             //ImageStream imageStream = imgsStreams[FrameIndex];
-            var imageStreamsSingle = await composition.GetThumbnailAsync(frameTimes[FrameIndex], 0, 0, VideoFramePrecision.NearestFrame);
+
+
+          
+
+            var mediaStreamSource = composition.GeneratePreviewMediaStreamSource((int)videoWidth, (int)videoHeight);
+            //mediaStreamSource.SampleRendered += MediaStreamSource_SampleRendered;
+            //mediaStreamSource.SampleRequested += MediaStreamSource_SampleRequested;
+            //MediaPlayer mp = new MediaPlayer();
+            //mp.SetMediaSource(mediaStreamSource);
+            //mp.Play();
+            //mp.PlaybackSession.Position = TimeSpan.FromSeconds(2);
+
+            var ms =   MediaSource.CreateFromMediaStreamSource(mediaStreamSource);
+            var co = await StorageFile.OpenReadAsync();
+            
+            var cod  = await MediaStreamSample.CreateFromStreamAsync(co, videoWidth * 4* videoHeight, frameTimes[8]);
+            var ccccc = cod.Buffer.ToArray();
+            //var to =  await BitmapDecoder.CreateAsync(cod.Buffer.CopyTo();
+            byte[] arr = new byte[videoWidth * 4 * videoHeight];
+            try
+            {
+                cod.Buffer.CopyTo(arr);
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            var lo = ccccc.Where(x => x == 255).ToList().Count;
+            var str = lo.ToString();
+
+
+            var imageStreamsSingle = await composition.GetThumbnailAsync(frameTimes[8], 0, 0, VideoFramePrecision.NearestFrame);
 
 
 
@@ -143,6 +178,17 @@ namespace TremAn3.Services
                 return grayBytes;
         }
 
+        private void MediaStreamSource_SampleRequested(MediaStreamSource sender, MediaStreamSourceSampleRequestedEventArgs args)
+        {
+            Debug.WriteLine( args.Request.Sample.Duration.ToString());
+            //throw new NotImplementedException();
+        }
+
+        private void MediaStreamSource_SampleRendered(MediaStreamSource sender, MediaStreamSourceSampleRenderedEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
         async System.Threading.Tasks.Task<byte[]> GetBytesFromImageStreamAsync(ImageStream stream)
         {
             var deco = await BitmapDecoder.CreateAsync(stream);
@@ -150,6 +196,8 @@ namespace TremAn3.Services
             var bytes = pixelss.DetachPixelData();
             return bytes;
         }
+
+
 
 
         public bool MovePositionToNextFrame()
