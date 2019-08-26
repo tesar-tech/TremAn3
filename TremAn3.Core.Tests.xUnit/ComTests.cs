@@ -68,7 +68,7 @@ namespace TremAn3.Core.Tests.xUnit
             };
             comVal.ForEach(x => { cOM3.listComX.Add(x.Item1); cOM3.listComY.Add(x.Item2); });
             double f = cOM3.GetMainFreqFromComLists();
-            Assert.Equal(1.275148936170213, f);//Description in README.md
+            Assert.Equal(1.275148936170213, f);
         }
         [Fact]
         public void GetMainFreqFromComLists_FewValues_SameResult()
@@ -78,7 +78,7 @@ namespace TremAn3.Core.Tests.xUnit
                 (319.5,239.5),(319.570564104974,239.690534471355),(319.570564104974,239.690534471355),(319.387187167831,239.447377199610)};
             comVal.ForEach(x => { cOM3.listComX.Add(x.Item1); cOM3.listComY.Add(x.Item2); });
             double f = cOM3.GetMainFreqFromComLists();
-            Assert.Equal(9, f);//Description in README.md
+            Assert.Equal(909090, f);
         }
 
 
