@@ -66,10 +66,12 @@ namespace TremAn3.Core.Tests.XUnit
             List<double> vecY = new List<double>() { 239.5, 239.690534471355, 239.690534471355, 239.447377199610 };
             FftResult resultX = Fft.GetAmpSpectrumAndMax(29.966, vecX);
             FftResult resultY = Fft.GetAmpSpectrumAndMax(29.966, vecY);
-            List<double> matlabValuesX = new List<double>() { 5.68434188608080e-14,0.196485098637862 };
-            List<double> matlabValuesY = new List<double>() { 0, 0.308915592965124 };
+            resultY.Values=resultY.Values.Select(x => Math.Round(x, 7)).ToList();
+            resultX.Values = resultX.Values.Select(x => Math.Round(x, 7)).ToList();
+            List<double> matlabValuesX = new List<double>() { 0,0.1964851 };
+            List<double> matlabValuesY = new List<double>() { 0, 0.3089156 };
             Assert.Equal(matlabValuesX,resultX.Values);
-           // Assert.Equal(matlabValuesY, resultY.Values);
+            Assert.Equal(matlabValuesY, resultY.Values);
         }
 
 

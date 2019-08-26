@@ -21,7 +21,7 @@ namespace TremAn3.Core
             int i = 0;
             foreach (var ve in vector)
             {
-                vec[i] = new Complex32((float)ve, 0);
+                vec[i] = new Complex32((float)(ve-vector.Average()), 0);
                 i++;
             }
             Fourier.Forward(vec, FourierOptions.Matlab);
