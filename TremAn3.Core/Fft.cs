@@ -10,6 +10,7 @@ namespace TremAn3.Core
 {
    public static class Fft
     {
+        //Method has optional bool argument removeAverage, because in other methods it accepts already averaged vector.
         public static FftResult GetAmpSpectrumAndMax(double fs, List<double> vector,bool removeAverage = true)
         {
             if (vector == null || !vector.Any())
