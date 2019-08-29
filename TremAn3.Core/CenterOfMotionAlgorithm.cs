@@ -70,6 +70,7 @@ namespace TremAn3.Core
             //returned value is max from average of two spectrums
             FftResult fftX = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanX,false);// false bc avg is already removed
             FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanY,false);
+
             List<double> avgSpecList = new List<double>();
             for (int i = 0; i < fftX.Values.Count;i++)
             {
