@@ -10,7 +10,8 @@ namespace TremAn3.Core
 {
    public static class Fft
     {
-        public static FftResult GetAmpSpectrumAndMax(double fs, List<double> vector)
+        //Method has optional bool argument removeAverage, because in other methods it accepts already averaged vector.
+        public static FftResult GetAmpSpectrumAndMax(double fs, List<double> vector,bool removeAverage = true)
         {
             if (vector == null || !vector.Any())
                 return null;
@@ -19,9 +20,10 @@ namespace TremAn3.Core
                 
             Complex32[] vec = new Complex32[vector.Count];
             int i = 0;
+            double vecAvg = removeAverage ? vector.Average():0;//don't compute avg if not needed
             foreach (var ve in vector)
             {
-                vec[i] = new Complex32((float)ve, 0);
+                vec[i] = removeAverage ? new Complex32((float)(ve - vecAvg), 0) : new Complex32((float)ve, 0);
                 i++;
             }
             Fourier.Forward(vec, FourierOptions.Matlab);

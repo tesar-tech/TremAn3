@@ -59,6 +59,20 @@ namespace TremAn3.Core.Tests.XUnit
             /*Hodnoty nejsou přesně shodné s matlabem(Matlab zaokrouhluje jinak než Math.Net)
               Math.Net počítá s větší přesností (e-21, matlab to zaokrouhlí na nulu)*/
         }
+        [Fact]
+        public void GetAmpSpectrumAndMax_ShortVec1_sameResult()
+        {
+            List<double> vecX = new List<double>() { 319.5, 319.570564104974, 319.570564104974, 319.387187167831 };
+            List<double> vecY = new List<double>() { 239.5, 239.690534471355, 239.690534471355, 239.447377199610 };
+            FftResult resultX = Fft.GetAmpSpectrumAndMax(29.966, vecX);
+            FftResult resultY = Fft.GetAmpSpectrumAndMax(29.966, vecY);
+            resultY.Values=resultY.Values.Select(x => Math.Round(x, 7)).ToList();
+            resultX.Values = resultX.Values.Select(x => Math.Round(x, 7)).ToList();
+            List<double> matlabValuesX = new List<double>() { 0,0.1964851 };
+            List<double> matlabValuesY = new List<double>() { 0, 0.3089156 };
+            Assert.Equal(matlabValuesX,resultX.Values);
+            Assert.Equal(matlabValuesY, resultY.Values);
+        }
 
 
         [Fact]
