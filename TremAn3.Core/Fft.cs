@@ -20,17 +20,10 @@ namespace TremAn3.Core
                 
             Complex32[] vec = new Complex32[vector.Count];
             int i = 0;
-            double vecAvg = vector.Average();
+            double vecAvg = removeAverage ? vector.Average():0;//don't compute avg if not needed
             foreach (var ve in vector)
             {
-                if(removeAverage)
-                {
-                    vec[i] = new Complex32((float)(ve - vecAvg), 0);
-                }
-                else
-                {
-                    vec[i] = new Complex32((float)ve, 0);
-                }
+                vec[i] = removeAverage ? new Complex32((float)(ve - vecAvg), 0) : new Complex32((float)ve, 0);
                 i++;
             }
             Fourier.Forward(vec, FourierOptions.Matlab);
