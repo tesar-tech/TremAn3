@@ -15,10 +15,11 @@ using System.Linq;
 using Windows.UI.Xaml.Media;
 using TremAn3.Core;
 using Microsoft.Toolkit.Uwp.UI.Converters;
+using OxyPlot.Series;
 
 namespace TremAn3.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public partial class MainViewModel : ViewModelBase
     {
         public MainViewModel()
         {
@@ -109,7 +110,6 @@ namespace TremAn3.ViewModels
             get => _IsFreqCounterOpen;
             set => Set(ref _IsFreqCounterOpen, value);
         }
-
 
         //public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = ViewModelLocator.Current.MediaPlayerViewModel;
     }

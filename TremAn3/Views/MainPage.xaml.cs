@@ -5,6 +5,7 @@ using Windows.System.Display;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using static TremAn3.ViewModels.MainViewModel;
 
 namespace TremAn3.Views
 {
@@ -57,6 +58,7 @@ namespace TremAn3.Views
         {
             base.OnNavigatedTo(e);
             mpe.MediaPlayer.PlaybackSession.PlaybackStateChanged += PlaybackSession_PlaybackStateChanged;
+            plotview.Model = PlotModelDefine.Fftplot();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
