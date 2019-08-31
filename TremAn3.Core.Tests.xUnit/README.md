@@ -109,3 +109,6 @@ Ethalon - Matlab code (Matlab has different indexing than C#) <br />
     
     end
     vectors = [x_centers', y_centers'];
+
+<b>GetMainFreqFromComLists_EnteredValues_SameResult()</b><br />
+<p><a href="https://github.com/tesar-tech/treman_algorithms/blob/master/simple_vector_fft.m">Github link</a></p>
