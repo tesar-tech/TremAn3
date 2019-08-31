@@ -15,6 +15,8 @@ namespace TremAn3.Core
         {
             if (vector == null || !vector.Any())
                 return null;
+            if (vector.Count == 1)
+                throw new ArgumentException("Vector must have more than 1 value",nameof(vector));
             if (fs <= 0)
                 throw new ArgumentException("Fs cannot be less than or equal to zero", nameof(fs));
                 
@@ -43,6 +45,40 @@ namespace TremAn3.Core
             res.MaxIndex = res.Values.FindIndex(n => n == (res.Values.Max()));
             return res;
         }
+
+        public static FftSpectogramResult ComputeFftWithinSignal(double fs, List<double> vector, int windowSize)
+        {
+            if (vector == null || !vector.Any())
+                return null;
+            if (vector.Count == 1)
+                throw new ArgumentException("Vector must have more than 1 value", nameof(vector));
+            if (windowSize > vector.Count)
+                throw new ArgumentException("Size of window must be bigger than count of values in vector", nameof(windowSize));
+            if (fs <= 0)
+                throw new ArgumentException("Fs cannot be less than or equal to zero", nameof(fs));
+            if (windowSize <= 0)
+                throw new ArgumentException("Size of window cannot be less than or equal to zero", nameof(windowSize));
+            
+            FftSpectogramResult spec = new FftSpectogramResult();
+            int window = (int)(Math.Round(windowSize * fs, MidpointRounding.AwayFromZero));
+            List<double> windowList = new List<double>();
+            for (int i = 0; i < vector.Count; i++)
+            {
+                if (i + window == vector.Count)
+                {
+                    window -= 1;
+                }
+                for (int j = 0; j < window; j++)
+                {
+                    windowList.Add(vector[i + j]);
+                }
+                FftResult res = GetAmpSpectrumAndMax(fs, windowList);
+                spec.Frequency.Add(res.Frequencies[res.MaxIndex]);
+                spec.Time.Add(i * (1 / fs));
+            }
+            return spec;
+        }
+
     }
     public class FftResult
     {
@@ -51,4 +87,10 @@ namespace TremAn3.Core
         public List<double> Frequencies { get; set; } = new List<double>();
         public List<double> Values { get; set; } = new List<double>();
     }
+    public class FftSpectogramResult
+    {
+        public List<double> Time { get; set; } = new List<double>();
+        public List<double> Frequency { get; set; } = new List<double>();
+    }
+
 }
