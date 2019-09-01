@@ -15,7 +15,10 @@ using System.Linq;
 using Windows.UI.Xaml.Media;
 using TremAn3.Core;
 using Microsoft.Toolkit.Uwp.UI.Converters;
+using OxyPlot;
+using OxyPlot.Axes;
 using OxyPlot.Series;
+
 
 namespace TremAn3.ViewModels
 {
@@ -23,7 +26,7 @@ namespace TremAn3.ViewModels
     {
         public MainViewModel()
         {
-            
+
         }
 
 
@@ -74,7 +77,8 @@ namespace TremAn3.ViewModels
             }
 
 
-
+            InitPlotModel(new FunctionSeries(System.Math.Sin, 0, 10, 0.1, "sin(x)"));
+            InvalidatePlotModel();
             VideoMainFreq = comAlg.GetMainFreqFromComLists();
         }
 
@@ -103,12 +107,29 @@ namespace TremAn3.ViewModels
         //    VideoMainFreq = num;
         //}
 
-        private bool _IsFreqCounterOpen =  false;
+        private bool _IsFreqCounterOpen = false;
 
         public bool IsFreqCounterOpen
         {
             get => _IsFreqCounterOpen;
             set => Set(ref _IsFreqCounterOpen, value);
+        }
+
+        private PlotModel _PlotModel = new PlotModel();
+
+        public PlotModel PlotModel
+        {
+            get => _PlotModel;
+            set => Set(ref _PlotModel, value);
+        }
+
+        public void InvalidatePlotModel() => PlotModel.InvalidatePlot(true);
+
+        public void InitPlotModel(FunctionSeries data)
+        {
+            PlotModel.Series.Add (data);
+            PlotModel.Axes.Add(new LinearAxis { Title = "x", Position = AxisPosition.Bottom, Minimum = 0, Maximum = 10});
+            PlotModel.Axes.Add(new LinearAxis { Title = "y", Position = AxisPosition.Left, Minimum = -1, Maximum = 1});
         }
 
         //public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = ViewModelLocator.Current.MediaPlayerViewModel;
