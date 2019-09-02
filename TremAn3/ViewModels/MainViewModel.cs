@@ -33,6 +33,7 @@ namespace TremAn3.ViewModels
         public async void LoadedAsync()
         {
             await MediaPlayerViewModel.SetDefaultSourceAsync();
+            IsFreqCounterOpen = false;// more info in IsFreqCounterOpen comment
         }
 
 
@@ -48,6 +49,8 @@ namespace TremAn3.ViewModels
 
         public async void GetFrameClickAsync()
         {
+            FreqCounterViewModel.PlotModel.InvalidatePlot(true);
+
             //Debug --- sample for plot
             var newVals = Enumerable.Range(1, 100).ToList().Select(x => (x, rnd.Next(10)));//create vector of 1-100 and rand numbers
             FreqCounterViewModel.UpdatePlotWithNewVals(newVals);
@@ -112,7 +115,7 @@ namespace TremAn3.ViewModels
         //    VideoMainFreq = num;
         //}
 
-        private bool _IsFreqCounterOpen = false;
+        private bool _IsFreqCounterOpen = true;//this is necessary workaround for splitView not showinx oxyplot. Freq counter is closed after page is loaded. 
 
         public bool IsFreqCounterOpen
         {
