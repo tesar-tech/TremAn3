@@ -35,6 +35,7 @@ namespace TremAn3.ViewModels
             DataPoints.Clear();
             newVals.ToList().ForEach(c => DataPoints.Add(new DataPoint(c.xx, c.yy)));
             PlotModel.InvalidatePlot(true);
+            PlotModel.ResetAllAxes();//zoom to whole plot
         }
     }
 }
