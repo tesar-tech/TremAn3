@@ -27,7 +27,7 @@ namespace TremAn3.ViewModels
             set => Set(ref _PlotModel, value);
         }
 
-        public List<DataPoint> DataPoints { get; set; } = new List<DataPoint>() { new DataPoint(1, 10), new DataPoint(2, 11), new DataPoint(3, 9) };
+        public List<DataPoint> DataPoints { get; set; } = new List<DataPoint>();// { new DataPoint(1, 10), new DataPoint(2, 11), new DataPoint(3, 9) };
 
         //convertor from tuple to datapoinnts
         internal void UpdatePlotWithNewVals(IEnumerable<(int xx, int yy)> newVals)
