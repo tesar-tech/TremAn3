@@ -15,20 +15,25 @@ using System.Linq;
 using Windows.UI.Xaml.Media;
 using TremAn3.Core;
 using Microsoft.Toolkit.Uwp.UI.Converters;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+
 
 namespace TremAn3.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public partial class MainViewModel : ViewModelBase
     {
         public MainViewModel()
         {
-            
+
         }
 
 
         public async void LoadedAsync()
         {
             await MediaPlayerViewModel.SetDefaultSourceAsync();
+            IsFreqCounterOpen = false;// more info in IsFreqCounterOpen comment
         }
 
 
@@ -40,9 +45,17 @@ namespace TremAn3.ViewModels
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();
+        Random rnd = new Random();
 
         public async void GetFrameClickAsync()
         {
+            FreqCounterViewModel.PlotModel.InvalidatePlot(true);
+
+            //Debug --- sample for plot
+            //var newVals = Enumerable.Range(1, 100).ToList().Select(x => (x, rnd.Next(10)));//create vector of 1-100 and rand numbers
+            //FreqCounterViewModel.UpdatePlotWithNewVals(newVals);
+            //return;//just for testing plot changes
+
 
             //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru.wmv"));
             //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru_small.avi"));
@@ -73,7 +86,7 @@ namespace TremAn3.ViewModels
             }
 
 
-
+           
             VideoMainFreq = comAlg.GetMainFreqFromComLists();
         }
 
@@ -102,7 +115,7 @@ namespace TremAn3.ViewModels
         //    VideoMainFreq = num;
         //}
 
-        private bool _IsFreqCounterOpen =  false;
+        private bool _IsFreqCounterOpen = true;//this is necessary workaround for splitView not showinx oxyplot. Freq counter is closed after page is loaded. 
 
         public bool IsFreqCounterOpen
         {
@@ -110,7 +123,7 @@ namespace TremAn3.ViewModels
             set => Set(ref _IsFreqCounterOpen, value);
         }
 
-
+        public FreqCounterViewModel FreqCounterViewModel { get; set; } = new FreqCounterViewModel();
         //public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = ViewModelLocator.Current.MediaPlayerViewModel;
     }
 }
