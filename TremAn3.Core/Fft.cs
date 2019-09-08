@@ -45,52 +45,43 @@ namespace TremAn3.Core
             res.MaxIndex = res.Values.FindIndex(n => n == (res.Values.Max()));
             return res;
         }
-
-        public static FftSpectogramResult ComputeFftWithinSignal(double fs, List<double> vector, int windowSize)
+        public static List<double[]> ComputeFftDuringSignal(double fs, List<double> vector, int windowSize, int step)
         {
             if (vector == null || !vector.Any())
                 return null;
             if (vector.Count == 1)
                 throw new ArgumentException("Vector must have more than 1 value", nameof(vector));
             if (windowSize > vector.Count)
-                throw new ArgumentException("Size of window must be bigger than count of values in vector", nameof(windowSize));
+                throw new ArgumentException("Size of window must be smaller than count of values in vector", nameof(windowSize));
             if (fs <= 0)
                 throw new ArgumentException("Fs cannot be less than or equal to zero", nameof(fs));
             if (windowSize <= 0)
                 throw new ArgumentException("Size of window cannot be less than or equal to zero", nameof(windowSize));
+            if(step <= 0)
+                throw new ArgumentException("Step cannot be less than or equal to zero", nameof(step));
+            if(windowSize + step >= vector.Count)
+                throw new ArgumentException("WindowSize + step must be smaller than count of values in vector", nameof(step));
             
-            FftSpectogramResult spec = new FftSpectogramResult();
-            int window = (int)(Math.Round(windowSize * fs, MidpointRounding.AwayFromZero));
-            List<double> windowList = new List<double>();
-            for (int i = 0; i < vector.Count; i++)
+            List<double[]> fftList = new List<double[]>();
+            double[] segment = new double[windowSize];
+            double[] latestFFT;
+            while (vector.Count > (windowSize + step))
             {
-                if (i + window == vector.Count)
-                {
-                    window -= 1;
-                }
-                for (int j = 0; j < window; j++)
-                {
-                    windowList.Add(vector[i + j]);
-                }
-                FftResult res = GetAmpSpectrumAndMax(fs, windowList);
-                spec.Frequency.Add(res.Frequencies[res.MaxIndex]);
-                spec.Time.Add(i * (1 / fs));
+                vector.CopyTo(0, segment, 0, windowSize);
+                vector.RemoveRange(0, step);
+                List<double> listSegment = new List<double>();
+                listSegment = segment.ToList();
+                FftResult res = GetAmpSpectrumAndMax(fs, listSegment);
+                latestFFT = res.Values.ToArray();
+                fftList.Add(latestFFT);
             }
-            return spec;
+            return fftList;
         }
-
     }
     public class FftResult
     {
-       
         public int MaxIndex { get; set; }
         public List<double> Frequencies { get; set; } = new List<double>();
         public List<double> Values { get; set; } = new List<double>();
     }
-    public class FftSpectogramResult
-    {
-        public List<double> Time { get; set; } = new List<double>();
-        public List<double> Frequency { get; set; } = new List<double>();
-    }
-
 }

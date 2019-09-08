@@ -109,11 +109,13 @@ namespace TremAn3.Core.Tests.XUnit
             var vector = CreateVector(100, 10);
             Assert.Throws<ArgumentException>(() => Fft.GetAmpSpectrumAndMax(-10, vector));
         }
-        /*[Fact]
+        [Fact]
         public void ComputeFftDuringSignal_ShortVec_sameResult()
         {
-            List<double> Vector = CreateVector(1, 13);
-            FftSpectogramResult fft = Fft.ComputeFftDuringSignal(1, Vector, 1);
-        }*/
+            List<double> vector = CreateVector(1, 13);
+            List<double[]> expected = new List<double[]>();
+            List<double[]> vys = Fft.ComputeFftDuringSignal(1, vector, 3, 1);
+            Assert.Equal(expected, vys);
+        }
     }
 }
