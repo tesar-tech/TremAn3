@@ -45,7 +45,7 @@ namespace TremAn3.Core
             res.MaxIndex = res.Values.FindIndex(n => n == (res.Values.Max()));
             return res;
         }
-        public static List<double[]> ComputeFftDuringSignal(double fs, List<double> vector, int windowSize, int step)
+        public static List<double> ComputeFftDuringSignal(double fs, List<double> vector, int windowSize, int step)
         {
             if (vector == null || !vector.Any())
                 return null;
@@ -61,19 +61,17 @@ namespace TremAn3.Core
                 throw new ArgumentException("Step cannot be less than or equal to zero", nameof(step));
             if(windowSize + step >= vector.Count)
                 throw new ArgumentException("WindowSize + step must be smaller than count of values in vector", nameof(step));
-            
-            List<double[]> fftList = new List<double[]>();
+
+            var vectorToBeCut = new List<double>(vector);//copy list 
+            var fftList = new List<double>();
             double[] segment = new double[windowSize];
-            double[] latestFFT;
             while (vector.Count > (windowSize + step))
             {
-                vector.CopyTo(0, segment, 0, windowSize);
-                vector.RemoveRange(0, step);
-                List<double> listSegment = new List<double>();
-                listSegment = segment.ToList();
-                FftResult res = GetAmpSpectrumAndMax(fs, listSegment);
-                latestFFT = res.Values.ToArray();
-                fftList.Add(latestFFT);
+                vectorToBeCut.CopyTo(0, segment, 0, windowSize);
+                vectorToBeCut.RemoveRange(0, step);
+                FftResult res = GetAmpSpectrumAndMax(fs, vectorToBeCut);
+                var maxFromSegment = res.Frequencies[res.MaxIndex];//get max freq from current segment
+                fftList.Add(maxFromSegment);
             }
             return fftList;
         }

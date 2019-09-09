@@ -113,8 +113,8 @@ namespace TremAn3.Core.Tests.XUnit
         public void ComputeFftDuringSignal_ShortVec_sameResult()
         {
             List<double> vector = CreateVector(1, 13);
-            List<double[]> expected = new List<double[]>();
-            List<double[]> vys = Fft.ComputeFftDuringSignal(1, vector, 3, 1);
+            List<double> expected = new List<double>();
+            List<double> vys = Fft.ComputeFftDuringSignal(1, vector, 3, 1);
             Assert.Equal(expected, vys);
         }
     }
