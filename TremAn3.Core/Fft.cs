@@ -59,13 +59,13 @@ namespace TremAn3.Core
                 throw new ArgumentException("Size of window cannot be less than or equal to zero", nameof(windowSize));
             if(step <= 0)
                 throw new ArgumentException("Step cannot be less than or equal to zero", nameof(step));
-            if(windowSize + step >= vector.Count)
-                throw new ArgumentException("WindowSize + step must be smaller than count of values in vector", nameof(step));
+            //if(windowSize + step > vector.Count)
+            //    throw new ArgumentException("WindowSize + step must be smaller than count of values in vector", nameof(step));
 
             var vectorToBeCut = new List<double>(vector);//copy list 
             var fftList = new List<double>();
             double[] segment = new double[windowSize];
-            while (vector.Count > (windowSize + step))
+            while (vectorToBeCut.Count > (windowSize + step)-1)
             {
                 vectorToBeCut.CopyTo(0, segment, 0, windowSize);
                 vectorToBeCut.RemoveRange(0, step);

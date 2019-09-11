@@ -15,12 +15,12 @@ namespace TremAn3.Core.Tests.XUnit
         /// <param name="fs"></param>
         /// <param name="frequency"></param>
         /// <returns></returns>
-        private List<double> CreateVector(double fs, double frequency)
+        private List<double> CreateVector(double fs, double frequency, double start, double stop)
         {
             List<double> vector = new List<double>();
             double xStep = 1 / fs;
             double y;
-            for (double xx = -10; xx <= 10; xx += xStep)
+            for (double xx = start; xx <= stop; xx += xStep)
             {
                 y = Math.Sin(2 * Math.PI * frequency * xx);
                 vector.Add(y);
@@ -38,7 +38,7 @@ namespace TremAn3.Core.Tests.XUnit
         [Fact]
         public void GetAmpSpectrumAndMax_ShortVec_sameResult()
         {
-            List<double> Vector = CreateVector(1, 13);
+            List<double> Vector = CreateVector(1, 13,-10,10);
             FftResult fft = new FftResult();
             FftResult result = Fft.GetAmpSpectrumAndMax(1, Vector);
             for (int i = 0; i < result.Values.Count; i++)
@@ -85,7 +85,7 @@ namespace TremAn3.Core.Tests.XUnit
             {
                 f = i * 20;
                 freq_matlab.Add(f);
-                List<double> Vector = CreateVector(100, i);
+                List<double> Vector = CreateVector(100, i,-10,10);
                 freq_math_dotnet.Add(Fft.GetAmpSpectrumAndMax(i, Vector).MaxIndex);
             }
             Assert.Equal(freq_matlab, freq_math_dotnet);
@@ -100,21 +100,21 @@ namespace TremAn3.Core.Tests.XUnit
         [Fact]
         public void GetAmpSpectrumAndMax_FsNotValid0_ThrowsError()
         {
-            var vector = CreateVector(100, 10);
+            var vector = CreateVector(100, 10,-10,10);
             Assert.Throws<ArgumentException>(() => Fft.GetAmpSpectrumAndMax(0, vector));
         }
         [Fact]
         public void GetAmpSpectrumAndMax_FsNotValidLessThanZero_ThrowsError()
         {
-            var vector = CreateVector(100, 10);
+            var vector = CreateVector(100, 10,-10,10);
             Assert.Throws<ArgumentException>(() => Fft.GetAmpSpectrumAndMax(-10, vector));
         }
         [Fact]
         public void ComputeFftDuringSignal_ShortVec_sameResult()
         {
-            List<double> vector = CreateVector(1, 13);
+            List<double> vector = CreateVector(10, 7,-15,15);
             List<double> expected = new List<double>();
-            List<double> vys = Fft.ComputeFftDuringSignal(1, vector, 3, 1);
+            List<double> vys = Fft.ComputeFftDuringSignal(10, vector, 10, 1);
             Assert.Equal(expected, vys);
         }
     }
