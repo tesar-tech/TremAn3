@@ -145,7 +145,7 @@ namespace TremAn3.Core.Tests.XUnit
                 expected.Add(0.8333);expected.Add(1.6667);expected.Add(1.6667);
                 expected.Add(0.8333);expected.Add(1.6667);
             }
-			expected.RemoveAt(expected.Count-1);
+            expected.RemoveAt(expected.Count-1);expected.RemoveAt(expected.Count - 1);
             Assert.Equal(expected, result);
         }
 
