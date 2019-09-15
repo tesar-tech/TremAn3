@@ -124,9 +124,10 @@ namespace TremAn3.Core.Tests.XUnit
         [Fact]
         public void ComputeFftDuringSignal_SinSignal_sameResult()
         {
-            List<double> vector = CreateVector(10, 7,-15,15);
+            double fs = 100;
+            List<double> vector = CreateVector(fs, 7,-15,15);
             List<double> expected = new List<double>();
-            List<double> vys = Fft.ComputeFftDuringSignal(10, vector, 10, 1);
+            List<double> vys = Fft.ComputeFftDuringSignal(fs, vector, 200, 1);
             for (int i = 0; i < 291;i++)
             {
                 expected.Add(3.75);
