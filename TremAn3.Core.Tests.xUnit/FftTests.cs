@@ -15,16 +15,28 @@ namespace TremAn3.Core.Tests.XUnit
         /// <param name="fs"></param>
         /// <param name="frequency"></param>
         /// <returns></returns>
-        private List<double> CreateVector(double fs, double frequency, double start, double stop)
+        private List<double> CreateVector(double fs, double frequency, double start, double stop, string signalType = "sin")
         {
             List<double> vector = new List<double>();
             double xStep = 1 / fs;
             double y;
-            for (double xx = start; xx <= stop; xx += xStep)
+            if(signalType == "sin")
             {
-                y = Math.Sin(2 * Math.PI * frequency * xx);
-                vector.Add(y);
+                for (double xx = start; xx <= stop; xx += xStep)
+                {
+                    y = Math.Sin(2 * Math.PI * frequency * xx);
+                    vector.Add(y);
+                } 
             }
+            else if(signalType == "sawtooth")
+            {
+                for (double xx = start; xx <= stop; xx += xStep)
+                {
+                    y = 2 * (xx - Math.Floor(xx + 0.5));
+                    vector.Add(y);
+                }
+            }
+
             return vector;
         }
 
@@ -110,12 +122,32 @@ namespace TremAn3.Core.Tests.XUnit
             Assert.Throws<ArgumentException>(() => Fft.GetAmpSpectrumAndMax(-10, vector));
         }
         [Fact]
-        public void ComputeFftDuringSignal_ShortVec_sameResult()
+        public void ComputeFftDuringSignal_SinSignal_sameResult()
         {
             List<double> vector = CreateVector(10, 7,-15,15);
             List<double> expected = new List<double>();
             List<double> vys = Fft.ComputeFftDuringSignal(10, vector, 10, 1);
+            for (int i = 0; i < 291;i++)
+            {
+                expected.Add(3.75);
+            }
             Assert.Equal(expected, vys);
         }
+        [Fact]
+        public void ComputeFftDuringSignal_SawToothSignal_sameResult()
+        {
+            List<double> vector = CreateVector(5, 5, -10, 10, "sawtooth");
+            List<double> expected = new List<double>();
+            List<double> vys = Fft.ComputeFftDuringSignal(5, vector, 8, 1);
+            var result = vys.Select(x => Math.Round(x, 4)).ToList();
+            for (int i = 0; i < 19; i++)
+            {
+                expected.Add(0.8333);expected.Add(1.6667);expected.Add(1.6667);
+                expected.Add(0.8333);expected.Add(1.6667);
+            }
+			expected.RemoveAt(expected.Count-1);
+            Assert.Equal(expected, result);
+        }
+
     }
 }
