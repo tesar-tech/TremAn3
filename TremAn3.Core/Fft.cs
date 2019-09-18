@@ -45,7 +45,7 @@ namespace TremAn3.Core
             res.MaxIndex = res.Values.FindIndex(n => n == (res.Values.Max()));
             return res;
         }
-        public static List<double> ComputeFftDuringSignal(double fs, List<double> vector, int windowSizeSamples, int step)
+        public static List<double> ComputeFftDuringSignal(double fs, List<double> vector, int windowSizeSamples, int step, bool removeAvgInSegment = true)
         {
             if (vector == null || !vector.Any())
                 return null;
@@ -69,7 +69,7 @@ namespace TremAn3.Core
             {
                 vectorToBeCut.CopyTo(0, segment, 0, windowSizeSamples);
                 vectorToBeCut.RemoveRange(0, step);
-                FftResult res = GetAmpSpectrumAndMax(fs, segment.ToList());
+                FftResult res = GetAmpSpectrumAndMax(fs, segment.ToList(),removeAvgInSegment);
                 var maxFromSegment = res.Frequencies[res.MaxIndex];//get max freq from current segment
                 fftList.Add(maxFromSegment);
             }
