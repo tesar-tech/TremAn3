@@ -124,13 +124,13 @@ namespace TremAn3.Core.Tests.XUnit
         [Fact]
         public void ComputeFftDuringSignal_SinSignal_sameResult()
         {
-            double fs = 100;
+            double fs = 35;
             List<double> vector = CreateVector(fs, 7,-15,15);
             List<double> expected = new List<double>();
-            List<double> vys = Fft.ComputeFftDuringSignal(fs, vector, 200, 1);
-            for (int i = 0; i < 291;i++)
+            List<double> vys = Fft.ComputeFftDuringSignal(fs, vector, 11, 1,false);
+            for (int i = 0; i < 1040;i++)
             {
-                expected.Add(3.75);
+                expected.Add(7);
             }
             Assert.Equal(expected, vys);
         }
@@ -146,22 +146,29 @@ namespace TremAn3.Core.Tests.XUnit
             List<double> vys2 = Fft.ComputeFftDuringSignal(fs, withoutAvg, window, 5, false);
             List<double> vys3 = Fft.ComputeFftDuringSignal(fs, vX, window, 1, true);
             List<double> vys4 = Fft.ComputeFftDuringSignal(fs, withoutAvg, window, 1, true);
-            Assert.False(true);
+            Random rnd = new Random();
+            for (int i = 0; i < 10;i++)
+            {
+                var vys2Index = rnd.Next(0, vys2.Count);
+                Assert.Equal(1.3620909091, vys2[vys2Index]);
+                var vys34Index = rnd.Next(0, vys3.Count);
+                Assert.Equal(1.3620909091, vys3[vys34Index]);
+                Assert.Equal(1.3620909091, vys4[vys34Index]);
+            }
         }
 
         [Fact]
         public void ComputeFftDuringSignal_SawToothSignal_sameResult()
         {
-            List<double> vector = CreateVector(5, 5, -10, 10, "sawtooth");
+            double fs = 30;
+            List<double> vector = CreateVector(fs, 5, -10, 10, "sawtooth");
             List<double> expected = new List<double>();
-            List<double> vys = Fft.ComputeFftDuringSignal(5, vector, 8, 1);
+            List<double> vys = Fft.ComputeFftDuringSignal(fs, vector, 8, 1);
             var result = vys.Select(x => Math.Round(x, 4)).ToList();
-            for (int i = 0; i < 19; i++)
+            for (int i = 0; i < 593; i++)
             {
-                expected.Add(0.8333);expected.Add(1.6667);expected.Add(1.6667);
-                expected.Add(0.8333);expected.Add(1.6667);
+                expected.Add(5);
             }
-            expected.RemoveAt(expected.Count-1);expected.RemoveAt(expected.Count - 1);
             Assert.Equal(expected, result);
         }
 
