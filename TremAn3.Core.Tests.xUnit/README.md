@@ -112,3 +112,42 @@ Ethalon - Matlab code (Matlab has different indexing than C#) <br />
 
 <b>GetMainFreqFromComLists_EnteredValues_SameResult()</b><br />
 <p><a href="https://github.com/tesar-tech/treman_algorithms/blob/master/simple_vector_fft.m">Github link</a></p>
+
+
+<h3>FftTests.cs </h3>
+
+<b>ComputeFftDuringSignal_SinSignal_sameResult()</b> <br />
+     This test is performed with sinus signal <br />
+Ethalon - Matlab code (Matlab has different indexing than C#) <br />
+
+    f=7;fs=10;
+    x1 = sin(2*pi*f*(-15:1/fs:15));
+    t = (-10:1/fs:10);
+    vec=[];frq=[];
+    for i=1:292
+        vfftX = fft(x1(i:i+9));
+        p1X = abs(vfftX(1:round(length(vfftX)/2)));
+        [mx,mx_ind] = max(p1X);
+        x_tics =linspace(0,fs/2,length(p1X)) ;
+        vec = [vec mx_ind];
+        frq = [frq x_tics(mx_ind)];
+    end   
+
+<b>ComputeFftDuringSignal_SawToothSignal_sameResult()</b> <br />
+     This test is performed with sawtooth signal <br />
+Ethalon - Matlab code (Matlab has different indexing than C#) <br />
+
+    f=5;fs=5;
+    t = (-10:1/fs:10);
+    x1 = 2 * (t - floor(t + 0.5));
+    vec=[];frq=[];
+    for i=1:94
+        vfftX = fft(x1(i:i+7));
+        p1X = abs(vfftX(1:round(length(vfftX)/2)));
+        [mx,mx_ind] = max(p1X);
+        x_tics =linspace(0,fs/2,length(p1X)) ;
+        vec = [vec mx_ind];
+        frq = [frq x_tics(mx_ind)];
+    end
+
+
