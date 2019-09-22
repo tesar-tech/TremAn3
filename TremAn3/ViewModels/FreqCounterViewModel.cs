@@ -37,5 +37,39 @@ namespace TremAn3.ViewModels
             PlotModel.InvalidatePlot(true);
             PlotModel.ResetAllAxes();//zoom to whole plot
         }
+
+
+        double _maximum;
+
+        public double Maximum
+        {
+            get { return _maximum; }
+            set
+            {
+                Set(ref _maximum, value);
+            }
+        }
+
+        double _minrange;
+
+        public double Minrange
+        {
+            get { return _minrange; }
+            set
+            {
+                Set(ref _minrange, value);
+            }
+        }
+
+        double _maxrange;
+
+        public double Maxrange
+        {
+            get { return _maxrange; }
+            set
+            {
+                Set(ref _maxrange, value);
+            }
+        }
     }
 }

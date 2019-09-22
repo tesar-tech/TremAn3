@@ -42,6 +42,8 @@ namespace TremAn3.ViewModels
         {
             var file = await DataService.OpenFileDialogueAsync();
             MediaPlayerViewModel.ChangeSource(file);
+            var dur = await MediaPlayerViewModel.GetCurrentVideoDuration();
+            FreqCounterViewModel.Maximum = dur;
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();

@@ -38,8 +38,13 @@ namespace TremAn3.ViewModels
         internal async Task SetDefaultSourceAsync()
         {
             Source = MediaSource.CreateFromUri(new Uri(DefaultSource));
+            CurrentStorageFile =  await StorageFile.GetFileFromApplicationUriAsync (new Uri("ms-appx:///Assets/beru.wmv"));
+        }
 
-           CurrentStorageFile =  await StorageFile.GetFileFromApplicationUriAsync (new Uri("ms-appx:///Assets/beru.wmv"));
+        public async Task<double> GetCurrentVideoDuration()
+        {
+            Windows.Storage.FileProperties.VideoProperties prop = await CurrentStorageFile.Properties.GetVideoPropertiesAsync();
+            return prop.Duration.TotalSeconds;
         }
 
         public MediaPlayerViewModel()
