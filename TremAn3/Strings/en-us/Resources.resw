@@ -190,7 +190,9 @@
     <comment>About this application title for Settings</comment>
   </data>
   <data name="Settings_AboutDescription.Text" xml:space="preserve">    
-    <value>Settings page placeholder text.  Your app description goes here.</value>
+    <value>This application measures hand shake of parkinsonians. It is develped by Faculty of Biomedical Engeneering CTU in Prague.
+This application is opensource:  
+https://github.com/tesar-tech/TremAn3</value>
     <comment>About this application description for Settings</comment>
   </data>
   <data name="Settings_PrivacyTermsLink.Content" xml:space="preserve">    
