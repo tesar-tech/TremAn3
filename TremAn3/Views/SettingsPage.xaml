@@ -79,10 +79,17 @@
                     x:Uid="Settings_AboutDescription"
                     Margin="{StaticResource XSmallTopMargin}"
                     Style="{ThemeResource BodyTextBlockStyle}" />
-
                 <HyperlinkButton
-                    x:Uid="Settings_PrivacyTermsLink"
+                    x:Uid="Settings_GitHubLink"
                     Margin="{StaticResource XSmallTopMargin}" />
+                <TextBlock
+                    x:Uid="Settings_AboutDescription1"
+                    Margin="{StaticResource XSmallTopMargin}"
+                    Style="{ThemeResource BodyTextBlockStyle}" />
+
+                <!--<HyperlinkButton
+                    x:Uid="Settings_PrivacyTermsLink"
+                    Margin="{StaticResource XSmallTopMargin}" />-->
             </StackPanel>
         </StackPanel>
     </Grid>    

@@ -191,8 +191,23 @@
   </data>
   <data name="Settings_AboutDescription.Text" xml:space="preserve">    
     <value>This application measures hand shake of parkinsonians. It is develped by Faculty of Biomedical Engeneering CTU in Prague.
-This application is opensource:  
-https://github.com/tesar-tech/TremAn3</value>
+This application is opensource:
+    </value>
+  </data>
+    <data name="Settings_GitHubLink.Content" xml:space="preserve">    
+    <value>https://github.com/tesar-tech/TremAn3</value>
+  </data>
+  <data name="Settings_GitHubLink.NavigateUri" xml:space="preserve">  
+    <value>https://github.com/tesar-tech/TremAn3</value>
+  </data>
+<data name="Settings_AboutDescription1.Text" xml:space="preserve">
+  <value>
+Privacy Statements
+TremAn3 does not collect, store, share or publish any personal information.
+
+App Center
+We use App Center to keep track of app usage, find bugs, and fix crashes. All information sent to App Center is anonymous and free of any user or contextual data.
+    </value>
     <comment>About this application description for Settings</comment>
   </data>
   <data name="Settings_PrivacyTermsLink.Content" xml:space="preserve">    
