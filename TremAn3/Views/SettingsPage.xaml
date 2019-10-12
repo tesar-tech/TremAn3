@@ -87,9 +87,9 @@
                     Margin="{StaticResource XSmallTopMargin}"
                     Style="{ThemeResource BodyTextBlockStyle}" />
 
-                <!--<HyperlinkButton
+                <HyperlinkButton
                     x:Uid="Settings_PrivacyTermsLink"
-                    Margin="{StaticResource XSmallTopMargin}" />-->
+                    Margin="{StaticResource XSmallTopMargin}" />
             </StackPanel>
         </StackPanel>
     </Grid>    

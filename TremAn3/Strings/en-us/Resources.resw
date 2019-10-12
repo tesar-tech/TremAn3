@@ -185,23 +185,23 @@
     <value>Light</value>
     <comment>Light theme text for Settings</comment>
   </data>
-  <data name="Settings_About.Text" xml:space="preserve">    
+  <data name="Settings_About.Text" xml:space="preserve">
     <value>About this application</value>
     <comment>About this application title for Settings</comment>
   </data>
-  <data name="Settings_AboutDescription.Text" xml:space="preserve">    
+  <data name="Settings_AboutDescription.Text" xml:space="preserve">
     <value>This application measures hand shake of parkinsonians. It is develped by Faculty of Biomedical Engeneering CTU in Prague.
 This application is opensource:
     </value>
   </data>
-    <data name="Settings_GitHubLink.Content" xml:space="preserve">    
+  <data name="Settings_GitHubLink.Content" xml:space="preserve">
     <value>https://github.com/tesar-tech/TremAn3</value>
   </data>
-  <data name="Settings_GitHubLink.NavigateUri" xml:space="preserve">  
+  <data name="Settings_GitHubLink.NavigateUri" xml:space="preserve">
     <value>https://github.com/tesar-tech/TremAn3</value>
   </data>
-<data name="Settings_AboutDescription1.Text" xml:space="preserve">
-  <value>
+  <data name="Settings_AboutDescription1.Text" xml:space="preserve">
+    <value>
 Privacy Statements
 TremAn3 does not collect, store, share or publish any personal information.
 
@@ -210,23 +210,23 @@ We use App Center to keep track of app usage, find bugs, and fix crashes. All in
     </value>
     <comment>About this application description for Settings</comment>
   </data>
-  <data name="Settings_PrivacyTermsLink.Content" xml:space="preserve">    
+  <data name="Settings_PrivacyTermsLink.Content" xml:space="preserve">
     <value>Privacy Statement</value>
     <comment>Privacy Statement link content for Settings</comment>
   </data>
-  <data name="Settings_PrivacyTermsLink.NavigateUri" xml:space="preserve">  
-    <value>https://YourPrivacyUrlGoesHere/</value>
+  <data name="Settings_PrivacyTermsLink.NavigateUri" xml:space="preserve">
+    <value>https://github.com/tesar-tech/TremAn3/blob/master/PrivacyStatements.md</value>
     <comment>Here is your Privacy Statement url for Settings</comment>
   </data>
-  <data name="Settings_Personalization.Text" xml:space="preserve">   
+  <data name="Settings_Personalization.Text" xml:space="preserve">
     <value>Personalization</value>
     <comment>Personalization text for Settings</comment>
   </data>
-  <data name="ExceptionEnumToBooleanConverterValueMustBeAnEnum" xml:space="preserve">   
+  <data name="ExceptionEnumToBooleanConverterValueMustBeAnEnum" xml:space="preserve">
     <value>value must be an Enum!</value>
     <comment>Value must be an Enum in enum to boolean converter</comment>
   </data>
-  <data name="ExceptionEnumToBooleanConverterParameterMustBeAnEnumName" xml:space="preserve">   
+  <data name="ExceptionEnumToBooleanConverterParameterMustBeAnEnumName" xml:space="preserve">
     <value>parameter must be an Enum name!</value>
     <comment>Parameter must be an Enum name in enum to boolean converter</comment>
   </data>
