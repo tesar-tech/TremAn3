@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TremAn3.ViewModels
 {
-    public class FreqCounterViewModel:ViewModelBase
+    public class FreqCounterViewModel : ViewModelBase
     {
         public FreqCounterViewModel()
         {
@@ -43,33 +43,32 @@ namespace TremAn3.ViewModels
 
         public double Maximum
         {
-            get { return _maximum; }
+            get => _maximum;
             set
             {
-                Set(ref _maximum, value);
+                if (_maximum == value) return;
+                _maximum = value;
+                RaisePropertyChanged();
+                Maxrange = Maximum;//on the begining - use full range
+
             }
         }
+
 
         double _minrange;
 
         public double Minrange
         {
-            get { return _minrange; }
-            set
-            {
-                Set(ref _minrange, value);
-            }
+            get => _minrange;
+            set => Set(ref _minrange, value);
         }
 
         double _maxrange;
 
         public double Maxrange
         {
-            get { return _maxrange; }
-            set
-            {
-                Set(ref _maxrange, value);
-            }
+            get => _maxrange;
+            set => Set(ref _maxrange, value);
         }
     }
 }
