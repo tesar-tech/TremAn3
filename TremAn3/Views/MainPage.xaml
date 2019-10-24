@@ -61,8 +61,8 @@
                         RangeMax="{x:Bind ViewModel.FreqCounterViewModel.Maxrange, Mode=TwoWay}"
                         RangeMin="{x:Bind ViewModel.FreqCounterViewModel.Minrange, Mode=TwoWay}">
                     </controls:RangeSelector>
-                    <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.FreqCounterViewModel.Minrange, Mode=OneWay}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Right" Text="{x:Bind ViewModel.FreqCounterViewModel.Maxrange, Mode=OneWay}"/>
+                    <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.FreqCounterViewModel.DoubleToTimeConverter(ViewModel.FreqCounterViewModel.Minrange), Mode=OneWay}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Right" Text="{x:Bind ViewModel.FreqCounterViewModel.DoubleToTimeConverter(ViewModel.FreqCounterViewModel.Maxrange), Mode=OneWay}"/>
                 </Grid>
             </Grid>
         </SplitView.Pane>

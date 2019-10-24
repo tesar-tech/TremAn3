@@ -70,5 +70,12 @@ namespace TremAn3.ViewModels
             get => _maxrange;
             set => Set(ref _maxrange, value);
         }
+
+        public string DoubleToTimeConverter(double time)
+        {
+            TimeSpan result = TimeSpan.FromSeconds(time);
+            string TimeString = result.ToString("mm':'ss");
+            return TimeString;
+        }
     }
 }
