@@ -200,16 +200,6 @@ This application is opensource:
   <data name="Settings_GitHubLink.NavigateUri" xml:space="preserve">
     <value>https://github.com/tesar-tech/TremAn3</value>
   </data>
-  <data name="Settings_AboutDescription1.Text" xml:space="preserve">
-    <value>
-Privacy Statements
-TremAn3 does not collect, store, share or publish any personal information.
-
-App Center
-We use App Center to keep track of app usage, find bugs, and fix crashes. All information sent to App Center is anonymous and free of any user or contextual data.
-    </value>
-    <comment>About this application description for Settings</comment>
-  </data>
   <data name="Settings_PrivacyTermsLink.Content" xml:space="preserve">
     <value>Privacy Statement</value>
     <comment>Privacy Statement link content for Settings</comment>
