@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TremAn3.ViewModels
 {
-    public class FreqCounterViewModel:ViewModelBase
+    public class FreqCounterViewModel : ViewModelBase
     {
         public FreqCounterViewModel()
         {
@@ -36,6 +36,46 @@ namespace TremAn3.ViewModels
             newVals.ToList().ForEach(c => DataPoints.Add(new DataPoint(c.xx, c.yy)));
             PlotModel.InvalidatePlot(true);
             PlotModel.ResetAllAxes();//zoom to whole plot
+        }
+
+
+        double _maximum;
+
+        public double Maximum
+        {
+            get => _maximum;
+            set
+            {
+                if (_maximum == value) return;
+                _maximum = value;
+                RaisePropertyChanged();
+                Maxrange = Maximum;//on the begining - use full range
+
+            }
+        }
+
+
+        double _minrange;
+
+        public double Minrange
+        {
+            get => _minrange;
+            set => Set(ref _minrange, value);
+        }
+
+        double _maxrange;
+
+        public double Maxrange
+        {
+            get => _maxrange;
+            set => Set(ref _maxrange, value);
+        }
+
+        public string DoubleToTimeConverter(double time)
+        {
+            TimeSpan result = TimeSpan.FromSeconds(time);
+            string TimeString = result.ToString("mm':'ss");
+            return TimeString;
         }
     }
 }

@@ -33,6 +33,7 @@ namespace TremAn3.ViewModels
         public async void LoadedAsync()
         {
             await MediaPlayerViewModel.SetDefaultSourceAsync();
+            FreqCounterViewModel.Maximum = MediaPlayerViewModel.CurrentVideoFileProps.Duration.TotalSeconds;
             IsFreqCounterOpen = false;// more info in IsFreqCounterOpen comment
         }
 
@@ -41,7 +42,8 @@ namespace TremAn3.ViewModels
         public async void OpenVideo_ButtonClickAsync()
         {
             var file = await DataService.OpenFileDialogueAsync();
-            MediaPlayerViewModel.ChangeSource(file);
+            await MediaPlayerViewModel.ChangeSourceAsync(file);
+            FreqCounterViewModel.Maximum = MediaPlayerViewModel.CurrentVideoFileProps.Duration.TotalSeconds;
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();
@@ -65,6 +67,7 @@ namespace TremAn3.ViewModels
 
             await grabber.ChangeStorageFileAsync(MediaPlayerViewModel.CurrentStorageFile);
             (int width, int height) = grabber.GetWidthAndHeight();
+            //grabber set start and end position -> tak that from range selector (freq counter Min range Max range)
             CenterOfMotionAlgorithm comAlg = new CenterOfMotionAlgorithm(width, height, grabber.FrameRate);
 
             int counter = 0;

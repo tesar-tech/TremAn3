@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
+using Windows.Storage.FileProperties;
 
 namespace TremAn3.ViewModels
 {
@@ -24,23 +25,27 @@ namespace TremAn3.ViewModels
             }
         }
 
+
+        public VideoProperties CurrentVideoFileProps { get; set; }
+
         public StorageFile CurrentStorageFile { get; private set; }
 
-        public void ChangeSource(StorageFile file)
+        public async Task ChangeSourceAsync(StorageFile file)
         {
             if (file != null)
             {
                 Source = MediaSource.CreateFromStorageFile(file);
                 CurrentStorageFile = file;
+                CurrentVideoFileProps = await CurrentStorageFile.Properties.GetVideoPropertiesAsync();
             }
         }
 
         internal async Task SetDefaultSourceAsync()
         {
-            Source = MediaSource.CreateFromUri(new Uri(DefaultSource));
-
-           CurrentStorageFile =  await StorageFile.GetFileFromApplicationUriAsync (new Uri("ms-appx:///Assets/beru.wmv"));
+            var defaultStorageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru.wmv"));
+            await ChangeSourceAsync(defaultStorageFile);
         }
+
 
         public MediaPlayerViewModel()
         {

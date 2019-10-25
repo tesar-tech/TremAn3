@@ -7,6 +7,7 @@
     xmlns:ViewModels="using.TremAn3.ViewModels"
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:oxyplot="using:OxyPlot.Windows"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     Style="{StaticResource PageStyle}"
     Loaded="{x:Bind ViewModel.LoadedAsync}"
     mc:Ignorable="d">
@@ -28,6 +29,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Button  Click="{x:Bind ViewModel.GetFrameClickAsync}" >Get curent frame</Button>
 
@@ -44,6 +46,24 @@
                     <ProgressBar Grid.Column="1" MinWidth="0"   Value="{x:Bind ViewModel.ProgressPercentage, Mode=OneWay}" />
                 </Grid>
                 <oxyplot:PlotView  Grid.Row="3" Width="200" Height="200" Model="{x:Bind ViewModel.FreqCounterViewModel.PlotModel, Mode=OneWay}"/>
+                <Grid Grid.Row="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <controls:RangeSelector  x:Name="RangeSelectorControl" Width="180" Grid.ColumnSpan="2"
+	                    Minimum="0" 
+	                    Maximum="{x:Bind ViewModel.FreqCounterViewModel.Maximum, Mode=OneWay}"
+                        RangeMax="{x:Bind ViewModel.FreqCounterViewModel.Maxrange, Mode=TwoWay}"
+                        RangeMin="{x:Bind ViewModel.FreqCounterViewModel.Minrange, Mode=TwoWay}">
+                    </controls:RangeSelector>
+                    <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.FreqCounterViewModel.DoubleToTimeConverter(ViewModel.FreqCounterViewModel.Minrange), Mode=OneWay}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Right" Text="{x:Bind ViewModel.FreqCounterViewModel.DoubleToTimeConverter(ViewModel.FreqCounterViewModel.Maxrange), Mode=OneWay}"/>
+                </Grid>
             </Grid>
         </SplitView.Pane>
 
