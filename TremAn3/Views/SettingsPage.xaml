@@ -79,7 +79,9 @@
                     x:Uid="Settings_AboutDescription"
                     Margin="{StaticResource XSmallTopMargin}"
                     Style="{ThemeResource BodyTextBlockStyle}" />
-
+                <HyperlinkButton
+                    x:Uid="Settings_GitHubLink"
+                    Margin="{StaticResource XSmallTopMargin}" />
                 <HyperlinkButton
                     x:Uid="Settings_PrivacyTermsLink"
                     Margin="{StaticResource XSmallTopMargin}" />
