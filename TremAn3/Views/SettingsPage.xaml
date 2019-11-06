@@ -75,10 +75,27 @@
                 <TextBlock
                     Text="{x:Bind ViewModel.VersionDescription, Mode=OneWay}"
                     Style="{ThemeResource BodyTextBlockStyle}" />
-                <TextBlock
-                    x:Uid="Settings_AboutDescription"
-                    Margin="{StaticResource XSmallTopMargin}"
-                    Style="{ThemeResource BodyTextBlockStyle}" />
+
+                <Grid  Margin="{StaticResource XSmallTopMargin}">
+                    <!--This all is bcsof overflowing image bz text-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="57" /><!--need to be exact because of overflow-->
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Image Margin="0,0,5,5" Source="ms-appx:///Assets/StoreLogo.scale-100.png" />
+
+                    <RichTextBlock Grid.Column="1" TextAlignment="Justify" OverflowContentTarget="{x:Bind firstOverflowContainer}">
+                        <Paragraph  >
+                            <Run  x:Uid="Settings_AboutDescription"  />
+                        </Paragraph>
+                </RichTextBlock>
+                 <RichTextBlockOverflow Grid.Row="1" Grid.ColumnSpan="2" x:Name="firstOverflowContainer" />
+                </Grid>
+                
                 <HyperlinkButton
                     x:Uid="Settings_GitHubLink"
                     Margin="{StaticResource XSmallTopMargin}" />

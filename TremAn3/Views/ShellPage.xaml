@@ -8,6 +8,7 @@
     Style="{StaticResource PageStyle}"
     xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:viewModels="using:TremAn3.ViewModels"
     mc:Ignorable="d">
 
     <i:Interaction.Behaviors>
@@ -35,19 +36,21 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <winui:MenuBar VerticalAlignment="Top">
                 <!--
                 TODO WTS: You can edit the text for the menu in String/en-US/Resources.resw
                 -->
                 <winui:MenuBarItem x:Uid="ShellMenuBarItem_File">
-                    <MenuFlyoutItem x:Uid="ShellMenuItem_File_Settings" Command="{x:Bind ViewModel.MenuFileSettingsCommand}" />
-                    <MenuFlyoutItem x:Uid="ShellMenuItem_File_Exit" Command="{x:Bind ViewModel.MenuFileExitCommand}" />
+                
                     <MenuFlyoutItem  Text="Open File" x:Uid="ShellMenuItem_File_OpenNewChannels" Click="{x:Bind ViewModel.OpenNewFile}" >
                         <MenuFlyoutItem.KeyboardAccelerators>
                             <KeyboardAccelerator Modifiers="Control"  Key="O" />
                         </MenuFlyoutItem.KeyboardAccelerators>
                     </MenuFlyoutItem>
+                    <MenuFlyoutItem x:Uid="ShellMenuItem_File_Settings" Command="{x:Bind ViewModel.MenuFileSettingsCommand}" />
+                    <MenuFlyoutItem x:Uid="ShellMenuItem_File_Exit" Command="{x:Bind ViewModel.MenuFileExitCommand}" />
                 </winui:MenuBarItem>
                     
                 <!--<winui:MenuBarItem Title="Freq Counter" Tapped="{x:Bind ViewModel.FreqCounter}"   />-->
@@ -57,8 +60,9 @@
                     <MenuFlyoutItem x:Uid="ShellMenuItem_Views_MediaPlayer" Command="{x:Bind ViewModel.MenuViewsMediaPlayerCommand}" />
                 </winui:MenuBarItem>-->
             </winui:MenuBar>
-            <Button Content="Freq Counter" Grid.Column="1" Click="{x:Bind ViewModel.FreqCounter}"/>
-            <Grid Grid.Row="1" Grid.ColumnSpan="2">
+            <ToggleButton Grid.Column="1" Content="Freq Counter"   IsChecked="{x:Bind viewModels: ViewModelLocator.Current.MainViewModel.IsFreqCounterOpen ,Mode=TwoWay}"/>
+
+            <Grid Grid.Row="1" Grid.ColumnSpan="3">
                 <Frame x:Name="shellFrame" />
             </Grid>
         </Grid>
