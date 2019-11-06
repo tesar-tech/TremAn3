@@ -30,13 +30,24 @@ namespace TremAn3.ViewModels
         public List<DataPoint> DataPoints { get; set; } = new List<DataPoint>();// { new DataPoint(1, 10), new DataPoint(2, 11), new DataPoint(3, 9) };
 
         //convertor from tuple to datapoinnts
-        internal void UpdatePlotWithNewVals(IEnumerable<(int xx, int yy)> newVals)
+        internal void UpdatePlotWithNewVals(IEnumerable<(double xx, double yy)> newVals, bool justClear = false)
         {
             DataPoints.Clear();
+            if(!justClear)
             newVals.ToList().ForEach(c => DataPoints.Add(new DataPoint(c.xx, c.yy)));
             PlotModel.InvalidatePlot(true);
-            PlotModel.ResetAllAxes();//zoom to whole plot
+                PlotModel.ResetAllAxes();//zoom to whole plot
+            IsDataAvailableForPlot = DataPoints.Count > 0 ? true : false;
         }
+
+        private bool _IsDataAvailableForPlot;//for displaying no data over plot
+
+        public bool IsDataAvailableForPlot
+        {
+            get => _IsDataAvailableForPlot;
+            set => Set(ref _IsDataAvailableForPlot, value);
+        }
+
 
 
         double _maximum;
@@ -71,11 +82,15 @@ namespace TremAn3.ViewModels
             set => Set(ref _maxrange, value);
         }
 
-        public string DoubleToTimeConverter(double time)
+        private bool _IsComputationInProgress;
+
+        public bool IsComputationInProgress
         {
-            TimeSpan result = TimeSpan.FromSeconds(time);
-            string TimeString = result.ToString("mm':'ss");
-            return TimeString;
+            get => _IsComputationInProgress;
+            set => Set(ref _IsComputationInProgress, value);
         }
+
+
+
     }
 }
