@@ -110,7 +110,7 @@ steps:
 
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'DreamSpark(e35f5f9b-c754-45ab-b017-941fea379cad)'
+    azureSubscription: 'DreamsparkJoten'
     appType: 'webApp'
     appName: '$(azureWebAppName)'
     package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
