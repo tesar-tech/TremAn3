@@ -21,6 +21,8 @@ variables:
   versionOfApp: '$(majorMinorBuildVer).$(patchver)'
   nameOfApp: 'TremAn3'
   folderOfUWPproj: '$(nameOfApp)'
+  certThumbPrint: 'BEB622613F451497DAA22C165A2DB53B07B0444E'
+  azureSub: 'DreamsparkJoten'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -58,7 +60,7 @@ steps:
                  /p:AppInstallerUpdateFrequency=1 
                  /p:AppInstallerCheckForUpdateFrequency=OnApplicationRun
                  /p:AppxPackageSigningEnabled=true
-                 /p:PackageCertificateThumbprint="BEB622613F451497DAA22C165A2DB53B07B0444E" 
+                 /p:PackageCertificateThumbprint="$(certThumbPrint)" 
                  /p:PackageCertificateKeyFile="$(signingCert.secureFilePath)"'
 
 - task: CopyFiles@2
@@ -87,7 +89,9 @@ steps:
     mode: 'singleFile'
     markdownPath: '$(system.defaultworkingdirectory)\NoApp\Deploy\default.md'
     htmlPath: '$(build.artifactstagingdirectory)\AppxPackages\default.html'
+    passThruHTML: true
     
+
 
 - task: PowerShell@2
   displayName: Change appname and version tepmplates in html file
@@ -110,7 +114,7 @@ steps:
 
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'DreamSpark(e35f5f9b-c754-45ab-b017-941fea379cad)'
+    azureSubscription: '$(azureSub)'
     appType: 'webApp'
     appName: '$(azureWebAppName)'
     package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
