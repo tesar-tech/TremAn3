@@ -112,13 +112,22 @@ steps:
     verbose: true
 
 
+
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: '$(azureSub)'
+    azureSubscription: 'DreamsparkJoten'
     appType: 'webApp'
-    appName: '$(azureWebAppName)'
+    appName: 'treman3'
     package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     deploymentMethod: 'auto'
+
+# - task: AzureWebApp@1
+#   inputs:
+#     azureSubscription: '$(azureSub)'
+#     appType: 'webApp'
+#     appName: '$(azureWebAppName)'
+#     package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+#     deploymentMethod: 'auto'
 
 
 
