@@ -8,15 +8,15 @@
   IgnorableNamespaces="uap mp genTemplate">
 
   <Identity
-    Name="9D46D68B-34EC-454E-8516-B36A855137BC"
-    Publisher="CN=toted"
-    Version="1.0.0.0" />
+    Name="26872JanTesa.TremAn3"
+    Publisher="CN=5981E6E6-8952-4365-82F4-62FDCB563115"
+    Version="1.0.3.0" />
 
-  <mp:PhoneIdentity PhoneProductId="9D46D68B-34EC-454E-8516-B36A855137BC" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="462d00ed-a9be-4885-9b42-2b9090bc9545" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>TremAn3</DisplayName>
-    <PublisherDisplayName>toted</PublisherDisplayName>
+    <PublisherDisplayName>Jan Tesař</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
