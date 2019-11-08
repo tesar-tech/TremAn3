@@ -111,23 +111,13 @@ steps:
     replaceExistingArchive: true
     verbose: true
 
-
-
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'DreamsparkJoten'
+    azureSubscription: '$(azureSub)'
     appType: 'webApp'
-    appName: 'treman3'
+    appName: '$(azureWebAppName)'
     package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     deploymentMethod: 'auto'
-
-# - task: AzureWebApp@1
-#   inputs:
-#     azureSubscription: '$(azureSub)'
-#     appType: 'webApp'
-#     appName: '$(azureWebAppName)'
-#     package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-#     deploymentMethod: 'auto'
 
 
 
