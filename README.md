@@ -1,10 +1,10 @@
 # TremAn3
 
-![treman logo](TremAn3\Assets\StoreLogo.scale-200.png)
+![treman logo](TremAn3/Assets/StoreLogo.scale-200.png?raw=true)
 
 TremaAn app measures frequency of tremor (e.g. Parkinsonian tremor) from video.
 
-![treman logo](NoApp\Store\screenshot01.png)
+![treman logo](NoApp/Store/screenshot01.png?raw=true )
 
 It is written in C# (UWP) for Windows 10.
 
