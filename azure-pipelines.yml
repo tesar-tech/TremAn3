@@ -87,7 +87,9 @@ steps:
     mode: 'singleFile'
     markdownPath: '$(system.defaultworkingdirectory)\NoApp\Deploy\default.md'
     htmlPath: '$(build.artifactstagingdirectory)\AppxPackages\default.html'
+    passThruHTML: true
     
+
 
 - task: PowerShell@2
   displayName: Change appname and version tepmplates in html file
