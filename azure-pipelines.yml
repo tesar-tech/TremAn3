@@ -42,7 +42,7 @@ steps:
       $xml.Save('$(system.defaultworkingdirectory)\$(folderOfUWPproj)\Package.appxmanifest')
       [xml]$xml2 = gc $(system.defaultworkingdirectory)\$(folderOfUWPproj)\$(nameOfUWPproj).csproj
       $xml2.Project.PropertyGroup[0].GenerateAppInstallerFile = "True"; #if published for store - .appintaller is not generated (and it changes the csproj)
-      $xml2.Save('$(system.defaultworkingdirectory)\$(folderOfUWPproj)\nameOfUWPproj.csproj')
+      $xml2.Save('$(system.defaultworkingdirectory)\$(folderOfUWPproj)\$(nameOfUWPproj).csproj')
 
 
 - task: DownloadSecureFile@1
