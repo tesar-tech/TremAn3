@@ -21,6 +21,7 @@ variables:
   versionOfApp: '$(majorMinorBuildVer).$(patchver)'
   nameOfApp: 'TremAn3'
   folderOfUWPproj: '$(nameOfApp)'
+  nameOfUWPproj: '$(nameOfApp)'
   certThumbPrint: 'BEB622613F451497DAA22C165A2DB53B07B0444E'
   azureSub: 'DreamsparkJoten'
 
@@ -32,13 +33,17 @@ steps:
     restoreSolution: '$(solution)'
 
 - task: PowerShell@2
-  displayName: '(PS)Change Package.appxmanifest Version'
+  displayName: '(PS)Change Package.appxmanifest Version, change csproj to generate appInstaller'
   inputs:
     targetType: 'inline'
     script: |
       [xml]$xml = gc $(system.defaultworkingdirectory)\$(folderOfUWPproj)\Package.appxmanifest
       $xml.Package.Identity.Version = "$(versionOfApp)"; 
       $xml.Save('$(system.defaultworkingdirectory)\$(folderOfUWPproj)\Package.appxmanifest')
+      [xml]$xml2 = gc $(system.defaultworkingdirectory)\$(folderOfUWPproj)\nameOfUWPproj.csproj
+      $xml2.Project.PropertyGroup[0].GenerateAppInstallerFile = "True"; #if published for store - .appintaller is not generated (and it changes the csproj)
+      $xml2.Save('$(system.defaultworkingdirectory)\$(folderOfUWPproj)\nameOfUWPproj.csproj')
+
 
 - task: DownloadSecureFile@1
   name: signingCert
