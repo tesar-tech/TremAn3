@@ -34,6 +34,7 @@ namespace TremAn3.ViewModels
         {
             await MediaPlayerViewModel.SetDefaultSourceAsync();
             FreqCounterViewModel.Maximum = MediaPlayerViewModel.CurrentVideoFileProps.Duration.TotalSeconds;
+            FreqCounterViewModel.Minrange = 0d;
             IsFreqCounterOpen = false;// more info in IsFreqCounterOpen comment
         }
 
