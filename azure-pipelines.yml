@@ -40,7 +40,7 @@ steps:
       [xml]$xml = gc $(system.defaultworkingdirectory)\$(folderOfUWPproj)\Package.appxmanifest
       $xml.Package.Identity.Version = "$(versionOfApp)"; 
       $xml.Save('$(system.defaultworkingdirectory)\$(folderOfUWPproj)\Package.appxmanifest')
-      [xml]$xml2 = gc $(system.defaultworkingdirectory)\$(folderOfUWPproj)\nameOfUWPproj.csproj
+      [xml]$xml2 = gc $(system.defaultworkingdirectory)\$(folderOfUWPproj)\$(nameOfUWPproj).csproj
       $xml2.Project.PropertyGroup[0].GenerateAppInstallerFile = "True"; #if published for store - .appintaller is not generated (and it changes the csproj)
       $xml2.Save('$(system.defaultworkingdirectory)\$(folderOfUWPproj)\nameOfUWPproj.csproj')
 
