@@ -82,14 +82,15 @@ steps:
            !default.md
     TargetFolder: '$(build.artifactstagingdirectory)\AppxPackages'
     flattenFolders: false
+    overWrite: true # bcs of index html
 
-- task: Markdown2Html@3
-  displayName: Create default.html from md file
-  inputs:
-    mode: 'singleFile'
-    markdownPath: '$(system.defaultworkingdirectory)\NoApp\Deploy\default.md'
-    htmlPath: '$(build.artifactstagingdirectory)\AppxPackages\default.html'
-    passThruHTML: true
+# - task: Markdown2Html@3
+#   displayName: Create default.html from md file
+#   inputs:
+#     mode: 'singleFile'
+#     markdownPath: '$(system.defaultworkingdirectory)\NoApp\Deploy\default.md'
+#     htmlPath: '$(build.artifactstagingdirectory)\AppxPackages\default.html'
+#     passThruHTML: true
     
 
 
@@ -98,8 +99,8 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $fileName = "$(build.artifactstagingdirectory)\AppxPackages\default.html"
-      (Get-Content $fileName).replace('VERSION__TEMPLATE', '$(versionOfApp)').replace('APPNAME__TEMPLATE', '$(nameOfApp)') | Set-Content $fileName
+      $fileName = "$(build.artifactstagingdirectory)\AppxPackages\index.html"
+      (Get-Content $fileName).replace('VERSION__TEMPLATE', '$(versionOfApp)') | Set-Content $fileName
 
 - task: ArchiveFiles@2
   displayName: zip for deploying app on the web
