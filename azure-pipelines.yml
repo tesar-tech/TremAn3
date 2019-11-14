@@ -14,6 +14,16 @@ variables:
   buildPlatform: 'x86'
   buildConfiguration: 'Release'
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
+  azureWebAppName: 'treman3'
+  distributionUrl: 'https://treman3.azurewebsites.net/'
+  majorMinorBuildVer: "1.0.0"
+  patchver: $[counter(variables['majorMinorBuildVer'], 0)]
+  versionOfApp: '$(majorMinorBuildVer).$(patchver)'
+  nameOfApp: 'TremAn3'
+  folderOfUWPproj: '$(nameOfApp)'
+  nameOfUWPproj: '$(nameOfApp)'
+  certThumbPrint: 'BEB622613F451497DAA22C165A2DB53B07B0444E'
+  azureSub: 'DreamsparkJoten'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -22,9 +32,99 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
+- task: PowerShell@2
+  displayName: '(PS)Change Package.appxmanifest Version, change csproj to generate appInstaller'
+  inputs:
+    targetType: 'inline'
+    script: |
+      [xml]$xml = gc $(system.defaultworkingdirectory)\$(folderOfUWPproj)\Package.appxmanifest
+      $xml.Package.Identity.Version = "$(versionOfApp)"; 
+      $xml.Save('$(system.defaultworkingdirectory)\$(folderOfUWPproj)\Package.appxmanifest')
+      [xml]$xml2 = gc $(system.defaultworkingdirectory)\$(folderOfUWPproj)\$(nameOfUWPproj).csproj
+      $xml2.Project.PropertyGroup[0].GenerateAppInstallerFile = "True"; #if published for store - .appintaller is not generated (and it changes the csproj)
+      $xml2.Save('$(system.defaultworkingdirectory)\$(folderOfUWPproj)\$(nameOfUWPproj).csproj')
+
+
+- task: DownloadSecureFile@1
+  name: signingCert
+  displayName: 'Download CA certificate'
+  inputs:
+    secureFile: '$(nameOfApp)_TemporaryKey.pfx' # need to allow to use by all pipes in Library -> settings of cert
+
 - task: VSBuild@1
   inputs:
     platform: 'x86'
     solution: '$(solution)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+    msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" 
+                 /p:AppxPackageDir="$(appxPackageDir)" 
+                 /p:AppxBundle=Always 
+                 /p:UapAppxPackageBuildMode=StoreUpload
+                 /p:AppxPackageSigningEnabled=false
+                 /p:AppInstallerUri="$(distributionUrl)"
+                 /p:AppInstallerUpdateFrequency=1 
+                 /p:AppInstallerCheckForUpdateFrequency=OnApplicationRun
+                 /p:AppxPackageSigningEnabled=true
+                 /p:PackageCertificateThumbprint="$(certThumbPrint)" 
+                 /p:PackageCertificateKeyFile="$(signingCert.secureFilePath)"'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: |
+          **\bin\$(BuildConfiguration)\AppxPackages\**
+    TargetFolder: '$(build.artifactstagingdirectory)'
+    flattenFolders: true
+#folder is not flattend, it also copies the appxPackages folder
+
+- task: CopyFiles@2
+  displayName: 'Copy all from deploy folder (web.config,media for default.html,...)'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)\NoApp\Deploy'
+    Contents: |
+           **
+           !default.md
+    TargetFolder: '$(build.artifactstagingdirectory)\AppxPackages'
+    flattenFolders: false
+    overWrite: true # bcs of index html
+
+# - task: Markdown2Html@3
+#   displayName: Create default.html from md file
+#   inputs:
+#     mode: 'singleFile'
+#     markdownPath: '$(system.defaultworkingdirectory)\NoApp\Deploy\default.md'
+#     htmlPath: '$(build.artifactstagingdirectory)\AppxPackages\default.html'
+#     passThruHTML: true
+    
+
+
+- task: PowerShell@2
+  displayName: Change appname and version tepmplates in html file
+  inputs:
+    targetType: 'inline'
+    script: |
+      $fileName = "$(build.artifactstagingdirectory)\AppxPackages\index.html"
+      (Get-Content $fileName).replace('VERSION__TEMPLATE', '$(versionOfApp)') | Set-Content $fileName
+
+- task: ArchiveFiles@2
+  displayName: zip for deploying app on the web
+  inputs:
+    rootFolderOrFile: '$(build.artifactstagingdirectory)\AppxPackages'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+    verbose: true
+
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: '$(azureSub)'
+    appType: 'webApp'
+    appName: '$(azureWebAppName)'
+    package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    deploymentMethod: 'auto'
+
+
+
+

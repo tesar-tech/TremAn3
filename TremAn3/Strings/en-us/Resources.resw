@@ -190,7 +190,7 @@
     <comment>About this application title for Settings</comment>
   </data>
   <data name="Settings_AboutDescription.Text" xml:space="preserve">
-    <value>This application measures hand shake of parkinsonians. It is develped by Faculty of Biomedical Engeneering CTU in Prague.
+    <value>TremaAn app measures frequency of tremor (e.g. Parkinsonian tremor) from video.
 This application is opensource:
     </value>
   </data>
