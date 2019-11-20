@@ -24,6 +24,7 @@ namespace TremAn3.ViewModels
         private ICommand _loadedCommand;
         private ICommand _menuViewsMainCommand;
         private ICommand _menuViewsMediaPlayerCommand;
+        private ICommand _menuFileVideoInfoCommand;
         private ICommand _menuFileSettingsCommand;
         private ICommand _menuFileExitCommand;
 
@@ -32,6 +33,8 @@ namespace TremAn3.ViewModels
         public ICommand MenuViewsMainCommand => _menuViewsMainCommand ?? (_menuViewsMainCommand = new RelayCommand(OnMenuViewsMain));
 
         public ICommand MenuViewsMediaPlayerCommand => _menuViewsMediaPlayerCommand ?? (_menuViewsMediaPlayerCommand = new RelayCommand(OnMenuViewsMediaPlayer));
+
+        public ICommand MenuFileVideoInfoCommand => _menuFileVideoInfoCommand ?? (_menuFileVideoInfoCommand = new RelayCommand(OnMenuFileVideoInfo));
 
         public ICommand MenuFileSettingsCommand => _menuFileSettingsCommand ?? (_menuFileSettingsCommand = new RelayCommand(OnMenuFileSettings));
 
@@ -71,6 +74,8 @@ namespace TremAn3.ViewModels
         private void OnMenuViewsMain() => MenuNavigationHelper.UpdateView(typeof(MainViewModel).FullName);
 
         private void OnMenuViewsMediaPlayer() => MenuNavigationHelper.UpdateView(typeof(MediaPlayerViewModel).FullName);
+
+        private void OnMenuFileVideoInfo() => MenuNavigationHelper.OpenInRightPane(typeof(Views.VideoInfoPage));
 
         private void OnMenuFileSettings() => MenuNavigationHelper.OpenInRightPane(typeof(Views.SettingsPage));
 
