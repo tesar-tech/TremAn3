@@ -7,11 +7,17 @@ using Windows.UI.Xaml.Navigation;
 
 namespace TremAn3.Views
 {
-    public sealed class VideoInfoPage : Page
+    public sealed partial class VideoInfoPage : Page
     {
+
+        private VideoInfoViewModel ViewModel
+        {
+            get { return ViewModelLocator.Current.VideoInfoViewModel; }
+        }
+
         public VideoInfoPage()
         {
-            this.DefaultStyleKey = typeof(VideoInfoPage);
+            //this.DefaultStyleKey = typeof(VideoInfoPage);
         }
     }
 }
