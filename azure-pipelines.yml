@@ -103,7 +103,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $date=$(Get-Date -Format "u");
+      $date=$(Get-Date -Format "yyyy/MM/dd HH:mm:ss K");
       Write-Host "##vso[task.setvariable variable=time]$date"
 
 - task: PowerShell@2
