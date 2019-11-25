@@ -98,6 +98,13 @@ steps:
 #     passThruHTML: true
     
 
+- task: PowerShell@2
+  displayName: Change date in html file
+  inputs:
+    targetType: 'inline'
+    script: |
+      $date=$(Get-Date -Format "MM/dd/yyyy HH:mm:ss");
+      Write-Host "##vso[task.setvariable variable=time]$date"
 
 - task: PowerShell@2
   displayName: Change appname and version tepmplates in html file
@@ -105,7 +112,8 @@ steps:
     targetType: 'inline'
     script: |
       $fileName = "$(build.artifactstagingdirectory)\AppxPackages\index.html"
-      (Get-Content $fileName).replace('VERSION__TEMPLATE', '$(versionOfApp)') | Set-Content $fileName
+      (Get-Content $fileName).replace('VERSION__TEMPLATE', '$(versionOfApp)') | Set-Content $fileName;
+      (Get-Content $fileName).replace('TIME__TEMPLATE', '$(time)') | Set-Content $fileName
 
 - task: ArchiveFiles@2
   displayName: zip for deploying app on the web
@@ -125,16 +133,6 @@ steps:
     package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     deploymentMethod: 'auto'
 
-- task: PowerShell@2
-  displayName: Change date in html file
-  inputs:
-    targetType: 'inline'
-    script: |
-      $date=$(Get-Date -Format "MM/dd/yyyy HH:mm K");
-      Write-Host "##vso[task.setvariable variable=time]$date"
-
-- bash: |
-          echo "$(time)"
 
 
 
