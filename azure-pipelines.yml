@@ -103,10 +103,9 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $date=$(Get-Date -Format "yyyy/MM/dd HH:mm:ss K");
       $fileName = "$(build.artifactstagingdirectory)\AppxPackages\index.html"
       (Get-Content $fileName).replace('VERSION__TEMPLATE', '$(versionOfApp)') | Set-Content $fileName;
-      (Get-Content $fileName).replace('TIME__TEMPLATE', $date) | Set-Content $fileName
+      (Get-Content $fileName).replace('TIME__TEMPLATE', $(Get-Date -Format "yyyy/MM/dd HH:mm:ss K")) | Set-Content $fileName
 
 - task: ArchiveFiles@2
   displayName: zip for deploying app on the web
