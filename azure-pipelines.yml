@@ -125,6 +125,22 @@ steps:
     package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     deploymentMethod: 'auto'
 
+- task: PowerShell@2
+  displayName: Change date in html file
+  inputs:
+    targetType: 'inline'
+    script: |
+      $date=$(Get-Date -Format g);
+      Write-Host "##vso[task.setvariable variable=time]$date"
+
+- task: PowerShell@2
+  displayName: Change date in html file
+  inputs:
+    targetType: 'inline'
+    script: |
+      $date=$(Get-Date -Format g);
+      Write-Host "##vso[task.setvariable variable=time]$date"
+
 
 
 
