@@ -106,7 +106,6 @@ steps:
       $fileName = "$(build.artifactstagingdirectory)\AppxPackages\index.html"
       (Get-Content $fileName).replace('VERSION__TEMPLATE', '$(versionOfApp)') | Set-Content $fileName;
       $date=$(Get-Date -Format "yyyy/MM/dd HH:mm:ss K");
-#      Write-Host "##vso[task.setvariable variable=time]$date"
       (Get-Content $fileName).replace('TIME__TEMPLATE', '$date' | Set-Content $fileName
 
 - task: ArchiveFiles@2
