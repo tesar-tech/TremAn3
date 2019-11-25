@@ -99,7 +99,7 @@ steps:
     
 
 - task: PowerShell@2
-  displayName: Change date in html file
+  displayName: Get current datetime
   inputs:
     targetType: 'inline'
     script: |
