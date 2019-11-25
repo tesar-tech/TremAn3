@@ -104,10 +104,9 @@ steps:
     targetType: 'inline'
     script: |
       $date=$(Get-Date -Format "yyyy/MM/dd HH:mm:ss K");
-      Write-Host "##vso[task.setvariable variable=time]$date"
       $fileName = "$(build.artifactstagingdirectory)\AppxPackages\index.html"
       (Get-Content $fileName).replace('VERSION__TEMPLATE', '$(versionOfApp)') | Set-Content $fileName;
-      (Get-Content $fileName).replace('TIME__TEMPLATE', '$(time)') | Set-Content $fileName
+      (Get-Content $fileName).replace('TIME__TEMPLATE', $date) | Set-Content $fileName
 
 - task: ArchiveFiles@2
   displayName: zip for deploying app on the web
