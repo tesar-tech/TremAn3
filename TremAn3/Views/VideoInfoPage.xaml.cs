@@ -17,6 +17,7 @@ namespace TremAn3.Views
 
         public VideoInfoPage()
         {
+            InitializeComponent();
             //this.DefaultStyleKey = typeof(VideoInfoPage);
         }
     }
