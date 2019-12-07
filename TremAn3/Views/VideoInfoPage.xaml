@@ -10,8 +10,43 @@
 
     <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="{x:Bind ViewModel.GetProperties()}" HorizontalAlignment="Left"/>
+        
+        <TextBlock Grid.Row="0" Text="      Video Information" FontSize="20" VerticalAlignment="Center"/>
+        
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBlock Text="Resolution: "/>
+            <TextBlock Text="{x:Bind ViewModel.CurrentVideoFileProps.Width}"/>
+            <TextBlock Text="x"/>
+            <TextBlock Text="{x:Bind ViewModel.CurrentVideoFileProps.Height}"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <TextBlock Text="Name: "/>
+            <TextBlock Text="{x:Bind ViewModel.DisplayName}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <TextBlock Text="Path:"/>
+            <TextBlock Text="{x:Bind ViewModel.FilePath}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <TextBlock Text="Size:"/>
+            <TextBlock Text="{x:Bind ViewModel.FileSize.ToString()}"/>
+            <TextBlock Text="kB"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal">
+            <TextBlock Text="Frame Rate:"/>
+            <TextBlock Text="{x:Bind ViewModel.FrameRate.ToString()}"/>
+            <TextBlock Text="fps"/>
+        </StackPanel>
     </Grid>
 </Page>

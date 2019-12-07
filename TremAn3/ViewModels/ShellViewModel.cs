@@ -78,6 +78,10 @@ namespace TremAn3.ViewModels
         private void OnMenuFileVideoInfo()
         {
             ViewModelLocator.Current.VideoInfoViewModel.CurrentVideoFileProps = ViewModelLocator.Current.MainViewModel.MediaPlayerViewModel.CurrentVideoFileProps;
+            ViewModelLocator.Current.VideoInfoViewModel.DisplayName = ViewModelLocator.Current.MainViewModel.MediaPlayerViewModel.CurrentStorageFile.DisplayName;
+            ViewModelLocator.Current.VideoInfoViewModel.FilePath = ViewModelLocator.Current.MainViewModel.MediaPlayerViewModel.CurrentStorageFile.Path;
+            ViewModelLocator.Current.VideoInfoViewModel.FileSize = ViewModelLocator.Current.MainViewModel.MediaPlayerViewModel.CurrentVideoFileBasicProps.Size/1000;
+            ViewModelLocator.Current.VideoInfoViewModel.FrameRate = ViewModelLocator.Current.MainViewModel.MediaPlayerViewModel.FrameRate;
             MenuNavigationHelper.OpenInRightPane(typeof(Views.VideoInfoPage));
         }
 
