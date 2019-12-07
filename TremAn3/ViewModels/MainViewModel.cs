@@ -24,10 +24,10 @@ namespace TremAn3.ViewModels
 {
     public partial class MainViewModel : ViewModelBase
     {
-        public MainViewModel()
-        {
+        //public MainViewModel()
+        //{
 
-        }
+        //}
 
 
         public async void LoadedAsync()

@@ -75,7 +75,11 @@ namespace TremAn3.ViewModels
 
         private void OnMenuViewsMediaPlayer() => MenuNavigationHelper.UpdateView(typeof(MediaPlayerViewModel).FullName);
 
-        private void OnMenuFileVideoInfo() => MenuNavigationHelper.OpenInRightPane(typeof(Views.VideoInfoPage));
+        private void OnMenuFileVideoInfo()
+        {
+            ViewModelLocator.Current.VideoInfoViewModel.CurrentVideoFileProps = ViewModelLocator.Current.MainViewModel.MediaPlayerViewModel.CurrentVideoFileProps;
+            MenuNavigationHelper.OpenInRightPane(typeof(Views.VideoInfoPage));
+        }
 
         private void OnMenuFileSettings() => MenuNavigationHelper.OpenInRightPane(typeof(Views.SettingsPage));
 

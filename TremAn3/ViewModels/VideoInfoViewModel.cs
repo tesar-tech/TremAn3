@@ -11,11 +11,12 @@ namespace TremAn3.ViewModels
 {
    public class VideoInfoViewModel : ViewModelBase
     {
-        MediaPlayerViewModel MPVM = new MediaPlayerViewModel();
+
+        public VideoProperties CurrentVideoFileProps { get; set; }
         public object GetProperties()
         {
 
-            MPVM = MainViewModel.MediaPlayerViewModel;
+            //MPVM = MainViewModel.MediaPlayerViewModel;
             //var MPVM = MainViewModel.MediaPlayerViewModel;
             //Windows.Storage.FileProperties.VideoProperties vidprops = await CurrentStorageFile.GetVideoPropertiesAsync();
             //VideoProperties vidprops = MPVM.CurrentVideoFileProps;
