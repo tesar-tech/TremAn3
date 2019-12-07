@@ -27,13 +27,9 @@ namespace TremAn3.ViewModels
         }
 
 
-        public VideoProperties CurrentVideoFileProps { get; set; }
-
-        public BasicProperties CurrentVideoFileBasicProps { get; set; }
+        public VideoPropsViewModel VideoPropsViewModel = new VideoPropsViewModel();
 
         public StorageFile CurrentStorageFile { get; private set; }
-
-        public double FrameRate { get; set; }
 
         public async Task ChangeSourceAsync(StorageFile file)
         {
@@ -41,11 +37,14 @@ namespace TremAn3.ViewModels
             {
                 Source = MediaSource.CreateFromStorageFile(file);
                 CurrentStorageFile = file;
-                CurrentVideoFileProps = await CurrentStorageFile.Properties.GetVideoPropertiesAsync();
-                CurrentVideoFileBasicProps = await CurrentStorageFile.GetBasicPropertiesAsync();
-                IDictionary<string, object> encodingProperties = await CurrentVideoFileProps.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });
+                VideoPropsViewModel.CurrentVideoFileProps = await CurrentStorageFile.Properties.GetVideoPropertiesAsync();
+                VideoPropsViewModel.CurrentVideoFileBasicProps = await CurrentStorageFile.GetBasicPropertiesAsync();
+                VideoPropsViewModel.Size = VideoPropsViewModel.CurrentVideoFileBasicProps.Size / 1000;
+                VideoPropsViewModel.DisplayName = CurrentStorageFile.DisplayName;
+                VideoPropsViewModel.FilePath = CurrentStorageFile.Path;
+                IDictionary<string, object> encodingProperties = await VideoPropsViewModel.CurrentVideoFileProps.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });
                 uint frameRateX1000 = (uint)encodingProperties["System.Video.FrameRate"];
-                FrameRate = frameRateX1000 / 1000d;
+                VideoPropsViewModel.FrameRate = frameRateX1000 / 1000d;
             }
         }
 

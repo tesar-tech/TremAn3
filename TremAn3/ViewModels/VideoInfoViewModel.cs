@@ -13,10 +13,10 @@ namespace TremAn3.ViewModels
    public class VideoInfoViewModel : ViewModelBase
     {
 
-        public VideoProperties CurrentVideoFileProps { get; set; }
-        public string DisplayName;
-        public string FilePath;
-        public ulong FileSize;
-        public double FrameRate;
+        public VideoPropsViewModel VideoPropsViewModel;
+
+        public VideoInfoViewModel()
+        {
+        }
     }
 }

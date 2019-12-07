@@ -22,30 +22,30 @@
         
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <TextBlock Text="Resolution: "/>
-            <TextBlock Text="{x:Bind ViewModel.CurrentVideoFileProps.Width}"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.CurrentVideoFileProps.Width, Mode=OneWay}"/>
             <TextBlock Text="x"/>
-            <TextBlock Text="{x:Bind ViewModel.CurrentVideoFileProps.Height}"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.CurrentVideoFileProps.Height, Mode=OneWay}"/>
         </StackPanel>
         
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <TextBlock Text="Name: "/>
-            <TextBlock Text="{x:Bind ViewModel.DisplayName}"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.DisplayName, Mode=OneWay}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal">
             <TextBlock Text="Path:"/>
-            <TextBlock Text="{x:Bind ViewModel.FilePath}"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.FilePath, Mode=OneWay}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="4" Orientation="Horizontal">
             <TextBlock Text="Size:"/>
-            <TextBlock Text="{x:Bind ViewModel.FileSize.ToString()}"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Size, Mode=OneWay}"/>
             <TextBlock Text="kB"/>
         </StackPanel>
 
         <StackPanel Grid.Row="5" Orientation="Horizontal">
             <TextBlock Text="Frame Rate:"/>
-            <TextBlock Text="{x:Bind ViewModel.FrameRate.ToString()}"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.FrameRate, Mode=OneWay}"/>
             <TextBlock Text="fps"/>
         </StackPanel>
     </Grid>
