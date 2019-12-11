@@ -11,8 +11,24 @@ namespace TremAn3.ViewModels
 {
     public class VideoPropsViewModel : ViewModelBase
     {
-        public VideoProperties CurrentVideoFileProps { get; set; }
-        public BasicProperties CurrentVideoFileBasicProps { get; set; }
+        public async void UpdateVideoPropsByStorageFile(StorageFile file)
+        {
+            CurrentFile = file;
+            CurrentVideoFileProps = await CurrentFile.Properties.GetVideoPropertiesAsync();
+            CurrentVideoFileBasicProps = await CurrentFile.GetBasicPropertiesAsync();
+            Height = CurrentVideoFileProps.Height;
+            Width = CurrentVideoFileProps.Width;
+            Size = CurrentVideoFileBasicProps.Size / 1024;
+            DisplayName = CurrentFile.DisplayName;
+            FilePath = CurrentFile.Path;
+            IDictionary<string, object> encodingProperties = await CurrentVideoFileProps.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });
+            uint frameRateX1000 = (uint)encodingProperties["System.Video.FrameRate"];
+            FrameRate = frameRateX1000 / 1000d;
+        }
+
+        private StorageFile CurrentFile;
+        private VideoProperties CurrentVideoFileProps { get; set; }
+        private BasicProperties CurrentVideoFileBasicProps { get; set; }
 
         public uint _Height;
         public uint Height
@@ -56,9 +72,13 @@ namespace TremAn3.ViewModels
             set => Set(ref _FrameRate, value);
         }
 
-        public VideoPropsViewModel()
-        {
+        private TimeSpan _Duration;
 
+        public TimeSpan Duration
+        {
+            get => _Duration;
+            set => Set(ref _Duration, value);
         }
+
     }
 }

@@ -37,16 +37,7 @@ namespace TremAn3.ViewModels
             {
                 Source = MediaSource.CreateFromStorageFile(file);
                 CurrentStorageFile = file;
-                VideoPropsViewModel.CurrentVideoFileProps = await CurrentStorageFile.Properties.GetVideoPropertiesAsync();
-                VideoPropsViewModel.CurrentVideoFileBasicProps = await CurrentStorageFile.GetBasicPropertiesAsync();
-                VideoPropsViewModel.Height = VideoPropsViewModel.CurrentVideoFileProps.Height;
-                VideoPropsViewModel.Width = VideoPropsViewModel.CurrentVideoFileProps.Width;
-                VideoPropsViewModel.Size = VideoPropsViewModel.CurrentVideoFileBasicProps.Size / 1024;
-                VideoPropsViewModel.DisplayName = CurrentStorageFile.DisplayName;
-                VideoPropsViewModel.FilePath = CurrentStorageFile.Path;
-                IDictionary<string, object> encodingProperties = await VideoPropsViewModel.CurrentVideoFileProps.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });
-                uint frameRateX1000 = (uint)encodingProperties["System.Video.FrameRate"];
-                VideoPropsViewModel.FrameRate = frameRateX1000 / 1000d;
+                VideoPropsViewModel.UpdateVideoPropsByStorageFile(file);
             }
         }
 

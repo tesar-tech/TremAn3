@@ -22,9 +22,9 @@
         
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <TextBlock Text="Resolution: "/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.CurrentVideoFileProps.Width, Mode=OneWay}"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Width, Mode=OneWay}"/>
             <TextBlock Text="x"/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.CurrentVideoFileProps.Height, Mode=OneWay}"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Height, Mode=OneWay}"/>
         </StackPanel>
         
         <StackPanel Grid.Row="2" Orientation="Horizontal">
