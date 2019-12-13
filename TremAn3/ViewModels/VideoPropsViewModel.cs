@@ -18,7 +18,8 @@ namespace TremAn3.ViewModels
             CurrentVideoFileBasicProps = await CurrentFile.GetBasicPropertiesAsync();
             Height = CurrentVideoFileProps.Height;
             Width = CurrentVideoFileProps.Width;
-            Size = CurrentVideoFileBasicProps.Size / 1024;
+            Size = Math.Round(Convert.ToDouble( CurrentVideoFileBasicProps.Size‬) / 1048576, 2);
+            Duration = CurrentVideoFileProps.Duration ;
             DisplayName = CurrentFile.DisplayName;
             FilePath = CurrentFile.Path;
             IDictionary<string, object> encodingProperties = await CurrentVideoFileProps.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });
@@ -30,42 +31,42 @@ namespace TremAn3.ViewModels
         private VideoProperties CurrentVideoFileProps { get; set; }
         private BasicProperties CurrentVideoFileBasicProps { get; set; }
 
-        public uint _Height;
+        private uint _Height;
         public uint Height
         {
             get => _Height;
             set => Set(ref _Height, value);
         }
 
-        public uint _Width;
+        private uint _Width;
         public uint Width
         {
             get => _Width;
             set => Set(ref _Width, value);
         }
 
-        public ulong _Size;
-        public ulong Size
+        private double _Size;
+        public double Size
         {
             get => _Size;
             set => Set(ref _Size, value);
         }
 
-        public string _DisplayName; 
+        private string _DisplayName; 
         public string DisplayName
         {
             get => _DisplayName;
             set => Set(ref _DisplayName, value);
         }
 
-        public string _FilePath;
+        private string _FilePath;
         public string FilePath
         {
             get => _FilePath;
             set => Set(ref _FilePath, value);
         }
 
-        public double _FrameRate;
+        private double _FrameRate;
         public double FrameRate
         {
             get => _FrameRate;
@@ -73,7 +74,6 @@ namespace TremAn3.ViewModels
         }
 
         private TimeSpan _Duration;
-
         public TimeSpan Duration
         {
             get => _Duration;

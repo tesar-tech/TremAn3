@@ -11,40 +11,48 @@
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
         
         <TextBlock Grid.Row="0" Text="      Video Information" FontSize="20" VerticalAlignment="Center"/>
-        
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <TextBlock Text="Resolution: "/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Width, Mode=OneWay}"/>
-            <TextBlock Text="x"/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Height, Mode=OneWay}"/>
-        </StackPanel>
-        
+               
         <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <TextBlock Text="Name: "/>
+            <TextBlock FontWeight="Bold" Text="Name: "/>
             <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.DisplayName, Mode=OneWay}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal">
-            <TextBlock Text="Path:"/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.FilePath, Mode=OneWay}"/>
+            <TextBlock FontWeight="Bold" Text="Duration:"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Duration.Minutes, Mode=OneWay}"/>
+            <TextBlock Text=":"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Duration.Seconds, Mode=OneWay}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBlock FontWeight="Bold" Text="Resolution: "/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Width, Mode=OneWay}"/>
+            <TextBlock Text="x"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Height, Mode=OneWay}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="4" Orientation="Horizontal">
-            <TextBlock Text="Size:"/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Size, Mode=OneWay}"/>
-            <TextBlock Text="kB"/>
+            <TextBlock FontWeight="Bold" Text="Path:"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.FilePath, Mode=OneWay}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="5" Orientation="Horizontal">
-            <TextBlock Text="Frame Rate:"/>
+            <TextBlock FontWeight="Bold" Text="Size:"/>
+            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Size, Mode=OneWay}"/>
+            <TextBlock Text="MB"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="6" Orientation="Horizontal">
+            <TextBlock FontWeight="Bold" Text="Frame Rate:"/>
             <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.FrameRate, Mode=OneWay}"/>
             <TextBlock Text="fps"/>
         </StackPanel>
