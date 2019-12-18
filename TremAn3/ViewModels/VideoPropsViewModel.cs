@@ -19,7 +19,7 @@ namespace TremAn3.ViewModels
             Height = CurrentVideoFileProps.Height;
             Width = CurrentVideoFileProps.Width;
             Size = Math.Round(Convert.ToDouble( CurrentVideoFileBasicProps.Size‬) / 1048576, 2);
-            Duration = CurrentVideoFileProps.Duration ;
+            Duration = CurrentVideoFileProps.Duration;
             DisplayName = CurrentFile.DisplayName;
             FilePath = CurrentFile.Path;
             IDictionary<string, object> encodingProperties = await CurrentVideoFileProps.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });

@@ -8,53 +8,56 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid >
+    <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         
-        <TextBlock Grid.Row="0" Text="      Video Information" FontSize="20" VerticalAlignment="Center"/>
-               
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <TextBlock FontWeight="Bold" Text="Name: "/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.DisplayName, Mode=OneWay}"/>
-        </StackPanel>
+        <TextBlock Grid.Row="0" Text="Video Information" FontSize="20" VerticalAlignment="Center"/>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal">
-            <TextBlock FontWeight="Bold" Text="Duration:"/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Duration.Minutes, Mode=OneWay}"/>
-            <TextBlock Text=":"/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Duration.Seconds, Mode=OneWay}"/>
-        </StackPanel>
+        <TextBlock Grid.Row="1" Text="This page shows the properties of selected video."/>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <TextBlock FontWeight="Bold" Text="Resolution: "/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Width, Mode=OneWay}"/>
-            <TextBlock Text="x"/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Height, Mode=OneWay}"/>
-        </StackPanel>
+        <TextBlock Grid.Row="2">
+                <Run FontWeight="Bold">Name: </Run>
+                <Run Text="{x:Bind ViewModel.VideoPropsViewModel.DisplayName, Mode=OneWay}"></Run>
+        </TextBlock>
+        
+        <TextBlock Grid.Row="3">
+                <Run FontWeight="Bold">Duration: </Run>
+                <Run Text="{x:Bind ViewModel.VideoPropsViewModel.Duration.Minutes, Mode=OneWay}"></Run>
+                <Run>:</Run>
+                <Run Text="{x:Bind ViewModel.VideoPropsViewModel.Duration.Seconds, Mode=OneWay}"></Run>
+        </TextBlock>
 
-        <StackPanel Grid.Row="4" Orientation="Horizontal">
-            <TextBlock FontWeight="Bold" Text="Path:"/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.FilePath, Mode=OneWay}"/>
-        </StackPanel>
+        <TextBlock Grid.Row="4">
+                <Run FontWeight="Bold">Resolution: </Run>
+                <Run Text="{x:Bind ViewModel.VideoPropsViewModel.Width, Mode=OneWay}"></Run>
+                <Run>x</Run>
+                <Run Text="{x:Bind ViewModel.VideoPropsViewModel.Height, Mode=OneWay}"></Run>
+        </TextBlock>
 
-        <StackPanel Grid.Row="5" Orientation="Horizontal">
-            <TextBlock FontWeight="Bold" Text="Size:"/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.Size, Mode=OneWay}"/>
-            <TextBlock Text="MB"/>
-        </StackPanel>
+        <TextBlock Grid.Row="5" TextWrapping="Wrap">
+                <Run FontWeight="Bold">Path: </Run>
+                <Run Text="{x:Bind ViewModel.VideoPropsViewModel.FilePath, Mode=OneWay}"></Run>
+        </TextBlock>
 
-        <StackPanel Grid.Row="6" Orientation="Horizontal">
-            <TextBlock FontWeight="Bold" Text="Frame Rate:"/>
-            <TextBlock Text="{x:Bind ViewModel.VideoPropsViewModel.FrameRate, Mode=OneWay}"/>
-            <TextBlock Text="fps"/>
-        </StackPanel>
+        <TextBlock Grid.Row="6">
+                <Run FontWeight="Bold">Size: </Run>
+                <Run Text="{x:Bind ViewModel.VideoPropsViewModel.Size, Mode=OneWay}"></Run>
+                <Run>MB</Run>
+        </TextBlock>
+
+        <TextBlock Grid.Row="7">
+                <Run FontWeight="Bold">Frame Rate: </Run>
+                <Run Text="{x:Bind ViewModel.VideoPropsViewModel.FrameRate, Mode=OneWay}"></Run>
+                <Run>fps</Run>
+        </TextBlock>
     </Grid>
 </Page>
