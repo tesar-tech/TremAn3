@@ -24,16 +24,16 @@ namespace TremAn3.ViewModels
 {
     public partial class MainViewModel : ViewModelBase
     {
-        public MainViewModel()
-        {
+        //public MainViewModel()
+        //{
 
-        }
+        //}
 
 
         public async void LoadedAsync()
         {
             await MediaPlayerViewModel.SetDefaultSourceAsync();
-            FreqCounterViewModel.Maximum = MediaPlayerViewModel.CurrentVideoFileProps.Duration.TotalSeconds;
+            FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
             FreqCounterViewModel.Minrange = 0d;
             IsFreqCounterOpen = false;// more info in IsFreqCounterOpen comment
         }
@@ -44,7 +44,7 @@ namespace TremAn3.ViewModels
         {
             var file = await DataService.OpenFileDialogueAsync();
             await MediaPlayerViewModel.ChangeSourceAsync(file);
-            FreqCounterViewModel.Maximum = MediaPlayerViewModel.CurrentVideoFileProps.Duration.TotalSeconds;
+            FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();

@@ -49,6 +49,7 @@
                             <KeyboardAccelerator Modifiers="Control"  Key="O" />
                         </MenuFlyoutItem.KeyboardAccelerators>
                     </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Video Info" x:Uid="ShellMenuItem_File_VideoInfo" Command="{x:Bind ViewModel.MenuFileVideoInfoCommand}" />
                     <MenuFlyoutItem x:Uid="ShellMenuItem_File_Settings" Command="{x:Bind ViewModel.MenuFileSettingsCommand}" />
                     <MenuFlyoutItem x:Uid="ShellMenuItem_File_Exit" Command="{x:Bind ViewModel.MenuFileExitCommand}" />
                 </winui:MenuBarItem>
