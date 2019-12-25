@@ -11,7 +11,7 @@ namespace TremAn3.ViewModels
 {
     public class VideoPropsViewModel : ViewModelBase
     {
-        public async void UpdateVideoPropsByStorageFile(StorageFile file)
+        public async Task UpdateVideoPropsByStorageFile(StorageFile file)
         {
             CurrentFile = file;
             CurrentVideoFileProps = await CurrentFile.Properties.GetVideoPropertiesAsync();

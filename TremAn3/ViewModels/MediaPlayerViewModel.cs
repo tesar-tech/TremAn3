@@ -27,7 +27,7 @@ namespace TremAn3.ViewModels
         }
 
 
-        public VideoPropsViewModel VideoPropsViewModel = new VideoPropsViewModel();
+        public VideoPropsViewModel VideoPropsViewModel { get; set; } = new VideoPropsViewModel();
 
         public StorageFile CurrentStorageFile { get; private set; }
 
@@ -37,7 +37,7 @@ namespace TremAn3.ViewModels
             {
                 Source = MediaSource.CreateFromStorageFile(file);
                 CurrentStorageFile = file;
-                VideoPropsViewModel.UpdateVideoPropsByStorageFile(file);
+                await VideoPropsViewModel.UpdateVideoPropsByStorageFile(file);
             }
         }
 

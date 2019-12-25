@@ -153,11 +153,11 @@ namespace TremAn3.ViewModels
             double vx = 0;
 
             var vys = vysX.Zip(vysY, (v1, v2) => (v1 + v2) / 2).ToList();
-            var period = 1.0 / grabber.FrameRate;
+            var vysTime = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds / vys.Count;
             foreach (var v in vys)
             {
                 datP.Add((vx,v));
-                vx += period;
+                vx += vysTime;
             }
 
             VideoMainFreq = comAlg.GetMainFreqFromComLists();
