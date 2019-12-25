@@ -106,9 +106,6 @@
     <PackageReference Include="AdaptiveCards">
       <Version>1.2.2</Version>
     </PackageReference>
-    <PackageReference Include="FFmpegInterop.UWP">
-      <Version>1.0.4</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
       <Version>2.1.1</Version>
     </PackageReference>
@@ -219,7 +216,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-    <ItemGroup>
+  <ItemGroup>
     <Content Include="$(SolutionDir)..\ffmpegbuild\Windows10\$(PlatformTarget)\bin\*.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -358,6 +355,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Tepa\FFmpegInteropX\FFmpegInterop\FFmpegInterop.vcxproj">
+      <Project>{9cfa3b3e-b7af-4629-84e2-c962c5b046b1}</Project>
+      <Name>FFmpegInterop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TremAn3.Core\TremAn3.Core.csproj">
       <Project>{7C4604C9-3614-4ACF-B8F3-57A558588793}</Project>
       <Name>TremAn3.Core</Name>
