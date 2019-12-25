@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFmpegInterop;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,6 +11,7 @@ using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace TremAn3.Services
 {
@@ -50,24 +52,27 @@ namespace TremAn3.Services
         {
             StorageFile = file;
             await GetVideoPropertiesAsync();
-            var clip = await MediaClip.CreateFromFileAsync(StorageFile);
-             composition = new MediaComposition();
-            composition.Clips.Add(clip);
+            //var clip = await MediaClip.CreateFromFileAsync(StorageFile);
+            // composition = new MediaComposition();
+            //composition.Clips.Add(clip);
 
-             framePeriod = 1 / FrameRate;
-             var framesGaps = (int)Math.Round(duration.TotalSeconds * FrameRate);
-             frameTimes = Enumerable.Range(0, framesGaps-1).Select(x => TimeSpan.FromSeconds(framePeriod * x)).ToList();
-            //-1 is because there is no frame (but there should be), and it throws error about expected range (in generate thumbnail)
-            //if (frameTimes.Last() < duration)
-            //    frameTimes.Add(duration);
-            framesCount = frameTimes.Count;
+            // framePeriod = 1 / FrameRate;
+            // var framesGaps = (int)Math.Round(duration.TotalSeconds * FrameRate);
+            // frameTimes = Enumerable.Range(0, framesGaps-1).Select(x => TimeSpan.FromSeconds(framePeriod * x)).ToList();
+            ////-1 is because there is no frame (but there should be), and it throws error about expected range (in generate thumbnail)
+            ////if (frameTimes.Last() < duration)
+            ////    frameTimes.Add(duration);
+            framesCount = (int)Math.Round( duration.TotalSeconds * FrameRate);
             FrameIndex = 0;
+            var stream = await StorageFile.OpenAsync(FileAccessMode.Read);
+            grabber = await FrameGrabber.CreateFromStreamAsync(stream);
         }
         double framePeriod;
+        FrameGrabber grabber;
 
         internal double GetProgressPercentage()
         {
-            return (double)(FrameIndex) / frameTimes.Count *100;
+            return (double)(FrameIndex) / framesCount *100;
         }
 
         int framesCount;
@@ -88,6 +93,23 @@ namespace TremAn3.Services
         IReadOnlyList<ImageStream> imgsStreams;
         public async Task<byte[]> GrabGrayFrameInCurrentIndexAsync()
         {
+            VideoFrame frame = null;
+            if (FrameIndex == 0)
+                frame = await grabber.ExtractVideoFrameAsync(TimeSpan.Zero);
+            else
+                frame = await grabber.ExtractNextVideoFrameAsync();
+            if (frame == null)
+                return null;
+            var data =  frame.PixelData.ToArray();
+            var grayBytes = new byte[data.Length / 4];
+            int grayBytrsIterator = 0;
+            for (int i = 0; i < data.Length; i += 4)
+            {
+                grayBytes[grayBytrsIterator] = (byte)(0.2989 * data[i] + 0.5870 * data[i + 1] + 0.1140 * data[i + 2]);
+                grayBytrsIterator++;
+            }
+            FrameIndex++;
+            return grayBytes;
             //get new portion of frames if there is nothing left.
             //if (currentEnumerator == null || !currentEnumerator.MoveNext())
             //{
@@ -106,7 +128,7 @@ namespace TremAn3.Services
 
             //if(imgsStreams == null)
             //    {
-               
+
             //     frameTimes = Enumerable.Range(0, 299).Select(x => TimeSpan.FromSeconds(framePeriod * x)).ToList();
 
             //    imgsStreams = await composition.GetThumbnailsAsync(frameTimes, 0,0, VideoFramePrecision.NearestFrame);
@@ -132,15 +154,7 @@ namespace TremAn3.Services
             //}
             // bytes is array with size = viedeoWidth * video Height * 4 ; (4 because of R G B and alpha).
             //bytes[0] - R value of first pixel, bytes[1] - Green value of first pixel...
-            var grayBytes = new byte[bytes.Length / 4];
-                int grayBytrsIterator = 0;
-                for (int i = 0; i < bytes.Length; i += 4)
-                {
-                    grayBytes[grayBytrsIterator] = (byte)(0.2989 * bytes[i] + 0.5870 * bytes[i + 1] + 0.1140 * bytes[i + 2]);
-                    grayBytrsIterator++;
-                }
-                FrameIndex++;
-                return grayBytes;
+            
         }
 
         async System.Threading.Tasks.Task<byte[]> GetBytesFromImageStreamAsync(ImageStream stream)

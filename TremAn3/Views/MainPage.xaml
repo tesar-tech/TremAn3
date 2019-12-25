@@ -83,7 +83,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                
-                <TextBlock Text="Time range:" Style="{StaticResource SubtitleTextBlockStyle}" />
+                <TextBlock Text="Time range (not implemented yet):" Style="{StaticResource SubtitleTextBlockStyle}" />
                 <controls:RangeSelector StepFrequency="0.1" Grid.Row="1"  x:Name="RangeSelectorControl" 
 	                    Minimum="0" 
 	                    Maximum="{x:Bind ViewModel.FreqCounterViewModel.Maximum, Mode=OneWay}"

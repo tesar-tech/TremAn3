@@ -12,12 +12,23 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18362.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <PackageCertificateKeyFile>TremAn3_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <!--<PackageCertificateThumbprint>859896A1C55C1366CFB763DF5C1960A49620020B</PackageCertificateThumbprint>-->
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <GenerateTestArtifacts>False</GenerateTestArtifacts>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x86</AppxBundlePlatforms>
+    <PackageCertificateKeyFile>
+    </PackageCertificateKeyFile>
+    <AppInstallerUri>https://treman3.azurewebsites.net/</AppInstallerUri>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -95,9 +106,6 @@
     <PackageReference Include="AdaptiveCards">
       <Version>1.2.2</Version>
     </PackageReference>
-    <PackageReference Include="FFmpegInterop.UWP">
-      <Version>1.0.4</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
       <Version>2.1.1</Version>
     </PackageReference>
@@ -174,6 +182,8 @@
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ShellContentDialogViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewModels\VideoInfoViewModel.cs" />
+    <Compile Include="ViewModels\VideoPropsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\FirstRunDialog.xaml.cs">
       <DependentUpon>FirstRunDialog.xaml</DependentUpon>
@@ -193,6 +203,9 @@
     <Compile Include="Views\ShellPage.xaml.cs">
       <DependentUpon>ShellPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\VideoInfoPage.xaml.cs">
+      <DependentUpon>VideoInfoPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\WhatsNewDialog.xaml.cs">
       <DependentUpon>WhatsNewDialog.xaml</DependentUpon>
     </Compile>
@@ -202,6 +215,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(SolutionDir)..\ffmpegbuild\Windows10\$(PlatformTarget)\bin\*.dll" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Styles\Page.xaml">
@@ -247,6 +263,10 @@
     <Page Include="Views\ShellPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\VideoInfoPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\WhatsNewDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -315,6 +335,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -334,6 +355,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Tepa\FFmpegInteropX\FFmpegInterop\FFmpegInterop.vcxproj">
+      <Project>{9cfa3b3e-b7af-4629-84e2-c962c5b046b1}</Project>
+      <Name>FFmpegInterop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TremAn3.Core\TremAn3.Core.csproj">
       <Project>{7C4604C9-3614-4ACF-B8F3-57A558588793}</Project>
       <Name>TremAn3.Core</Name>

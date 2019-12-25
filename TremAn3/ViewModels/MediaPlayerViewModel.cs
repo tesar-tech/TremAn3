@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 
@@ -26,7 +27,7 @@ namespace TremAn3.ViewModels
         }
 
 
-        public VideoProperties CurrentVideoFileProps { get; set; }
+        public VideoPropsViewModel VideoPropsViewModel { get; set; } = new VideoPropsViewModel();
 
         public StorageFile CurrentStorageFile { get; private set; }
 
@@ -36,7 +37,7 @@ namespace TremAn3.ViewModels
             {
                 Source = MediaSource.CreateFromStorageFile(file);
                 CurrentStorageFile = file;
-                CurrentVideoFileProps = await CurrentStorageFile.Properties.GetVideoPropertiesAsync();
+                await VideoPropsViewModel.UpdateVideoPropsByStorageFile(file);
             }
         }
 

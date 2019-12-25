@@ -21,12 +21,14 @@ namespace TremAn3.ViewModels
             Register<MainViewModel, MainPage>();
             //Register<MediaPlayerViewModel, MediaPlayerPage>();
             Register<SettingsViewModel, SettingsPage>();
+            Register<VideoInfoViewModel, VideoInfoPage>();
             Register<SchemeActivationSampleViewModel, SchemeActivationSamplePage>();
         }
 
         public SchemeActivationSampleViewModel SchemeActivationSampleViewModel => SimpleIoc.Default.GetInstance<SchemeActivationSampleViewModel>();
 
         public SettingsViewModel SettingsViewModel => SimpleIoc.Default.GetInstance<SettingsViewModel>();
+        public VideoInfoViewModel VideoInfoViewModel => SimpleIoc.Default.GetInstance<VideoInfoViewModel>();
 
         // A Guid is generated as a unique key for each instance as reusing the same VM instance in multiple MediaPlayerElement instances can cause playback errors
         public MediaPlayerViewModel MediaPlayerViewModel => SimpleIoc.Default.GetInstance<MediaPlayerViewModel>(Guid.NewGuid().ToString());
