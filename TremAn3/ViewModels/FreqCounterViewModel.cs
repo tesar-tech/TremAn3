@@ -90,6 +90,15 @@ namespace TremAn3.ViewModels
             set => Set(ref _IsComputationInProgress, value);
         }
 
+        private double _percentageOfResolution = 100;
+
+        public double PercentageOfResolution
+        {
+            get => _percentageOfResolution;
+            set => Set(ref _percentageOfResolution, value);
+        }
+
+
 
 
     }

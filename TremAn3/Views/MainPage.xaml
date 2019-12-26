@@ -51,14 +51,8 @@
         <controls:GridSplitter CursorBehavior="ChangeOnSplitterHover"   Grid.Column="1" >
            
         </controls:GridSplitter>
-        <Grid x:Name="FreqCounterGrid" Grid.Column="2" Padding="5" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical"  Grid.Column="2" Padding="5" >
+            
             <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.FreqCounterViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.GetFrameClickAsync}" />
             <TextBlock Grid.Row="1" Visibility="{x:Bind helpers:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
                 <Run>Main frequency:  </Run>
@@ -93,7 +87,24 @@
                 <TextBlock Grid.Row="2" HorizontalAlignment="Left" Text="{x:Bind helpers:StaticConverters.DoubleToTimeConverter(ViewModel.FreqCounterViewModel.Minrange), Mode=OneWay}"/>
                 <TextBlock Grid.Row="2" HorizontalAlignment="Right" Text="{x:Bind helpers:StaticConverters.DoubleToTimeConverter(ViewModel.FreqCounterViewModel.Maxrange), Mode=OneWay}"/>
             </Grid>
-        </Grid>
+
+            <Grid Grid.Row="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock  ToolTipService.ToolTip="Lower => faster; Higher => more accurate " Style="{StaticResource SubtitleTextBlockStyle}" >
+                    <Run Text="Percentage of Resolution ("/><Run Text="{x:Bind ViewModel.FreqCounterViewModel.PercentageOfResolution.ToString(), Mode=OneWay}" />
+                    <Run Text="%)"/>
+                </TextBlock>
+                <Slider Maximum="100" Minimum="10" Value="{x:Bind ViewModel.FreqCounterViewModel.PercentageOfResolution, Mode=TwoWay}" StepFrequency="1" Grid.Row="1" />
+                    
+            </Grid>
+
+
+        </StackPanel>
 
     </Grid>
 </Page>
