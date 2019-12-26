@@ -85,8 +85,10 @@ namespace TremAn3.ViewModels
             }
 
             //comAlg.listComX
-            
-            var window = 200;
+
+            int step = 5;
+            var window = Math.Min(comAlg.listComX.Count-step,200);//dont let window to be bigger than sample count
+
             var avgX =  comAlg.listComX.Average();
 
             var withoutAvgLisX = comAlg.listComX.Select(x => x - avgX).ToList();
@@ -100,8 +102,10 @@ namespace TremAn3.ViewModels
             List<(double xx, double yy)> datP = new List<(double xx, double yy)>();
             double vx = 0;
 
-            var vys = vysX.Zip(vysY, (v1, v2) => (v1 + v2) / 2).ToList();
-            var vysTime = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds / vys.Count;
+            var vys = vysX.Zip(vysY, (v1, v2) => Math.Max(v1, v2)).ToList();
+            if (vys.Count == 1)// if ther is just one res, add another for plot
+                vys.Add(vys[0]);
+            var vysTime = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds / (vys.Count-1);
             foreach (var v in vys)
             {
                 datP.Add((vx,v));
