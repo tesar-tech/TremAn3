@@ -65,6 +65,11 @@ namespace TremAn3.ViewModels
             }
         }
 
+        internal void ResetResultDisplay()
+        {
+            VideoMainFreq = -1;//means nothing
+            UpdatePlotWithNewVals(null, true);
+        }
 
         double _minrange;
 
@@ -98,6 +103,20 @@ namespace TremAn3.ViewModels
             set => Set(ref _percentageOfResolution, value);
         }
 
+        private double _VideoMainFreq = -1;
+
+        //lower than zero means: no value
+        //(same as null, but null does not update raise prop)
+        public double VideoMainFreq
+        {
+            get => _VideoMainFreq;
+            set
+            {
+                if (_VideoMainFreq == value) return;
+                _VideoMainFreq = value;
+                RaisePropertyChanged();
+            }
+        }
 
 
 

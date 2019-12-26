@@ -54,9 +54,9 @@
         <StackPanel Orientation="Vertical"  Grid.Column="2" Padding="5" >
             
             <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.FreqCounterViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.GetFrameClickAsync}" />
-            <TextBlock Grid.Row="1" Visibility="{x:Bind helpers:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
+            <TextBlock Grid.Row="1" Visibility="{x:Bind helpers:StaticConverters.FreqDoubleToVisibility(ViewModel.FreqCounterViewModel.VideoMainFreq), Mode=OneWay}">
                 <Run>Main frequency:  </Run>
-                <Run Text="{x:Bind ViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
+                <Run Text="{x:Bind ViewModel.FreqCounterViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
             </TextBlock>
             <Grid  Grid.Row="2" Visibility="{x:Bind helpers:StaticConverters.BoolToVisiblity(ViewModel.FreqCounterViewModel.IsComputationInProgress),Mode=OneWay}" >
                 <Grid.ColumnDefinitions>
@@ -68,8 +68,7 @@
             </Grid>
             <oxyplot:PlotView Grid.Row="3" Height="200"  Model="{x:Bind ViewModel.FreqCounterViewModel.PlotModel, Mode=OneWay}"/>
         <!--oxyplot bug numero dont know: it cannot be in grid or cannot be without height?? so it is separated from nodata-->
-            <TextBlock Canvas.ZIndex="1" Grid.Row="3"  Text="No data" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Style="{StaticResource TitleTextBlockStyle}" Visibility="{x:Bind  helpers:StaticConverters.BoolToVisiblityInverse(ViewModel.FreqCounterViewModel.IsDataAvailableForPlot), Mode=OneWay}"/>
-
+            <TextBlock Canvas.ZIndex="1" Grid.Row="3" Margin="0,-200,0,0" Text="No data" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Style="{StaticResource TitleTextBlockStyle}" Visibility="{x:Bind  helpers:StaticConverters.BoolToVisiblityInverse(ViewModel.FreqCounterViewModel.IsDataAvailableForPlot), Mode=OneWay}"/>
             <Grid Grid.Row="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

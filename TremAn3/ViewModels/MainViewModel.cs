@@ -35,7 +35,7 @@ namespace TremAn3.ViewModels
         {
             await MediaPlayerViewModel.SetDefaultSourceAsync();
             FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
-            FreqCounterViewModel.Minrange = 0d;
+            //FreqCounterViewModel.Minrange = 0d;
             IsFreqCounterOpen = false;// more info in IsFreqCounterOpen comment
         }
 
@@ -45,17 +45,15 @@ namespace TremAn3.ViewModels
         {
             var file = await DataService.OpenFileDialogueAsync();
             await MediaPlayerViewModel.ChangeSourceAsync(file);
+            FreqCounterViewModel.ResetResultDisplay();
             FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();
-        Random rnd = new Random();
-
         public async void GetFrameClickAsync()
         {
             FreqCounterViewModel.IsComputationInProgress = true;
-            VideoMainFreq = -1;//means nothing
-            FreqCounterViewModel.UpdatePlotWithNewVals(null, true);
+            FreqCounterViewModel.ResetResultDisplay();
             
             FramesGrabber grabber = await FramesGrabber.CtorAsync(MediaPlayerViewModel.CurrentStorageFile,MediaPlayerViewModel.VideoPropsViewModel,FreqCounterViewModel.PercentageOfResolution);
             var frameRate = MediaPlayerViewModel.VideoPropsViewModel.FrameRate;
@@ -110,7 +108,7 @@ namespace TremAn3.ViewModels
                 vx += vysTime;
             }
 
-            VideoMainFreq = comAlg.GetMainFreqFromComLists();
+           FreqCounterViewModel.VideoMainFreq = comAlg.GetMainFreqFromComLists();
             FreqCounterViewModel.UpdatePlotWithNewVals(datP);
             FreqCounterViewModel.IsComputationInProgress = false;
         }
@@ -124,21 +122,7 @@ namespace TremAn3.ViewModels
         }
 
 
-        private double _VideoMainFreq = -1;
-
-        //lower than zero means: no value
-        //(same as null, but null does not update raise prop)
-        public double VideoMainFreq
-        {
-            get => _VideoMainFreq;
-            set
-            {
-                if (_VideoMainFreq == value) return;
-                _VideoMainFreq = value;
-                RaisePropertyChanged();
-            }
-        }
-
+        
         Random random = new Random();
         //public void GenRanNum()
         //{ 
