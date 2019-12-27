@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using OxyPlot;
+using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace TremAn3.ViewModels
             ls.ItemsSource = DataPoints;
             PlotModel.Series.Add(ls);
             PlotModel.InvalidatePlot(true);
+
         }
 
         private PlotModel _PlotModel = new PlotModel();
@@ -33,10 +35,17 @@ namespace TremAn3.ViewModels
         internal void UpdatePlotWithNewVals(IEnumerable<(double xx, double yy)> newVals, bool justClear = false)
         {
             DataPoints.Clear();
-            if(!justClear)
-            newVals.ToList().ForEach(c => DataPoints.Add(new DataPoint(c.xx, c.yy)));
+            if (!justClear)
+                newVals.ToList().ForEach(c => DataPoints.Add(new DataPoint(c.xx, c.yy)));
+            PlotModel.ResetAllAxes();//zoom to whole plot
+            if (newVals?.Count()>0)
+            {
+                var newMax = newVals.Select(x => x.yy).Max(); newMax *= 1.1;
+                PlotModel.Axes[1].Minimum = 0;
+                PlotModel.Axes[1].Maximum = newMax;
+            }
             PlotModel.InvalidatePlot(true);
-                PlotModel.ResetAllAxes();//zoom to whole plot
+
             IsDataAvailableForPlot = DataPoints.Count > 0 ? true : false;
         }
 
@@ -95,7 +104,7 @@ namespace TremAn3.ViewModels
             set => Set(ref _IsComputationInProgress, value);
         }
 
-        private double _percentageOfResolution = 100;
+        private double _percentageOfResolution = 100;//aka SizeReductionFactor
 
         public double PercentageOfResolution
         {
