@@ -18,21 +18,23 @@ namespace TremAn3.Services
 {
     public class FramesGrabber
     {
-      //ctors
-        public static async Task<FramesGrabber> CtorAsync(StorageFile currentStorageFile, VideoPropsViewModel videoPropsViewModel, double perc)
+        //ctors
+        public static async Task<FramesGrabber> CtorAsync(StorageFile currentStorageFile, VideoPropsViewModel videoPropsViewModel, double perc, TimeSpan start, TimeSpan end)
         {
             //how to make ctor async: https://stackoverflow.com/questions/8145479/can-constructors-be-async
-            var thisObj = new FramesGrabber(currentStorageFile, videoPropsViewModel, perc);
+            var thisObj = new FramesGrabber(currentStorageFile, videoPropsViewModel, perc,start,end);
             await thisObj.InitAsync();
             return thisObj;
         }
-
-        private FramesGrabber(StorageFile currentStorageFile, VideoPropsViewModel videoPropsViewModel, double perc) 
+      
+        private FramesGrabber(StorageFile currentStorageFile, VideoPropsViewModel videoPropsViewModel, double perc,TimeSpan start, TimeSpan end) 
         {
             //we can do this in InitAsync, but loosing readonly modifiers...
             file = currentStorageFile;
             this.videoPropsViewModel = videoPropsViewModel;
-            framesCount = (int)Math.Round(videoPropsViewModel.Duration.TotalSeconds * videoPropsViewModel.FrameRate);
+            this.start = start;
+            this.end = end;
+            framesCount = (int)Math.Round(RangeDuration.TotalSeconds* videoPropsViewModel.FrameRate);
             percentageOfResolution = perc;
         }
 
@@ -56,8 +58,11 @@ namespace TremAn3.Services
         readonly VideoPropsViewModel videoPropsViewModel;
         readonly double percentageOfResolution;
         readonly int framesCount;
+        readonly TimeSpan start;
+        readonly TimeSpan end;
         int frameIndex = 0;
 
+        public TimeSpan RangeDuration { get=> end-start;  }
         public int DecodedPixelWidth { get;private set; }
         public int DecodedPixelHeight { get;private set; }
 
@@ -67,10 +72,10 @@ namespace TremAn3.Services
         {
             VideoFrame frame;
             if (frameIndex == 0)
-                frame = await grabber.ExtractVideoFrameAsync(TimeSpan.Zero);
+                frame = await grabber.ExtractVideoFrameAsync(start);
             else
                 frame = await grabber.ExtractNextVideoFrameAsync();
-            if (frame == null)
+            if (frame == null || frame.Timestamp > end)//it is last frame or frame we dont want to
                 return null;
             var data =  frame.PixelData.ToArray();
             //var grayBytes = new byte[data.Length / 4];

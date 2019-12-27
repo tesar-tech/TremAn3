@@ -43,6 +43,11 @@ namespace TremAn3.ViewModels
                 var newMax = newVals.Select(x => x.yy).Max(); newMax *= 1.1;
                 PlotModel.Axes[1].Minimum = 0;
                 PlotModel.Axes[1].Maximum = newMax;
+                PlotModel.Axes[0].MinorStep= 0.5;
+
+                PlotModel.Axes[1].MajorStep = 1;
+                PlotModel.Axes[1].MinorStep = .1;
+
             }
             PlotModel.InvalidatePlot(true);
 
@@ -85,7 +90,18 @@ namespace TremAn3.ViewModels
         public double Minrange
         {
             get => _minrange;
-            set => Set(ref _minrange, value);
+            set {
+
+                if (_minrange == value) return;
+                if (Maxrange - value < 1)
+                {
+                    RaisePropertyChanged();
+                    return;
+                }
+                    _minrange = value;
+                RaisePropertyChanged();
+                
+            }
         }
 
         double _maxrange;
@@ -93,7 +109,19 @@ namespace TremAn3.ViewModels
         public double Maxrange
         {
             get => _maxrange;
-            set => Set(ref _maxrange, value);
+            set
+            {
+
+                if (_maxrange == value) return;
+                if (value - Minrange < 1)
+                {
+                    RaisePropertyChanged();
+                    return;
+                }
+                    _maxrange = value;
+                RaisePropertyChanged();
+
+            }
         }
 
         private bool _IsComputationInProgress;

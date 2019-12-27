@@ -55,7 +55,8 @@ namespace TremAn3.ViewModels
             FreqCounterViewModel.IsComputationInProgress = true;
             FreqCounterViewModel.ResetResultDisplay();
             
-            FramesGrabber grabber = await FramesGrabber.CtorAsync(MediaPlayerViewModel.CurrentStorageFile,MediaPlayerViewModel.VideoPropsViewModel,FreqCounterViewModel.PercentageOfResolution);
+            FramesGrabber grabber = await FramesGrabber.CtorAsync(MediaPlayerViewModel.CurrentStorageFile,MediaPlayerViewModel.VideoPropsViewModel,
+                    FreqCounterViewModel.PercentageOfResolution, TimeSpan.FromSeconds( FreqCounterViewModel.Minrange), TimeSpan.FromSeconds(FreqCounterViewModel.Maxrange));
             var frameRate = MediaPlayerViewModel.VideoPropsViewModel.FrameRate;
             CenterOfMotionAlgorithm comAlg = new CenterOfMotionAlgorithm(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate);
 
@@ -100,12 +101,13 @@ namespace TremAn3.ViewModels
 
 
             List<(double xx, double yy)> datP = new List<(double xx, double yy)>();
-            double vx = 0;
+
+            double vx = FreqCounterViewModel.Minrange;
 
             var vys = vysX.Zip(vysY, (v1, v2) => Math.Max(v1, v2)).ToList();
             if (vys.Count == 1)// if ther is just one res, add another for plot
                 vys.Add(vys[0]);
-            var vysTime = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds / (vys.Count-1);
+            var vysTime = grabber.RangeDuration.TotalSeconds / (vys.Count-1);
             foreach (var v in vys)
             {
                 datP.Add((vx,v));
