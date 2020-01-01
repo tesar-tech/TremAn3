@@ -50,13 +50,16 @@ namespace TremAn3.Core.Tests.xUnit
         [Fact]
         public void GetComFromCurrentFrames_SameFrames_SameResult()
         {
-            cOM1.GetComFromCurrentFrames();
+
+            cOM1.GetComFromCurrentARGBFrames();// this is probably gonna fail, I am in hurry
+                                               //(after change from gray to rgb)
             Assert.Equal(127.5, cOM1.listComX[0]);//Description in README.md
         }
         [Fact]
         public void GetComFromCurrentFrames_DifferentFrames_SameResult()
         {
-            cOM2.GetComFromCurrentFrames();
+            cOM2.GetComFromCurrentARGBFrames();// this is probably gonna fail, I am in hurry
+               //(after change from gray to rgb)
             Assert.Equal(127.5, cOM2.listComX[0]);//Description in README.md
         }
         [Fact]
