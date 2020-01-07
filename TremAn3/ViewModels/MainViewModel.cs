@@ -88,23 +88,20 @@ namespace TremAn3.ViewModels
             //comAlg.listComX
 
             int step = 5;
-            var window = Math.Min(comAlg.listComX.Count-step,200);//dont let window to be bigger than sample count
+            var window = 128;
+            window = Math.Min(comAlg.listComX.Count-step,window);//dont let window to be bigger than sample count
 
             var avgX =  comAlg.listComX.Average();
+            var avgY =  comAlg.listComY.Average();
 
             var withoutAvgLisX = comAlg.listComX.Select(x => x - avgX).ToList();
-            List<double> vysX = Fft.ComputeFftDuringSignal(frameRate, withoutAvgLisX, window, 5, false);
-
-            var avgY = comAlg.listComY.Average();
             var withoutAvgLisY = comAlg.listComY.Select(x => x - avgY).ToList();
-            List<double> vysY = Fft.ComputeFftDuringSignal(frameRate, withoutAvgLisY, window, 5, false);
-
-
+            List<double> vys = Fft.ComputeFftDuringSignalForTwoSignals(frameRate, withoutAvgLisX, withoutAvgLisY, window, 5, false);
+          
             List<(double xx, double yy)> datP = new List<(double xx, double yy)>();
 
             double vx = FreqCounterViewModel.Minrange;
 
-            var vys = vysX.Zip(vysY, (v1, v2) => Math.Max(v1, v2)).ToList();
             if (vys.Count == 1)// if ther is just one res, add another for plot
                 vys.Add(vys[0]);
             var vysTime = grabber.RangeDuration.TotalSeconds / (vys.Count-1);
@@ -113,9 +110,10 @@ namespace TremAn3.ViewModels
                 datP.Add((vx,v));
                 vx += vysTime;
             }
+            List<(double,double)> dataForPSD;
+           (FreqCounterViewModel.VideoMainFreq, dataForPSD) = comAlg.GetMainFreqAndAvgPSDFromComLists();
 
-           FreqCounterViewModel.VideoMainFreq = comAlg.GetMainFreqFromComLists();
-            FreqCounterViewModel.UpdatePlotWithNewVals(datP);
+            FreqCounterViewModel.UpdatePlotsWithNewVals(datP, dataForPSD);
             FreqCounterViewModel.IsComputationInProgress = false;
         }
 
@@ -148,8 +146,6 @@ namespace TremAn3.ViewModels
         public FreqCounterViewModel FreqCounterViewModel { get; set; } = new FreqCounterViewModel();
         //public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = ViewModelLocator.Current.MediaPlayerViewModel;
 
-
-      
 
     }
 }

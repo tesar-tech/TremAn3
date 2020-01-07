@@ -67,6 +67,6 @@ namespace TremAn3.Views
             ViewModel.MediaPlayerViewModel.DisposeSource();
         }
 
-     
+       
     }
 }

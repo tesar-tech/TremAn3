@@ -45,36 +45,86 @@ namespace TremAn3.Core
             res.MaxIndex = res.Values.FindIndex(n => n == (res.Values.Max()));
             return res;
         }
-        public static List<double> ComputeFftDuringSignal(double fs, List<double> vector, int windowSizeSamples, int step, bool removeAvgInSegment = true)
+        //public static List<double> ComputeFftDuringSignal(double fs, List<double> vector, int windowSizeSamples, int step, bool removeAvgInSegment = true)
+        //{
+        //    if (vector == null || !vector.Any())
+        //        return null;
+        //    if (vector.Count == 1)
+        //        throw new ArgumentException("Vector must have more than 1 value", nameof(vector));
+        //    if (windowSizeSamples > vector.Count)
+        //        throw new ArgumentException("Size of window must be smaller than count of values in vector", nameof(windowSizeSamples));
+        //    if (fs <= 0)
+        //        throw new ArgumentException("Fs cannot be less than or equal to zero", nameof(fs));
+        //    if (windowSizeSamples <= 0)
+        //        throw new ArgumentException("Size of window cannot be less than or equal to zero", nameof(windowSizeSamples));
+        //    if(step <= 0)
+        //        throw new ArgumentException("Step cannot be less than or equal to zero", nameof(step));
+        //    //if(windowSize + step > vector.Count)
+        //    //    throw new ArgumentException("WindowSize + step must be smaller than count of values in vector", nameof(step));
+
+        //    var vectorToBeCut = new List<double>(vector);//copy list 
+        //    var fftList = new List<double>();
+        //    double[] segment = new double[windowSizeSamples];
+        //    while (vectorToBeCut.Count > (windowSizeSamples + step)-1)
+        //    {
+        //        vectorToBeCut.CopyTo(0, segment, 0, windowSizeSamples);
+        //        vectorToBeCut.RemoveRange(0, step);
+        //        FftResult res = GetAmpSpectrumAndMax(fs, segment.ToList(),removeAvgInSegment);
+        //        var maxFromSegment = res.Frequencies[res.MaxIndex];//get max freq from current segment
+        //        fftList.Add(maxFromSegment);
+        //    }
+        //    return fftList;
+        //}
+
+        public static List<double> ComputeFftDuringSignalForTwoSignals(double fs, List<double> vector1, List<double> vector2, int windowSizeSamples, int step, bool removeAvgInSegment = true)
         {
-            if (vector == null || !vector.Any())
-                return null;
-            if (vector.Count == 1)
-                throw new ArgumentException("Vector must have more than 1 value", nameof(vector));
-            if (windowSizeSamples > vector.Count)
-                throw new ArgumentException("Size of window must be smaller than count of values in vector", nameof(windowSizeSamples));
+            //todo vectors have to be the same length
+            //todo: do this for both vectors
+            //if (vector == null || !vector.Any())
+            //    return null;
+            //if (vector.Count == 1)
+            //    throw new ArgumentException("Vector must have more than 1 value", nameof(vector));
+            //if (windowSizeSamples > vector.Count)
+            //    throw new ArgumentException("Size of window must be smaller than count of values in vector", nameof(windowSizeSamples));
             if (fs <= 0)
                 throw new ArgumentException("Fs cannot be less than or equal to zero", nameof(fs));
             if (windowSizeSamples <= 0)
                 throw new ArgumentException("Size of window cannot be less than or equal to zero", nameof(windowSizeSamples));
-            if(step <= 0)
+            if (step <= 0)
                 throw new ArgumentException("Step cannot be less than or equal to zero", nameof(step));
             //if(windowSize + step > vector.Count)
             //    throw new ArgumentException("WindowSize + step must be smaller than count of values in vector", nameof(step));
 
-            var vectorToBeCut = new List<double>(vector);//copy list 
+            var vectorToBeCut1 = new List<double>(vector1);//copy list 
+            var vectorToBeCut2 = new List<double>(vector2);//copy list 
             var fftList = new List<double>();
-            double[] segment = new double[windowSizeSamples];
-            while (vectorToBeCut.Count > (windowSizeSamples + step)-1)
+            double[] segment1 = new double[windowSizeSamples];
+            double[] segment2 = new double[windowSizeSamples];
+            while (vectorToBeCut1.Count > (windowSizeSamples + step) - 1)
             {
-                vectorToBeCut.CopyTo(0, segment, 0, windowSizeSamples);
-                vectorToBeCut.RemoveRange(0, step);
-                FftResult res = GetAmpSpectrumAndMax(fs, segment.ToList(),removeAvgInSegment);
-                var maxFromSegment = res.Frequencies[res.MaxIndex];//get max freq from current segment
+                vectorToBeCut1.CopyTo(0, segment1, 0, windowSizeSamples);
+                vectorToBeCut1.RemoveRange(0, step);
+
+                vectorToBeCut2.CopyTo(0, segment2, 0, windowSizeSamples);
+                vectorToBeCut2.RemoveRange(0, step);
+
+                FftResult res1 = GetAmpSpectrumAndMax(fs, segment1.ToList(), removeAvgInSegment);
+                FftResult res2 = GetAmpSpectrumAndMax(fs, segment2.ToList(), removeAvgInSegment);
+
+
+                List<double> avgSpecList = new List<double>();
+                for (int i = 0; i < res1.Values.Count; i++)
+                {
+                    double avg = (res1.Values[i] + res2.Values[i]) / 2;
+                    avgSpecList.Add(avg);
+                }
+                int maxIndex = avgSpecList.IndexOf(avgSpecList.Max());
+                double maxFromSegment = res1.Frequencies[maxIndex];
                 fftList.Add(maxFromSegment);
             }
             return fftList;
         }
+
     }
     public class FftResult
     {

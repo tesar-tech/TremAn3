@@ -118,7 +118,7 @@ namespace TremAn3.Core
             listComY.Add(comY);
         }
 
-        public double GetMainFreqFromComLists()
+        public (double,List<(double,double)>) GetMainFreqAndAvgPSDFromComLists()
         {
 
             //var lo = "";
@@ -136,14 +136,18 @@ namespace TremAn3.Core
             FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanY, false);
 
             List<double> avgSpecList = new List<double>();
+            List<(double,double)> psdData = new List<(double, double)>();
             for (int i = 0; i < fftX.Values.Count; i++)
             {
                 double avg = (fftX.Values[i] + fftY.Values[i]) / 2;
                 avgSpecList.Add(avg);
+                psdData.Add((fftX.Frequencies[i],avg ));
             }
             int maxIndex = avgSpecList.IndexOf(avgSpecList.Max());
-            return fftX.Frequencies[maxIndex];
+            return (fftX.Frequencies[maxIndex],psdData);
         }
+
+      
 
 
     }

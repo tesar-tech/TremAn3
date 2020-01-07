@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using OxyPlot;
+using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 
 namespace TremAn3.ViewModels
 {
@@ -14,53 +16,83 @@ namespace TremAn3.ViewModels
     {
         public FreqCounterViewModel()
         {
-            LineSeries ls = new LineSeries();
-            ls.ItemsSource = DataPoints;
-            PlotModel.Series.Add(ls);
-            PlotModel.InvalidatePlot(true);
-
+            _PSDPlotModel = getPlotModelWithNoDataText();
+            _PlotModelFreqInTime = getPlotModelWithNoDataText();
         }
 
-        private PlotModel _PlotModel = new PlotModel();
+        private PlotModel _PlotModelFreqInTime = new PlotModel();
 
-        public PlotModel PlotModel
+        public PlotModel PlotModelFreqInTime
         {
-            get => _PlotModel;
-            set => Set(ref _PlotModel, value);
+            get => _PlotModelFreqInTime;
+            set => Set(ref _PlotModelFreqInTime, value);
         }
 
-        public List<DataPoint> DataPoints { get; set; } = new List<DataPoint>();// { new DataPoint(1, 10), new DataPoint(2, 11), new DataPoint(3, 9) };
+        private PlotModel _PSDPlotModel;
 
-        //convertor from tuple to datapoinnts
-        internal void UpdatePlotWithNewVals(IEnumerable<(double xx, double yy)> newVals, bool justClear = false)
+        public PlotModel PSDPlotModel
         {
-            DataPoints.Clear();
-            if (!justClear)
-                newVals.ToList().ForEach(c => DataPoints.Add(new DataPoint(c.xx, c.yy)));
-            PlotModel.ResetAllAxes();//zoom to whole plot
-            if (newVals?.Count()>0)
+            get => _PSDPlotModel;
+            set => Set(ref _PSDPlotModel, value);
+        }
+
+        private PlotModel getPlotModelWithNoDataText()
+        {
+            var model = new PlotModel { Title = "No Data" };
+            return model;
+        }
+
+        internal void UpdatePlotsWithNewVals(IEnumerable<(double xx, double yy)> newValsFreqInTime, List<(double xx, double yy)> newValsPSD, bool justClear = false)
+        {
+
+            if (justClear || newValsFreqInTime?.Count() <= 0)
+                PlotModelFreqInTime = getPlotModelWithNoDataText();
+            else
             {
-                var newMax = newVals.Select(x => x.yy).Max(); newMax *= 1.1;
-                PlotModel.Axes[1].Minimum = 0;
-                PlotModel.Axes[1].Maximum = newMax;
-                PlotModel.Axes[0].MinorStep= 0.5;
+                var newPlotModel = new PlotModel();
+                LineSeries s = new LineSeries
+                {
+                    ItemsSource = newValsFreqInTime.Select(c => new DataPoint(c.xx, c.yy))
+                };
+                newPlotModel.Series.Add(s);
 
-                PlotModel.Axes[1].MajorStep = 1;
-                PlotModel.Axes[1].MinorStep = .1;
+
+
+
+                PlotModelFreqInTime = newPlotModel;
+                PlotModelFreqInTime.InvalidatePlot(true);
+                newPlotModel.Axes[0].Title = "Time (s)";
+                newPlotModel.Axes[1].Title = "Freq (Hz)";
+
+                
+
 
             }
-            PlotModel.InvalidatePlot(true);
-
-            IsDataAvailableForPlot = DataPoints.Count > 0 ? true : false;
+            if (justClear || newValsPSD?.Count() <= 0)
+                PSDPlotModel = getPlotModelWithNoDataText();
+            else
+            {
+                var newPlotModel = new PlotModel();
+                LineSeries s = new LineSeries
+                {
+                    ItemsSource = newValsPSD.Select(c => new DataPoint(c.xx, c.yy))
+                };
+                newPlotModel.Series.Add(s);
+                PSDPlotModel = newPlotModel;
+                PSDPlotModel.InvalidatePlot(true);
+                newPlotModel.Axes[0].Title = "Freq (Hz)";
+                newPlotModel.Axes[1].Title = "PSD";
+            }
+            
         }
 
-        private bool _IsDataAvailableForPlot;//for displaying no data over plot
+        //private bool _IsDataAvailableForPlot;//for displaying no data over plot
 
-        public bool IsDataAvailableForPlot
-        {
-            get => _IsDataAvailableForPlot;
-            set => Set(ref _IsDataAvailableForPlot, value);
-        }
+        //public bool IsDataAvailableForPlot
+        //{
+        //    get => _IsDataAvailableForPlot;
+        //    set => Set(ref _IsDataAvailableForPlot, value);
+        //}
 
 
 
@@ -82,7 +114,7 @@ namespace TremAn3.ViewModels
         internal void ResetResultDisplay()
         {
             VideoMainFreq = -1;//means nothing
-            UpdatePlotWithNewVals(null, true);
+            UpdatePlotsWithNewVals(null, null, true);
         }
 
         double _minrange;
@@ -90,7 +122,8 @@ namespace TremAn3.ViewModels
         public double Minrange
         {
             get => _minrange;
-            set {
+            set
+            {
 
                 if (_minrange == value) return;
                 if (Maxrange - value < 1)
@@ -98,9 +131,9 @@ namespace TremAn3.ViewModels
                     RaisePropertyChanged();
                     return;
                 }
-                    _minrange = value;
+                _minrange = value;
                 RaisePropertyChanged();
-                
+
             }
         }
 
@@ -118,7 +151,7 @@ namespace TremAn3.ViewModels
                     RaisePropertyChanged();
                     return;
                 }
-                    _maxrange = value;
+                _maxrange = value;
                 RaisePropertyChanged();
 
             }
