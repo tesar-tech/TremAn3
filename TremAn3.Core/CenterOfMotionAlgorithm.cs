@@ -26,6 +26,23 @@ namespace TremAn3.Core
         readonly List<int> vecOfy;
         public List<double> listComX = new List<double>();
         public List<double> listComY = new List<double>();
+        public List<(double,double)> PsdAvgData{ get; set; }
+        public List<double> ListComXNoAvg { 
+            get {
+                var avgX = listComX.Average();
+                var noavg = listComX.Select(x => x - avgX).ToList();
+                return noavg;
+            } }
+
+        public List<double> ListComYNoAvg
+        {
+            get
+            {
+                var avgY= listComY.Average();
+                var noavg = listComY.Select(x => x - avgY).ToList();
+                return noavg;
+            }
+        }
 
         double previousValueX;
         public double previousValueY;
@@ -118,7 +135,7 @@ namespace TremAn3.Core
             listComY.Add(comY);
         }
 
-        public (double,List<(double,double)>) GetMainFreqAndAvgPSDFromComLists()
+        public double GetMainFreqAndFillPsdDataFromComLists()
         {
 
             //var lo = "";
@@ -136,15 +153,21 @@ namespace TremAn3.Core
             FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanY, false);
 
             List<double> avgSpecList = new List<double>();
-            List<(double,double)> psdData = new List<(double, double)>();
+            //List<(double,double)> psdAvgData = new List<(double, double)>();
+            PsdAvgData = new List<(double, double)>(); 
+            //List<(double,double)> psdXData = new List<(double, double)>();
+            //List<(double,double)> psdYData = new List<(double, double)>();
             for (int i = 0; i < fftX.Values.Count; i++)
+
             {
                 double avg = (fftX.Values[i] + fftY.Values[i]) / 2;
                 avgSpecList.Add(avg);
-                psdData.Add((fftX.Frequencies[i],avg ));
+                PsdAvgData.Add((fftX.Frequencies[i],avg ));
+
+                //psdXData.Add((fftX.Frequencies[i],))
             }
             int maxIndex = avgSpecList.IndexOf(avgSpecList.Max());
-            return (fftX.Frequencies[maxIndex],psdData);
+            return fftX.Frequencies[maxIndex];
         }
 
       

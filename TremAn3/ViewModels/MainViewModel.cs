@@ -20,6 +20,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using System.Threading.Tasks;
 using FFmpegInterop;
+using TremAn3.Helpers;
 
 namespace TremAn3.ViewModels
 {
@@ -29,7 +30,9 @@ namespace TremAn3.ViewModels
         //{
 
         //}
+        //public event EventHandler NotificationHandler;
 
+        public event Action<string> NotificationHandler;
 
         public async void LoadedAsync()
         {
@@ -58,7 +61,7 @@ namespace TremAn3.ViewModels
             FramesGrabber grabber = await FramesGrabber.CtorAsync(MediaPlayerViewModel.CurrentStorageFile,MediaPlayerViewModel.VideoPropsViewModel,
                     FreqCounterViewModel.PercentageOfResolution, TimeSpan.FromSeconds( FreqCounterViewModel.Minrange), TimeSpan.FromSeconds(FreqCounterViewModel.Maxrange));
             var frameRate = MediaPlayerViewModel.VideoPropsViewModel.FrameRate;
-            CenterOfMotionAlgorithm comAlg = new CenterOfMotionAlgorithm(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate);
+            comAlg = new CenterOfMotionAlgorithm(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate);
 
             int counter = 0;
             double grabbingtime = 0;
@@ -85,37 +88,69 @@ namespace TremAn3.ViewModels
                 // frame grabber is bad on small videos - no idea why
             }
 
-            //comAlg.listComX
+           
+            FreqCounterViewModel.VideoMainFreq= comAlg.GetMainFreqAndFillPsdDataFromComLists();
 
-            int step = 5;
-            var window = 128;
-            window = Math.Min(comAlg.listComX.Count-step,window);//dont let window to be bigger than sample count
+            FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.PSDAvg, comAlg.PsdAvgData);
 
-            var avgX =  comAlg.listComX.Average();
-            var avgY =  comAlg.listComY.Average();
+            var xComs = comAlg.ListComXNoAvg.Select((x, i) => ((double)i, x)).ToList();
+            FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.XCoM, xComs);
 
-            var withoutAvgLisX = comAlg.listComX.Select(x => x - avgX).ToList();
-            var withoutAvgLisY = comAlg.listComY.Select(x => x - avgY).ToList();
-            List<double> vys = Fft.ComputeFftDuringSignalForTwoSignals(frameRate, withoutAvgLisX, withoutAvgLisY, window, 5, false);
-          
-            List<(double xx, double yy)> datP = new List<(double xx, double yy)>();
+            var YComs = comAlg.ListComYNoAvg.Select((x, i) => ((double)i, x)).ToList();
+            FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.YCoM, xComs);
 
-            double vx = FreqCounterViewModel.Minrange;
-
-            if (vys.Count == 1)// if ther is just one res, add another for plot
-                vys.Add(vys[0]);
-            var vysTime = grabber.RangeDuration.TotalSeconds / (vys.Count-1);
-            foreach (var v in vys)
-            {
-                datP.Add((vx,v));
-                vx += vysTime;
-            }
-            List<(double,double)> dataForPSD;
-           (FreqCounterViewModel.VideoMainFreq, dataForPSD) = comAlg.GetMainFreqAndAvgPSDFromComLists();
-
-            FreqCounterViewModel.UpdatePlotsWithNewVals(datP, dataForPSD);
             FreqCounterViewModel.IsComputationInProgress = false;
         }
+
+        CenterOfMotionAlgorithm comAlg;
+
+
+
+        public async Task ExportCoMsAsync()
+        {
+            if (comAlg == null)
+            {
+                NotificationHandler.Invoke("Nothing to export");
+                return;
+            }
+            var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
+            var str = CsvBuilder.GetCsvFromTwoLists(comAlg.ListComXNoAvg, comAlg.ListComYNoAvg, separators, "frame", "CoMX", "CoMY");
+            var name = $"{MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_CoMs";
+            var status = await CsvExport.ExportStringAsCsvAsync(str,name);
+            NotifBasedOnStatus(status,name);
+        }
+
+        public async Task ExportPsdAsync()
+        {
+            if (comAlg == null)
+            {
+                NotificationHandler.Invoke("Nothing to export");
+                return;
+            }
+                var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
+            var str = CsvBuilder.GetCsvFromData(comAlg.PsdAvgData, separators, "frequency","PSD");
+            var name = $"{MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_PSD";
+            var status =  await CsvExport.ExportStringAsCsvAsync(str, name);
+            NotifBasedOnStatus(status,name);
+         
+
+        }
+
+        private void NotifBasedOnStatus(CsvExport.CsvExportStatus status, string filename)
+        {
+            switch (status)
+            {
+                case CsvExport.CsvExportStatus.Completed:
+                    NotificationHandler.Invoke($"File ({filename}) was saved");
+                    break;
+                case CsvExport.CsvExportStatus.NotCompleted:
+                    NotificationHandler.Invoke("File couldn't be saved");
+                    break;
+                default:
+                    break;
+            }
+        }
+  
 
         private double _ProgressPercentage;
 
@@ -124,16 +159,6 @@ namespace TremAn3.ViewModels
             get => _ProgressPercentage;
             set => Set(ref _ProgressPercentage, value);
         }
-
-
-        
-        Random random = new Random();
-        //public void GenRanNum()
-        //{ 
-        //    int num = random.Next(100);
-        //    //string str =num.ToString();
-        //    VideoMainFreq = num;
-        //}
 
         private bool _IsFreqCounterOpen = true;//this is necessary workaround for splitView not showinx oxyplot. Freq counter is closed after page is loaded. 
 

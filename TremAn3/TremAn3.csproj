@@ -150,7 +150,9 @@
     <Compile Include="Activation\SchemeActivationHandler.cs" />
     <Compile Include="BackgroundTasks\BackgroundTask.cs" />
     <Compile Include="BackgroundTasks\BackgroundTask1.cs" />
+    <Compile Include="Helpers\CsvExport.cs" />
     <Compile Include="Helpers\EnumToBooleanConverter.cs" />
+    <Compile Include="Helpers\LocalSettings.cs" />
     <Compile Include="Helpers\MenuNavigationHelper.cs" />
     <Compile Include="Helpers\SettingsStorageExtensions.cs" />
     <Compile Include="Helpers\StaticConverters.cs" />

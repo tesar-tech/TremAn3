@@ -16,6 +16,48 @@ namespace TremAn3.ViewModels
     // TODO WTS: Add other settings as necessary. For help see https://github.com/Microsoft/WindowsTemplateStudio/blob/master/docs/pages/settings.md
     public class SettingsViewModel : ViewModelBase
     {
+
+    
+
+        private string _DecimalSeparator = LocalSettings.Read(".", nameof(DecimalSeparator));
+
+        public string DecimalSeparator
+        {
+            get => _DecimalSeparator;
+            set
+            {
+                if (_DecimalSeparator == value) return;
+                if (value != "")
+                {
+                    _DecimalSeparator = value;
+                    LocalSettings.Write(value);
+                }
+               
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _CsvElementSeparator = LocalSettings.Read(",", nameof(CsvElementSeparator));
+
+        public string CsvElementSeparator
+        {
+            get => _CsvElementSeparator;
+            set
+            {
+                if (_CsvElementSeparator == value) return;
+                if (value != "")
+                {
+                    //_CsvElementSeparator = value.Replace(@"\t","\t");
+                    _CsvElementSeparator = value;
+                    LocalSettings.Write(value);
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
         private ElementTheme _elementTheme = ThemeSelectorService.Theme;
 
         public ElementTheme ElementTheme

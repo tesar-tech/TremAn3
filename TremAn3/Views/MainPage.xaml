@@ -52,13 +52,11 @@
         <controls:GridSplitter CursorBehavior="ChangeOnSplitterHover"   Grid.Column="1" >
            
         </controls:GridSplitter>
-        <StackPanel Orientation="Vertical"  Grid.Column="2" Padding="5" >
+        <ScrollViewer Grid.Column="2">
+        <StackPanel Orientation="Vertical"   Padding="5" >
             
             <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.FreqCounterViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.GetFrameClickAsync}" />
-            <TextBlock Grid.Row="1" Visibility="{x:Bind helpers:StaticConverters.FreqDoubleToVisibility(ViewModel.FreqCounterViewModel.VideoMainFreq), Mode=OneWay}">
-                <Run>Main frequency:  </Run>
-                <Run Text="{x:Bind ViewModel.FreqCounterViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
-            </TextBlock>
+           
             <Grid  Grid.Row="2" Visibility="{x:Bind helpers:StaticConverters.BoolToVisiblity(ViewModel.FreqCounterViewModel.IsComputationInProgress),Mode=OneWay}" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -67,10 +65,15 @@
                 <TextBlock Text="{x:Bind ViewModel.ProgressPercentage, Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} %' }"  />
                 <ProgressBar Grid.Column="1" MinWidth="0"   Value="{x:Bind ViewModel.ProgressPercentage, Mode=OneWay}" />
             </Grid>
-            <TextBlock Text="Frequency in time:"/>
-            <oxyplot:PlotView  Height="200"  Model="{x:Bind ViewModel.FreqCounterViewModel.PlotModelFreqInTime, Mode=OneWay}">
-</oxyplot:PlotView>
-            <TextBlock Text="PSD:"/>
+            <TextBlock Text="CoM X movement:"/>
+                <oxyplot:PlotView  Height="100"  Model="{x:Bind ViewModel.FreqCounterViewModel.XCoMPlotModel, Mode=OneWay}"/>
+                <TextBlock Text="CoM Y movement:"/>
+                <oxyplot:PlotView  Height="100"  Model="{x:Bind ViewModel.FreqCounterViewModel.YCoMPlotModel, Mode=OneWay}"/>
+                <TextBlock Grid.Row="1" Visibility="{x:Bind helpers:StaticConverters.FreqDoubleToVisibility(ViewModel.FreqCounterViewModel.VideoMainFreq), Mode=OneWay}">
+                <Run>Main frequency:  </Run>
+                <Run Text="{x:Bind ViewModel.FreqCounterViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
+                </TextBlock>
+                <TextBlock Text="PSD:"/>
             <oxyplot:PlotView  Height="200"  Model="{x:Bind ViewModel.FreqCounterViewModel.PSDPlotModel, Mode=OneWay}"/>
         <!--oxyplot bug numero dont know: it cannot be in grid or cannot be without height?? so it is separated from nodata-->
             <!--<TextBlock Canvas.ZIndex="1" Grid.Row="3" Margin="0,-200,0,0" Text="No data" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Style="{StaticResource TitleTextBlockStyle}" Visibility="{x:Bind  helpers:StaticConverters.BoolToVisiblityInverse(ViewModel.FreqCounterViewModel.IsDataAvailableForPlot), Mode=OneWay}"/>-->
@@ -106,7 +109,12 @@
                 <Slider Maximum="100" Minimum="10" Value="{x:Bind ViewModel.FreqCounterViewModel.PercentageOfResolution, Mode=TwoWay}" StepFrequency="1" Grid.Row="1" />
                     
             </Grid>
-        </StackPanel>
-
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="10.0" Click="{x:Bind ViewModel.ExportCoMsAsync}" Content="Export CoM movement" />
+                    <Button Click="{x:Bind ViewModel.ExportPsdAsync}" Content="Export PSD" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <controls:InAppNotification VerticalOffset="-50" HorizontalOffset="-200" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="Notif" ></controls:InAppNotification>
     </Grid>
 </Page>

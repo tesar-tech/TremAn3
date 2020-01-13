@@ -30,6 +30,14 @@
                 x:Uid="Settings_Personalization"
                 Style="{ThemeResource SubtitleTextBlockStyle}" />
             <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Decimal CSV separator:"/>
+                    <TextBox Text="{x:Bind ViewModel.DecimalSeparator,Mode=TwoWay}" MaxLength="1"  Width="70"/>
+            </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="CSV element separator:"/>
+                    <TextBox Text="{x:Bind ViewModel.CsvElementSeparator,Mode=TwoWay}"   Width="70"/>
+                </StackPanel>
                 <TextBlock
                     x:Uid="Settings_Theme" />
 

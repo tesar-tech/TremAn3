@@ -17,16 +17,18 @@ namespace TremAn3.ViewModels
         public FreqCounterViewModel()
         {
             _PSDPlotModel = getPlotModelWithNoDataText();
-            _PlotModelFreqInTime = getPlotModelWithNoDataText();
+            _XCoMPlotModel = getPlotModelWithNoDataText();
+            _YCoMPlotModel = getPlotModelWithNoDataText();
+            //_PlotModelFreqInTime = getPlotModelWithNoDataText();
         }
 
-        private PlotModel _PlotModelFreqInTime = new PlotModel();
+        //private PlotModel _PlotModelFreqInTime = new PlotModel();
 
-        public PlotModel PlotModelFreqInTime
-        {
-            get => _PlotModelFreqInTime;
-            set => Set(ref _PlotModelFreqInTime, value);
-        }
+        //public PlotModel PlotModelFreqInTime
+        //{
+        //    get => _PlotModelFreqInTime;
+        //    set => Set(ref _PlotModelFreqInTime, value);
+        //}
 
         private PlotModel _PSDPlotModel;
 
@@ -36,54 +38,85 @@ namespace TremAn3.ViewModels
             set => Set(ref _PSDPlotModel, value);
         }
 
+        private PlotModel _XCoMPlotModel;
+
+        public PlotModel XCoMPlotModel
+        {
+            get => _XCoMPlotModel;
+            set => Set(ref _XCoMPlotModel, value);
+        }
+
+        private PlotModel _YCoMPlotModel;
+
+        public PlotModel YCoMPlotModel
+        {
+            get => _YCoMPlotModel;
+            set => Set(ref _YCoMPlotModel, value);
+        }
+
+
         private PlotModel getPlotModelWithNoDataText()
         {
             var model = new PlotModel { Title = "No Data" };
             return model;
         }
 
-        internal void UpdatePlotsWithNewVals(IEnumerable<(double xx, double yy)> newValsFreqInTime, List<(double xx, double yy)> newValsPSD, bool justClear = false)
+        public enum PlotType
         {
-
-            if (justClear || newValsFreqInTime?.Count() <= 0)
-                PlotModelFreqInTime = getPlotModelWithNoDataText();
-            else
+            XCoM,YCoM,PSDAvg
+        }
+        internal void UpdatePlotsWithNewVals(PlotType type, List<(double xx, double yy)> newVals, bool justClear = false)
+        {
+            switch (type)
             {
-                var newPlotModel = new PlotModel();
-                LineSeries s = new LineSeries
-                {
-                    ItemsSource = newValsFreqInTime.Select(c => new DataPoint(c.xx, c.yy))
-                };
-                newPlotModel.Series.Add(s);
-
-
-
-
-                PlotModelFreqInTime = newPlotModel;
-                PlotModelFreqInTime.InvalidatePlot(true);
-                newPlotModel.Axes[0].Title = "Time (s)";
-                newPlotModel.Axes[1].Title = "Freq (Hz)";
-
-                
-
-
+                case PlotType.XCoM:
+                    if (justClear || newVals?.Count() <= 0)
+                        XCoMPlotModel = getPlotModelWithNoDataText();
+                    else
+                    {
+                        XCoMPlotModel = NewPlotModelWithSeries(newVals);
+                        XCoMPlotModel.InvalidatePlot(true);
+                        //newPlotModel.Axes[0].Title = "Freq (Hz)";
+                        //newPlotModel.Axes[1].Title = "PSD";
+                    }
+                    break;
+                case PlotType.YCoM:
+                    if (justClear || newVals?.Count() <= 0)
+                        YCoMPlotModel = getPlotModelWithNoDataText();
+                    else
+                    {
+                        YCoMPlotModel = NewPlotModelWithSeries(newVals);
+                        YCoMPlotModel.InvalidatePlot(true);
+                        //newPlotModel.Axes[0].Title = "Freq (Hz)";
+                        //newPlotModel.Axes[1].Title = "PSD";
+                    }
+                    break;
+                case PlotType.PSDAvg:
+                    if (justClear || newVals?.Count() <= 0)
+                        PSDPlotModel = getPlotModelWithNoDataText();
+                    else
+                    {
+                        PSDPlotModel = NewPlotModelWithSeries(newVals);
+                        PSDPlotModel.InvalidatePlot(true);
+                        //newPlotModel.Axes[0].Title = "Freq (Hz)";
+                        //newPlotModel.Axes[1].Title = "PSD";
+                    }
+                    break;
+                default:
+                    break;
             }
-            if (justClear || newValsPSD?.Count() <= 0)
-                PSDPlotModel = getPlotModelWithNoDataText();
-            else
+
+        }
+
+        PlotModel NewPlotModelWithSeries(List<(double xx, double yy)> newVals)
+        {
+            var newPlotModel = new PlotModel();
+            LineSeries s = new LineSeries
             {
-                var newPlotModel = new PlotModel();
-                LineSeries s = new LineSeries
-                {
-                    ItemsSource = newValsPSD.Select(c => new DataPoint(c.xx, c.yy))
-                };
-                newPlotModel.Series.Add(s);
-                PSDPlotModel = newPlotModel;
-                PSDPlotModel.InvalidatePlot(true);
-                newPlotModel.Axes[0].Title = "Freq (Hz)";
-                newPlotModel.Axes[1].Title = "PSD";
-            }
-            
+                ItemsSource = newVals.Select(c => new DataPoint(c.xx, c.yy))
+            };
+            newPlotModel.Series.Add(s);
+            return newPlotModel;
         }
 
         //private bool _IsDataAvailableForPlot;//for displaying no data over plot
@@ -114,7 +147,9 @@ namespace TremAn3.ViewModels
         internal void ResetResultDisplay()
         {
             VideoMainFreq = -1;//means nothing
-            UpdatePlotsWithNewVals(null, null, true);
+            UpdatePlotsWithNewVals(PlotType.XCoM, null, true);
+            UpdatePlotsWithNewVals(PlotType.YCoM, null, true);
+            UpdatePlotsWithNewVals(PlotType.PSDAvg, null, true);
         }
 
         double _minrange;
