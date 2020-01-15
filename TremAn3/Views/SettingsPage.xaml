@@ -26,18 +26,20 @@
         <StackPanel
             Grid.Row="1"
             x:Name="ContentArea">
+            <TextBlock Text="CSV settings" Style="{ThemeResource SubtitleTextBlockStyle}" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Decimal CSV separator:"/>
+                <TextBox Text="{x:Bind ViewModel.DecimalSeparator,Mode=TwoWay}" MaxLength="1"  Width="70"/>
+            </StackPanel>
+            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="CSV element separator:"/>
+                <TextBox Text="{x:Bind ViewModel.CsvElementSeparator,Mode=TwoWay}"   Width="70"/>
+            </StackPanel>
             <TextBlock
                 x:Uid="Settings_Personalization"
                 Style="{ThemeResource SubtitleTextBlockStyle}" />
             <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Decimal CSV separator:"/>
-                    <TextBox Text="{x:Bind ViewModel.DecimalSeparator,Mode=TwoWay}" MaxLength="1"  Width="70"/>
-            </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="CSV element separator:"/>
-                    <TextBox Text="{x:Bind ViewModel.CsvElementSeparator,Mode=TwoWay}"   Width="70"/>
-                </StackPanel>
+               
                 <TextBlock
                     x:Uid="Settings_Theme" />
 
@@ -91,7 +93,8 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="57" /><!--need to be exact because of overflow-->
+                        <RowDefinition Height="57" />
+                        <!--need to be exact because of overflow-->
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Image Margin="0,0,5,5" Source="ms-appx:///Assets/StoreLogo.scale-100.png" />
@@ -100,10 +103,10 @@
                         <Paragraph  >
                             <Run  x:Uid="Settings_AboutDescription"  />
                         </Paragraph>
-                </RichTextBlock>
-                 <RichTextBlockOverflow Grid.Row="1" Grid.ColumnSpan="2" x:Name="firstOverflowContainer" />
+                    </RichTextBlock>
+                    <RichTextBlockOverflow Grid.Row="1" Grid.ColumnSpan="2" x:Name="firstOverflowContainer" />
                 </Grid>
-                
+
                 <HyperlinkButton
                     x:Uid="Settings_GitHubLink"
                     Margin="{StaticResource XSmallTopMargin}" />
@@ -112,5 +115,5 @@
                     Margin="{StaticResource XSmallTopMargin}" />
             </StackPanel>
         </StackPanel>
-    </Grid>    
+    </Grid>
 </Page>

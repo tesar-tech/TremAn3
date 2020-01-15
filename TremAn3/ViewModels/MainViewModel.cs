@@ -36,9 +36,9 @@ namespace TremAn3.ViewModels
 
         public async void LoadedAsync()
         {
-            await MediaPlayerViewModel.SetDefaultSourceAsync();
-            FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
-            FreqCounterViewModel.Minrange = 0d;
+            //await MediaPlayerViewModel.SetDefaultSourceAsync();
+            //FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
+            //FreqCounterViewModel.Minrange = 0d;
             IsFreqCounterOpen = false;// more info in IsFreqCounterOpen comment
         }
 
@@ -55,6 +55,11 @@ namespace TremAn3.ViewModels
         public DataService DataService { get; set; } = new DataService();
         public async Task CountFreqAsync()
         {
+            if (MediaPlayerViewModel.Source == null)
+            {
+                NotificationHandler.Invoke("Load video first!");
+                return;
+            }
             FreqCounterViewModel.IsComputationInProgress = true;
             FreqCounterViewModel.ResetResultDisplay();
             

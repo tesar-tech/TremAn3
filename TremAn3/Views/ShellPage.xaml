@@ -49,7 +49,12 @@
                             <KeyboardAccelerator Modifiers="Control"  Key="O" />
                         </MenuFlyoutItem.KeyboardAccelerators>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Video Info" x:Uid="ShellMenuItem_File_VideoInfo" Command="{x:Bind ViewModel.MenuFileVideoInfoCommand}" />
+                    <MenuFlyoutItem Text="Video Info" x:Uid="ShellMenuItem_File_VideoInfo" Command="{x:Bind ViewModel.MenuFileVideoInfoCommand}" >
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control"  Key="I" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+
                     <MenuFlyoutItem x:Uid="ShellMenuItem_File_Settings" Command="{x:Bind ViewModel.MenuFileSettingsCommand}" />
                     <MenuFlyoutItem x:Uid="ShellMenuItem_File_Exit" Command="{x:Bind ViewModel.MenuFileExitCommand}" />
                 </winui:MenuBarItem>
@@ -61,8 +66,8 @@
                     <MenuFlyoutItem x:Uid="ShellMenuItem_Views_MediaPlayer" Command="{x:Bind ViewModel.MenuViewsMediaPlayerCommand}" />
                 </winui:MenuBarItem>-->
             </winui:MenuBar>
-            <ToggleButton Grid.Column="1" Content="Freq Counter"   IsChecked="{x:Bind viewModels: ViewModelLocator.Current.MainViewModel.IsFreqCounterOpen ,Mode=TwoWay}"/>
-
+            <ToggleButton Grid.Column="1" Content="Frequency Counter"   IsChecked="{x:Bind viewModels: ViewModelLocator.Current.MainViewModel.IsFreqCounterOpen ,Mode=TwoWay}"/>
+          
             <Grid Grid.Row="1" Grid.ColumnSpan="3">
                 <Frame x:Name="shellFrame" />
             </Grid>

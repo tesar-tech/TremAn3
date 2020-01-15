@@ -14,7 +14,7 @@ namespace TremAn3.ViewModels
     {
         // TODO WTS: Set your default video and image URIs
 
-        private const string DefaultSource = "ms-appx:///Assets/beru.wmv";
+        //private const string DefaultSource = "ms-appx:///Assets/beru.wmv";
 
         private IMediaPlaybackSource _source;
 

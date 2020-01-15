@@ -45,7 +45,7 @@ namespace TremAn3.ViewModels
             set
             {
                 if (_CsvElementSeparator == value) return;
-                if (value != "")
+                if (!string.IsNullOrEmpty(value))
                 {
                     //_CsvElementSeparator = value.Replace(@"\t","\t");
                     _CsvElementSeparator = value;

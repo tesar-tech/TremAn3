@@ -28,11 +28,18 @@
                         <StateTrigger   IsActive="{x:Bind  helpers:StaticConverters.InverseBool(ViewModel.IsFreqCounterOpen),Mode=OneWay}" ></StateTrigger>
                     </VisualState.StateTriggers>
                 </VisualState>
-                <VisualState x:Name="Open">
-
-                   
-               
-                   
+                <VisualState x:Name="Open"/>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="MainOpenButtonAndMpeVisibility">
+                <VisualState x:Name="VisibleMainButtonInvisibleMpe" />
+                <VisualState x:Name="NotVisibleMainButtonVisibleMpe">
+                    <VisualState.Setters>
+                        <Setter Target="MainOpenButtonPanel.Visibility" Value="Collapsed"/>
+                        <Setter Target="Mpe.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <StateTrigger  IsActive="{x:Bind  helpers:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay}" />
+                    </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
@@ -43,17 +50,27 @@
         </Grid.ColumnDefinitions>
 
         <controls:InAppNotification Canvas.ZIndex="2"  VerticalOffset="-50" HorizontalOffset="-200" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="Notif" ></controls:InAppNotification>
-
-        <MediaPlayerElement
-            x:Name="mpe" AutoPlay="False" AreTransportControlsEnabled="True"
+        <StackPanel x:Name="MainOpenButtonPanel" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Button Content="Open Video File (Ctrl + O)" FontSize="30" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"  />
+            <HyperlinkButton HorizontalAlignment="Center" Content="Download test video (0.9 MB)" NavigateUri="https://github.com/tesar-tech/TremAn3/blob/master/NoApp/hand.mp4" />
+            <HyperlinkButton HorizontalAlignment="Center"  NavigateUri="https://github.com/tesar-tech/TremAn3" >
+                <StackPanel Orientation="Horizontal">
+                <PathIcon Margin="0,0,5,0" Style="{StaticResource GithubIcon}"  />
+                    <TextBlock TextDecorations="Underline" VerticalAlignment="Center" Text="Visit TremAn repository"/> 
+                </StackPanel>
+            </HyperlinkButton>
+        </StackPanel>
+        <MediaPlayerElement x:Name="Mpe" Visibility="Collapsed"
+            AutoPlay="False" AreTransportControlsEnabled="True"
             Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
             <MediaPlayerElement.TransportControls>
                 <MediaTransportControls IsCompact="False"/>
             </MediaPlayerElement.TransportControls>
         </MediaPlayerElement>
+        
         <controls:GridSplitter CursorBehavior="ChangeOnSplitterHover"   Grid.Column="1" >
            
         </controls:GridSplitter>
-        <views:FreqCounterUc  Grid.Column="2" ViewModel="{x:Bind ViewModel.FreqCounterViewModel}"/>
+        <views:FreqCounterUc IsEnabled="{x:Bind helpers:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay }"  Grid.Column="2" ViewModel="{x:Bind ViewModel.FreqCounterViewModel}"/>
     </Grid>
 </Page>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,8 @@ namespace TremAn3.Helpers
 
         public static Visibility FreqDoubleToVisibility(double val) => val < 0? Visibility.Collapsed : Visibility.Visible;
 
+
+        public static bool NullToBool(object obj) => obj != null;
 
         //public static Visibility MoreThanZeroToCollapsed(int count) => count > 0 ? Visibility.Collapsed : Visibility.Visible;
     }

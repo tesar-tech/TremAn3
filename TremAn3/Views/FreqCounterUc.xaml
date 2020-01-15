@@ -18,10 +18,9 @@
     </UserControl.Resources>
     <Grid>
 
-        <ScrollViewer>
+        <ScrollViewer >
 
-
-            <StackPanel Orientation="Vertical"   Padding="5" >
+                <StackPanel   Orientation="Vertical"   Padding="5" >
 
                 <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" />
 
