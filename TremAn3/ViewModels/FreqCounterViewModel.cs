@@ -14,13 +14,16 @@ namespace TremAn3.ViewModels
 {
     public class FreqCounterViewModel : ViewModelBase
     {
-        public FreqCounterViewModel()
+        public FreqCounterViewModel(MainViewModel mainViewModel)
         {
             _PSDPlotModel = getPlotModelWithNoDataText();
             _XCoMPlotModel = getPlotModelWithNoDataText();
             _YCoMPlotModel = getPlotModelWithNoDataText();
+            ParentVm = mainViewModel;
             //_PlotModelFreqInTime = getPlotModelWithNoDataText();
         }
+
+        public MainViewModel ParentVm { get;private set; }
 
         //private PlotModel _PlotModelFreqInTime = new PlotModel();
 
@@ -29,6 +32,14 @@ namespace TremAn3.ViewModels
         //    get => _PlotModelFreqInTime;
         //    set => Set(ref _PlotModelFreqInTime, value);
         //}
+
+        private double _ProgressPercentage;
+
+        public double ProgressPercentage
+        {
+            get => _ProgressPercentage;
+            set => Set(ref _ProgressPercentage, value);
+        }
 
         private PlotModel _PSDPlotModel;
 
@@ -222,6 +233,7 @@ namespace TremAn3.ViewModels
                 RaisePropertyChanged();
             }
         }
+
 
 
 

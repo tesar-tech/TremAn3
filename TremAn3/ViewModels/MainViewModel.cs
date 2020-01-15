@@ -26,10 +26,10 @@ namespace TremAn3.ViewModels
 {
     public partial class MainViewModel : ViewModelBase
     {
-        //public MainViewModel()
-        //{
-
-        //}
+        public MainViewModel()
+        {
+            FreqCounterViewModel   = new FreqCounterViewModel(this);
+        }
         //public event EventHandler NotificationHandler;
 
         public event Action<string> NotificationHandler;
@@ -38,7 +38,7 @@ namespace TremAn3.ViewModels
         {
             await MediaPlayerViewModel.SetDefaultSourceAsync();
             FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
-            //FreqCounterViewModel.Minrange = 0d;
+            FreqCounterViewModel.Minrange = 0d;
             IsFreqCounterOpen = false;// more info in IsFreqCounterOpen comment
         }
 
@@ -53,7 +53,7 @@ namespace TremAn3.ViewModels
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();
-        public async void GetFrameClickAsync()
+        public async Task CountFreqAsync()
         {
             FreqCounterViewModel.IsComputationInProgress = true;
             FreqCounterViewModel.ResetResultDisplay();
@@ -83,7 +83,7 @@ namespace TremAn3.ViewModels
                 if (comAlg.Frame2 == null)
                     break;
                 comAlg.GetComFromCurrentARGBFrames();
-                ProgressPercentage = grabber.ProgressPercentage;
+                FreqCounterViewModel.ProgressPercentage = grabber.ProgressPercentage;
                 getComTime += sw.ElapsedMilliseconds;
                 // frame grabber is bad on small videos - no idea why
             }
@@ -116,8 +116,8 @@ namespace TremAn3.ViewModels
             var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
             var str = CsvBuilder.GetCsvFromTwoLists(comAlg.ListComXNoAvg, comAlg.ListComYNoAvg, separators, "frame", "CoMX", "CoMY");
             var name = $"{MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_CoMs";
-            var status = await CsvExport.ExportStringAsCsvAsync(str,name);
-            NotifBasedOnStatus(status,name);
+            var status = await CsvExport.ExportStringAsCsvAsync(str, name);
+            NotifBasedOnStatus(status, name);
         }
 
         public async Task ExportPsdAsync()
@@ -127,14 +127,15 @@ namespace TremAn3.ViewModels
                 NotificationHandler.Invoke("Nothing to export");
                 return;
             }
-                var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
-            var str = CsvBuilder.GetCsvFromData(comAlg.PsdAvgData, separators, "frequency","PSD");
+            var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
+            var str = CsvBuilder.GetCsvFromData(comAlg.PsdAvgData, separators, "frequency", "PSD");
             var name = $"{MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_PSD";
-            var status =  await CsvExport.ExportStringAsCsvAsync(str, name);
-            NotifBasedOnStatus(status,name);
-         
+            var status = await CsvExport.ExportStringAsCsvAsync(str, name);
+            NotifBasedOnStatus(status, name);
+
 
         }
+
 
         private void NotifBasedOnStatus(CsvExport.CsvExportStatus status, string filename)
         {
@@ -152,13 +153,7 @@ namespace TremAn3.ViewModels
         }
   
 
-        private double _ProgressPercentage;
-
-        public double ProgressPercentage
-        {
-            get => _ProgressPercentage;
-            set => Set(ref _ProgressPercentage, value);
-        }
+   
 
         private bool _IsFreqCounterOpen = true;//this is necessary workaround for splitView not showinx oxyplot. Freq counter is closed after page is loaded. 
 
@@ -168,7 +163,7 @@ namespace TremAn3.ViewModels
             set => Set(ref _IsFreqCounterOpen, value);
         }
 
-        public FreqCounterViewModel FreqCounterViewModel { get; set; } = new FreqCounterViewModel();
+        public FreqCounterViewModel FreqCounterViewModel { get; set; }
         //public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = ViewModelLocator.Current.MediaPlayerViewModel;
 
 
