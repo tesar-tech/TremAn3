@@ -18,7 +18,9 @@ TremaAn app measures frequency of tremor (e.g. Parkinsonian tremor) from video.
 
 ## Availability
 
-Available in [Microsoft Store](https://www.microsoft.com/store/apps/9NL11TZLSFDP)
+Available in Microsoft Store.
+
+<a href='//www.microsoft.com/store/apps/9nl11tzlsfdp?cid=storebadge&ocid=badge'><img src='https://assets.windowsphone.com/13484911-a6ab-4170-8b7e-795c1e8b4165/English_get_L_InvariantCulture_Default.png' alt='English badge' style='width: 127px; height: 52px;'/></a>
 
 Alternatily it can be downloaded as msix package. Instructions [here](https://treman3.azurewebsites.net/).
 
