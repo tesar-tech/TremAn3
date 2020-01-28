@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TremAn3.Core;
 using Windows.UI;
 
 namespace TremAn3.ViewModels
@@ -45,8 +46,10 @@ namespace TremAn3.ViewModels
         public (uint X, uint Y, uint width, uint height) Rect
         {
             get => _Rect;
-            set {
-                Set(ref _Rect, value); }
+            set
+            {
+                Set(ref _Rect, value);
+            }
         }
 
 
