@@ -24,8 +24,12 @@ namespace TremAn3.Views
         public DrawingRectangleUc()
         {
             this.InitializeComponent();
+            canvas.PointerMoved += canvas_PointerMoved;
+            canvas.PointerEntered += (s,e) => enterWithContact = e.Pointer.IsInContact;
+            canvas.PointerReleased += (s, e) => enterWithContact = false;
         }
 
+        bool enterWithContact;
         public void ClearCanvas()
         {
             canvas.Children.Clear();
@@ -75,6 +79,7 @@ namespace TremAn3.Views
         {
             if (manipulationWithRect)
                 return;
+           
             canvas.Children.Clear();
             startPoint = e.GetCurrentPoint(canvas).Position;
             CreateRoiUi();
@@ -233,7 +238,7 @@ namespace TremAn3.Views
         {
             if (manipulationWithRect)
                 return;
-            if (!e.Pointer.IsInContact || gr == null)
+            if (!e.Pointer.IsInContact || gr == null || enterWithContact)
                 return;
 
             var pos = e.GetCurrentPoint(canvas).Position;
@@ -252,7 +257,5 @@ namespace TremAn3.Views
             Rect = ((uint)x, (uint)y, (uint)w, (uint)h);
 
         }
-
-
     }
 }

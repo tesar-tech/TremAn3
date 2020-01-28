@@ -4,17 +4,18 @@
 
 TremaAn app measures frequency of tremor (e.g. Parkinsonian tremor) from video.
 
-![treman logo](NoApp/Store/screenshot02.png?raw=true )
+![treman logo](NoApp/Store/screenshot03.png?raw=true )
 
 ## Features
 
-- Opens and plays videos.
-- Counst frequency from video using [CoM algorithm](https://github.com/tesar-tech/treman_algorithms) (Center of Motion)
-
+- Opens and plays videos
+- Counts frequency from video using [CoM algorithm](https://github.com/tesar-tech/treman_algorithms) (Center of Motion)
+- Enables ROI selection
 - Displays plot with power spectral density
 - Displays plot with CoM values
 - Export values to .csv format
 - Set time range for computation
+- Controlled by touch, keyboard, mouse or pen
 
 ## Availability
 
@@ -26,3 +27,17 @@ Alternatily it can be downloaded as msix package. Instructions [here](https://tr
 
 
 [![Build Status](https://dev.azure.com/tesarj13/TremAn/_apis/build/status/tesar-tech.TremAn3?branchName=develop)](https://dev.azure.com/tesarj13/TremAn/_build/latest?definitionId=6&branchName=develop)
+
+## Changelog
+
+### 202001
+
+- ROI implementation - works better on small details and insignificant movement.
+  - ROI is customizable (size and position changes)
+  - Also works with resolution reduction (speed boost).
+  - Works with window size changes.
+- Store badge in README  
+- In app notifications
+- CSV export
+- Support for x64 (fixes ffmpeginterop package)
+- FFmpegInteropX in nuget package

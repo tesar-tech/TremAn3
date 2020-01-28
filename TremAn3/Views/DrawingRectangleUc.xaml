@@ -10,6 +10,6 @@
     d:DesignWidth="400">
 
     <Viewbox x:Name="viewbox">
-        <Canvas x:Name="canvas"  Background="Transparent" Height="{x:Bind CanvasHeight,Mode=OneWay}" Width="{x:Bind CanvasWidth, Mode=OneWay}" PointerPressed="canvas_PointerPressed" PointerMoved="canvas_PointerMoved"  />
+        <Canvas x:Name="canvas"  Background="Transparent" Height="{x:Bind CanvasHeight,Mode=OneWay}" Width="{x:Bind CanvasWidth, Mode=OneWay}" PointerPressed="canvas_PointerPressed"/>
     </Viewbox>
 </UserControl>
