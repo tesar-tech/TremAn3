@@ -8,8 +8,8 @@ namespace TremAn3.Core.Tests.xUnit
 {
     public class ComTests
     {
-        CenterOfMotionAlgorithm cOM1 = new CenterOfMotionAlgorithm(256, 256, 30);
-        CenterOfMotionAlgorithm cOM2 = new CenterOfMotionAlgorithm(256, 256, 30);
+        CenterOfMotionAlgorithm cOM1 = new CenterOfMotionAlgorithm(256, 256, 30, new SelectionRectangle((0,0,256,256)));
+        CenterOfMotionAlgorithm cOM2 = new CenterOfMotionAlgorithm(256, 256, 30, new SelectionRectangle((0, 0, 256, 256)));
         public ComTests()
         {
             cOM1.Frame1 = new byte[65536];cOM1.Frame2 = new byte[65536];
