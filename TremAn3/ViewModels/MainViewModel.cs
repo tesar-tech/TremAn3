@@ -32,7 +32,6 @@ namespace TremAn3.ViewModels
         }
         //public event EventHandler NotificationHandler;
 
-        public event Action<string> NotificationHandler;
 
         public async void LoadedAsync()
         {
@@ -49,6 +48,7 @@ namespace TremAn3.ViewModels
             var file = await DataService.OpenFileDialogueAsync();
             await MediaPlayerViewModel.ChangeSourceAsync(file);
             FreqCounterViewModel.ResetResultDisplay();
+            FreqCounterViewModel.RemoveSelection();
             FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
@@ -57,7 +57,7 @@ namespace TremAn3.ViewModels
         {
             if (MediaPlayerViewModel.Source == null)
             {
-                NotificationHandler.Invoke("Load video first!");
+                ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Load video first!");
                 return;
             }
             FreqCounterViewModel.IsComputationInProgress = true;
@@ -115,7 +115,8 @@ namespace TremAn3.ViewModels
         {
             if (comAlg == null)
             {
-                NotificationHandler.Invoke("Nothing to export");
+                ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Nothing to export");
+
                 return;
             }
             var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
@@ -129,7 +130,8 @@ namespace TremAn3.ViewModels
         {
             if (comAlg == null)
             {
-                NotificationHandler.Invoke("Nothing to export");
+                ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Nothing to export");
+
                 return;
             }
             var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
@@ -147,10 +149,10 @@ namespace TremAn3.ViewModels
             switch (status)
             {
                 case CsvExport.CsvExportStatus.Completed:
-                    NotificationHandler.Invoke($"File ({filename}) was saved");
+                    ViewModelLocator.Current.NoificationViewModel.SimpleNotification($"File ({filename}) was saved");
                     break;
                 case CsvExport.CsvExportStatus.NotCompleted:
-                    NotificationHandler.Invoke("File couldn't be saved");
+                    ViewModelLocator.Current.NoificationViewModel.SimpleNotification("File couldn't be saved");
                     break;
                 default:
                     break;

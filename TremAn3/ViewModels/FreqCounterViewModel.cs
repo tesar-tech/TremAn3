@@ -32,6 +32,23 @@ namespace TremAn3.ViewModels
         //    get => _PlotModelFreqInTime;
         //    set => Set(ref _PlotModelFreqInTime, value);
         //}
+        public void RemoveSelection()
+        {
+            Rect = (0, 0, 0, 0);
+            RemoveSelectionHandler?.Invoke();
+        }
+
+        public event Action RemoveSelectionHandler;
+
+        private (uint X, uint Y, uint width, uint height) _Rect;
+
+        public (uint X, uint Y, uint width, uint height) Rect
+        {
+            get => _Rect;
+            set {
+                Set(ref _Rect, value); }
+        }
+
 
         private double _ProgressPercentage;
 

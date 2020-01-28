@@ -19,8 +19,13 @@ namespace TremAn3.Views
         public MainPage()
         {
             InitializeComponent();
+            ViewModelLocator.Current.NoificationViewModel.NotificationHandler += ViewModel_NotificationHandler;
+            ViewModel.FreqCounterViewModel.RemoveSelectionHandler += FreqCounterViewModel_RemoveSelectionHandler;
+        }
 
-            ViewModel.NotificationHandler += ViewModel_NotificationHandler;
+        private void FreqCounterViewModel_RemoveSelectionHandler()
+        {
+            DrawingRectangle.ClearCanvas();
         }
 
         private void ViewModel_NotificationHandler(string message)
