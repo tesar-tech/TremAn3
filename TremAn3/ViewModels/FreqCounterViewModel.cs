@@ -35,22 +35,32 @@ namespace TremAn3.ViewModels
         //}
         public void RemoveSelection()
         {
-            Rect = (0, 0, 0, 0);
-            RemoveSelectionHandler?.Invoke();
+            //Rect = (0, 0, 0, 0);
+            //RemoveSelectionHandler?.Invoke();
+            SelectionRectangleViewModel.IsVisible = false;
         }
 
-        public event Action RemoveSelectionHandler;
+        //public event Action RemoveSelectionHandler;
 
-        private (uint X, uint Y, uint width, uint height) _Rect;
 
-        public (uint X, uint Y, uint width, uint height) Rect
+        private SelectionRectangleViewModel _SelectionRectangleViewModel = new SelectionRectangleViewModel();
+
+        public SelectionRectangleViewModel SelectionRectangleViewModel
         {
-            get => _Rect;
-            set
-            {
-                Set(ref _Rect, value);
-            }
+            get => _SelectionRectangleViewModel;
+            set => Set(ref _SelectionRectangleViewModel, value);
         }
+
+        //private (uint X, uint Y, uint width, uint height) _Rect;
+
+        //public (uint X, uint Y, uint width, uint height) Rect
+        //{
+        //    get => _Rect;
+        //    set
+        //    {
+        //        Set(ref _Rect, value);
+        //    }
+        //}
 
 
         private double _ProgressPercentage;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using TremAn3.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
@@ -25,23 +26,35 @@ namespace TremAn3.Views
         {
             this.InitializeComponent();
             canvas.PointerMoved += canvas_PointerMoved;
-            canvas.PointerEntered += (s,e) => enterWithContact = e.Pointer.IsInContact;
+            canvas.PointerEntered += (s, e) => enterWithContact = e.Pointer.IsInContact;
             canvas.PointerReleased += (s, e) => enterWithContact = false;
+            GridRoi.PointerPressed += (s, ee) => manipulationWithRect = true;
+            GridRoi.ManipulationStarted += (s, ee) => GridRoi.Opacity = 0.5;
+            GridRoi.ManipulationCompleted += (s, ee) => { GridRoi.Opacity = 1; manipulationWithRect = false; };
+            GridRoi.ManipulationDelta += Roi_ManipulationDelta;
         }
 
+        bool loaded;
         bool enterWithContact;
-        double multiplicatorForVideoSize = 1;
-        public void ClearCanvas()
+        double minsize = 50;
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            canvas.Children.Clear();
+            loaded = true;
         }
-        //this is basicly height of video
+
+       
+
         public double CanvasHeight
         {
             get { return (double)GetValue(CanvasHeightProperty); }
-            set {
+            set
+            {
                 SetValue(CanvasHeightProperty, value);
-                multiplicatorForVideoSize = value / 300;//changes sizes of thickenes and grag cornerc acording to video FramSize
+                if (loaded)//otherwise it throws invalidcast (???) ex
+                {
+                    SelectionRectangleViewModel.MultiplicatorForUiValues = (int)value / 300;//changes sizes of thickenes and grag cornerc acording to video FramSize
+                    minsize = 50 * SelectionRectangleViewModel.MultiplicatorForUiValues;
+                }
             }
         }
 
@@ -62,81 +75,32 @@ namespace TremAn3.Views
             DependencyProperty.Register("CanvasWidth", typeof(double), typeof(DrawingRectangleUc), new PropertyMetadata(0));
 
 
-
-
-        public (uint X, uint Y, uint width, uint height) Rect
+        public SelectionRectangleViewModel SelectionRectangleViewModel
         {
-            get { return ((uint X, uint Y, uint width, uint height))GetValue(RectProperty); }
-            set { SetValue(RectProperty, value); }
+            get { return (SelectionRectangleViewModel)GetValue(SelectionRectangleViewModelProperty); }
+            set
+            {
+                SetValue(SelectionRectangleViewModelProperty, value);
+            }
         }
 
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RectProperty =
-            DependencyProperty.Register("Rect", typeof((uint X, uint Y, uint width, uint height)), typeof(DrawingRectangleUc), new PropertyMetadata(0));
-
+        // Using a DependencyProperty as the backing store for SelectionRectangleViewModel.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectionRectangleViewModelProperty =
+            DependencyProperty.Register("SelectionRectangleViewModel", typeof(SelectionRectangleViewModel), typeof(DrawingRectangleUc), new PropertyMetadata(0));
 
         private Point startPoint;
         private bool manipulationWithRect;
-        Grid gr;
-
         private void canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
+
             if (manipulationWithRect)
                 return;
-           
-            canvas.Children.Clear();
+            SelectionRectangleViewModel.IsVisible = true;
             startPoint = e.GetCurrentPoint(canvas).Position;
-            CreateRoiUi();
-           
-            Canvas.SetLeft(gr, startPoint.X);
-            Canvas.SetTop(gr, startPoint.Y);
-            canvas.Children.Add(gr);
-        }
+            GridRoi.Width = GridRoi.Height = 0;
 
-      
-        private void CreateRoiUi()
-        {
-            //border (keeps style)
-           var bor = new Border()
-            {
-                Background = new SolidColorBrush(Color.FromArgb(30, 112, 255, 0)),
-                BorderThickness = new Thickness(2* multiplicatorForVideoSize),
-                BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 0, 112)),
-            };
-            gr = new Grid();
-
-            gr.Children.Add(bor);
-            //grid manipulation
-            gr.PointerPressed += (s, ee) => manipulationWithRect = true;
-            gr.ManipulationStarted += (s, ee) => gr.Opacity = 0.5;
-            gr.ManipulationCompleted += (s, ee) => { gr.Opacity = 1; manipulationWithRect = false; };
-            gr.ManipulationDelta += Roi_ManipulationDelta;
-            gr.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-
-
-            //corners for drag
-            var alignments = new List<(HorizontalAlignment, VerticalAlignment, string)>
-            {
-                (HorizontalAlignment.Left,VerticalAlignment.Top,"lt"),
-                (HorizontalAlignment.Right,VerticalAlignment.Top,"rt"),
-                (HorizontalAlignment.Right,VerticalAlignment.Bottom,"rb"),
-                (HorizontalAlignment.Left,VerticalAlignment.Bottom,"lb")
-            };
-
-            foreach (var a in alignments)
-            {
-                Rectangle re = new Rectangle();
-                gr.Children.Add(re);
-                re.Fill = new SolidColorBrush(Color.FromArgb(50, 143, 0, 255));
-                re.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-                re.Height = 30* multiplicatorForVideoSize;
-                re.Width = 30* multiplicatorForVideoSize;
-                re.HorizontalAlignment = a.Item1;
-                re.VerticalAlignment = a.Item2;
-                re.ManipulationDelta += CornerRectangle_ManipulationDelta;
-                re.Tag = a.Item3;//as an ID of button, in manipulation delta
-            }
-
+            Canvas.SetLeft(GridRoi, startPoint.X);
+            Canvas.SetTop(GridRoi, startPoint.Y);
         }
 
         /// <summary>
@@ -151,62 +115,60 @@ namespace TremAn3.Views
             double x = e.Delta.Translation.X / viewbox.ActualWidth * canvas.ActualWidth;
             double y = e.Delta.Translation.Y / viewbox.ActualHeight * canvas.ActualHeight;
 
-
-            double top = Canvas.GetTop(gr);
-            double left = Canvas.GetLeft(gr);
+            double top = Canvas.GetTop(GridRoi);
+            double left = Canvas.GetLeft(GridRoi);
             double ytop;
             double wleft;
-            double minsize = 50* multiplicatorForVideoSize;
 
             switch ((string)el.Tag)
             {
                 case "lt"://left top
-                     wleft = Math.Max(0, left + x);//dont be smaller that top lef cornet (0,0)
+                    wleft = Math.Max(0, left + x);//dont be smaller that top lef cornet (0,0)
                     if (wleft != 0)
-                        gr.Width = Math.Max(minsize, gr.Width - x);
-                    if (gr.Width != minsize)//move roi with drag
-                        Canvas.SetLeft(gr, wleft);
+                        GridRoi.Width = Math.Max(minsize, GridRoi.Width - x);
+                    if (GridRoi.Width != minsize)//move roi with drag
+                        Canvas.SetLeft(GridRoi, wleft);
 
-                     ytop = Math.Max(0, top + y);
+                    ytop = Math.Max(0, top + y);
                     if (ytop != 0)
-                        gr.Height = Math.Max(minsize, gr.Height - y);
-                    if (gr.Height != minsize)
-                        Canvas.SetTop(gr, ytop);
+                        GridRoi.Height = Math.Max(minsize, GridRoi.Height - y);
+                    if (GridRoi.Height != minsize)
+                        Canvas.SetTop(GridRoi, ytop);
 
                     break;
                 case "rt":
-                     wleft = Math.Min(canvas.Width - left, gr.Width + x);
-                    gr.Width = Math.Max(minsize, wleft);
+                    wleft = Math.Min(canvas.Width - left, GridRoi.Width + x);
+                    GridRoi.Width = Math.Max(minsize, wleft);
 
                     ytop = Math.Max(0, top + y);
-                    if (ytop !=0)
-                        gr.Height = Math.Max(minsize, gr.Height - y);
-                    if (gr.Height != minsize)
-                        Canvas.SetTop(gr, ytop);
+                    if (ytop != 0)
+                        GridRoi.Height = Math.Max(minsize, GridRoi.Height - y);
+                    if (GridRoi.Height != minsize)
+                        Canvas.SetTop(GridRoi, ytop);
                     break;
                 case "rb":
-                    wleft = Math.Min(canvas.Width - left, gr.Width + x);
-                    gr.Width = Math.Max(minsize, wleft);
+                    wleft = Math.Min(canvas.Width - left, GridRoi.Width + x);
+                    GridRoi.Width = Math.Max(minsize, wleft);
 
-                    ytop = Math.Min(canvas.Height - top, gr.Height + y);
-                    gr.Height = Math.Max(minsize, ytop);
+                    ytop = Math.Min(canvas.Height - top, GridRoi.Height + y);
+                    GridRoi.Height = Math.Max(minsize, ytop);
                     break;
                 case "lb":
                     wleft = Math.Max(0, left + x);
                     if (wleft != 0)
-                        gr.Width = Math.Max(minsize, gr.Width - x);
-                    if (gr.Width != minsize)
+                        GridRoi.Width = Math.Max(minsize, GridRoi.Width - x);
+                    if (GridRoi.Width != minsize)
 
-                        Canvas.SetLeft(gr, wleft);
+                        Canvas.SetLeft(GridRoi, wleft);
 
-                    ytop = Math.Min(canvas.Height - top, gr.Height + y);
-                    gr.Height = Math.Max(minsize, ytop);
+                    ytop = Math.Min(canvas.Height - top, GridRoi.Height + y);
+                    GridRoi.Height = Math.Max(minsize, ytop);
                     break;
                 default:
                     break;
             }
 
-            Rect = ((uint)Canvas.GetLeft(gr), (uint)Canvas.GetTop(gr), (uint)gr.Width, (uint)gr.Height);
+            SelectionRectangleViewModel.SetValues(Canvas.GetLeft(GridRoi), Canvas.GetTop(GridRoi), GridRoi.Width, GridRoi.Height);
 
             e.Handled = true;//donot bubble lower
         }
@@ -221,15 +183,16 @@ namespace TremAn3.Views
             var trX = e.Delta.Translation.X / viewbox.ActualWidth * canvas.ActualWidth;
             var trY = e.Delta.Translation.Y / viewbox.ActualHeight * canvas.ActualHeight;
 
-            var setleft = Math.Max(0, Canvas.GetLeft(gr) + trX);//do not cross left upper
-            var settop = Math.Max(0, Canvas.GetTop(gr) + trY);
+            var setleft = Math.Max(0, Canvas.GetLeft(GridRoi) + trX);//do not cross left upper
+            var settop = Math.Max(0, Canvas.GetTop(GridRoi) + trY);
 
-            setleft = Math.Min(setleft, canvas.Width - gr.Width);//do not cross rigth bottom
-            settop = Math.Min(settop, canvas.Height - gr.Height);
+            setleft = Math.Min(setleft, canvas.Width - GridRoi.Width);//do not cross rigth bottom
+            settop = Math.Min(settop, canvas.Height - GridRoi.Height);
 
-            Canvas.SetLeft(gr, setleft);
-            Canvas.SetTop(gr, settop);
-            Rect = ((uint)Canvas.GetLeft(gr), (uint)Canvas.GetTop(gr), (uint)gr.Width, (uint)gr.Height);
+            Canvas.SetLeft(GridRoi, setleft);
+            Canvas.SetTop(GridRoi, settop);
+            SelectionRectangleViewModel.SetValues(Canvas.GetLeft(GridRoi), Canvas.GetTop(GridRoi), GridRoi.Width, GridRoi.Height);
+
 
         }
 
@@ -242,7 +205,7 @@ namespace TremAn3.Views
         {
             if (manipulationWithRect)
                 return;
-            if (!e.Pointer.IsInContact || gr == null || enterWithContact)
+            if (!e.Pointer.IsInContact || enterWithContact)
                 return;
 
             var pos = e.GetCurrentPoint(canvas).Position;
@@ -253,13 +216,17 @@ namespace TremAn3.Views
             var w = Math.Max(pos.X, startPoint.X) - x;
             var h = Math.Max(pos.Y, startPoint.Y) - y;
 
-            gr.Width = w;
-            gr.Height = h;
+            GridRoi.Width = w;
+            GridRoi.Height = h;
 
-            Canvas.SetLeft(gr, x);
-            Canvas.SetTop(gr, y);
-            Rect = ((uint)x, (uint)y, (uint)w, (uint)h);
+            Canvas.SetLeft(GridRoi, x);
+            Canvas.SetTop(GridRoi, y);
+            if (SelectionRectangleViewModel == null)
+                SelectionRectangleViewModel = new SelectionRectangleViewModel();
+            SelectionRectangleViewModel.SetValues(x, y, w, h);
 
         }
+
+
     }
 }

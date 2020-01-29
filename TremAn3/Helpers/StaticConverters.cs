@@ -20,11 +20,13 @@ namespace TremAn3.Helpers
 
         public static Visibility NonZeroRectToVisibility((uint, uint, uint, uint) rect) => (rect.Item1+rect.Item2+rect.Item3+rect.Item4)!=0 ? Visibility.Visible : Visibility.Collapsed;
 
-        public static Visibility BoolToVisiblity(bool boolVal) => boolVal ? Visibility.Visible : Visibility.Collapsed;
+        public static Visibility BoolToVisibility(bool boolVal) => boolVal ? Visibility.Visible : Visibility.Collapsed;
 
-        public static Visibility BoolToVisiblityInverse(bool boolVal) => BoolToVisiblity(!boolVal);
-        
+        public static Visibility BoolToVisiblityInverse(bool boolVal) => BoolToVisibility(!boolVal);
+        //public static Visibility NullToVisibility(object obj) => obj != null ? Visibility.Visible : Visibility.Collapsed;
+
         public static bool InverseBool(bool val) => !val;
+        public static Thickness IntToThickness(int val) => new Thickness(val);
 
 
 

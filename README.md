@@ -32,6 +32,7 @@ Alternatily it can be downloaded as msix package. Instructions [here](https://tr
 
 ### 202001
 
+- What's new dialog in the app
 - ROI implementation - works better on small details and insignificant movement.
   - ROI is customizable (size and position changes)
   - Also works with resolution reduction (speed boost).

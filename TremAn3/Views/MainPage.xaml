@@ -63,7 +63,7 @@
         </StackPanel>
 
         <views:DrawingRectangleUc x:Name="DrawingRectangle" Visibility="Collapsed" Canvas.ZIndex="2"
-                                  IsEnabled="{x:Bind  ViewModel.IsFreqCounterOpen, Mode=OneWay}" Rect="{x:Bind ViewModel.FreqCounterViewModel.Rect,Mode=TwoWay}"
+                                  IsEnabled="{x:Bind  ViewModel.IsFreqCounterOpen, Mode=OneWay}" SelectionRectangleViewModel="{x:Bind ViewModel.FreqCounterViewModel.SelectionRectangleViewModel,Mode=TwoWay}"
                                   CanvasHeight="{x:Bind ViewModel.MediaPlayerViewModel.VideoPropsViewModel.Height, Mode=OneWay}" CanvasWidth="{x:Bind ViewModel.MediaPlayerViewModel.VideoPropsViewModel.Width,Mode=OneWay}" />
         <MediaPlayerElement x:Name="Mpe" Visibility="Collapsed"
             AutoPlay="False" AreTransportControlsEnabled="True"
