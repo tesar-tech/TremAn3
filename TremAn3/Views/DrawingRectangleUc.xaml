@@ -14,7 +14,7 @@
 
     <Viewbox x:Name="viewbox">
         <Canvas x:Name="canvas"  Background="Transparent" Height="{x:Bind CanvasHeight,Mode=OneWay}" Width="{x:Bind CanvasWidth, Mode=OneWay}" PointerPressed="canvas_PointerPressed">
-            <Grid x:Name="GridRoi" ManipulationMode="TranslateY,TranslateX"  Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(SelectionRectangleViewModel.IsVisible), Mode=OneWay}" >
+            <Grid x:Name="GridRoi" Width="{x:Bind SelectionRectangleViewModel.Width,Mode=TwoWay}" Height="{x:Bind SelectionRectangleViewModel.Height,Mode=TwoWay}" Canvas.Left="{x:Bind SelectionRectangleViewModel.X,Mode=TwoWay}" Canvas.Top="{x:Bind SelectionRectangleViewModel.Y,Mode=TwoWay}" ManipulationMode="TranslateY,TranslateX"  Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(SelectionRectangleViewModel.IsVisible), Mode=OneWay}" >
                 <Border Background="#1e70ff00" BorderThickness="{x:Bind helpers:StaticConverters.IntToThickness(SelectionRectangleViewModel.BorderThickness), Mode=OneWay}" BorderBrush="#88dd000c" />
                 <Rectangle Tag="lt" HorizontalAlignment="Left" VerticalAlignment="Top" Height="{x:Bind SelectionRectangleViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind SelectionRectangleViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
                 <Rectangle Tag="rt" HorizontalAlignment="Right" VerticalAlignment="Top" Height="{x:Bind SelectionRectangleViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind SelectionRectangleViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />

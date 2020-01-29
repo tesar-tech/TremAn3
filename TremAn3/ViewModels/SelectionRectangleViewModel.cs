@@ -15,14 +15,21 @@ namespace TremAn3.ViewModels
         public uint X
         {
             get => _X;
-            set => Set(ref _X, value);
+            set
+            {
+                //if (value > 1e6) return;
+                Set(ref _X, value);
+            }
         }
         private uint _Y;
 
         public uint Y
         {
             get => _Y;
-            set => Set(ref _Y, value);
+            set {
+                //if (value > 1e6) return;   
+                Set(ref _Y, value);
+            }
         }
 
         private uint _Width;
@@ -40,6 +47,8 @@ namespace TremAn3.ViewModels
             get => _height;
             set => Set(ref _height, value);
         }
+
+        
 
         private bool _IsVisible;
 
@@ -65,6 +74,24 @@ namespace TremAn3.ViewModels
             get => _CornerSize;
             set => Set(ref _CornerSize, value);
         }
+
+        private int _MaxHeight;
+
+        public int MaxHeight
+        {
+            get => _MaxHeight;
+            set => Set(ref _MaxHeight, value);
+        }
+
+        private int _MaxWidth;
+
+        public int MaxWidth
+        {
+            get => _MaxWidth;
+            set => Set(ref _MaxWidth, value);
+        }
+
+
 
 
         int _mul;
