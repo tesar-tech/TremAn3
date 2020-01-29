@@ -27,25 +27,15 @@
 
                 <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" />
                 <StackPanel Orientation="Horizontal" Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(ViewModel.SelectionRectangleViewModel.IsVisible), Mode=OneWay}">
-                    <!--<TextBlock VerticalAlignment="Center">
-                        <Run FontWeight="Bold" Text="Current Selection"/>
-                        <Run FontWeight="SemiBold" Text="X"/><Run Text="{x:Bind ViewModel.SelectionRectangleViewModel.X,Mode=OneWay}"/>
-                        <Run FontWeight="SemiBold" Text="Y"/><Run Text="{x:Bind ViewModel.SelectionRectangleViewModel.Y,Mode=OneWay}"/>
-                        <Run FontWeight="SemiBold" Text="W"/><Run Text="{x:Bind ViewModel.SelectionRectangleViewModel.Width,Mode=OneWay}"/>
-                        <Run FontWeight="SemiBold" Text="H"/><Run Text="{x:Bind ViewModel.SelectionRectangleViewModel.Height,Mode=OneWay}"/>
-                    </TextBlock>-->
-
                     <StackPanel Background="Gray" Orientation="Horizontal">
-                        <!--<mux:NumberBox Value="{x:Bind ViewModel.SelectionRectangleViewModel.X, Mode=TwoWay}" />-->
                         <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="X"/>
-                        <TextBox Text="{x:Bind ViewModel.SelectionRectangleViewModel.X,Mode=TwoWay}" extensions:TextBoxRegex.ValidationMode="Dynamic" extensions:TextBoxRegex.ValidationType="Number" />
+                        <mux:NumberBox Value="{x:Bind ViewModel.SelectionRectangleViewModel.X, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                         <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="Y"/>
-                        <TextBox Text="{x:Bind ViewModel.SelectionRectangleViewModel.Y,Mode=TwoWay}" extensions:TextBoxRegex.ValidationMode="Dynamic" extensions:TextBoxRegex.ValidationType="Number" />
+                        <mux:NumberBox Value="{x:Bind ViewModel.SelectionRectangleViewModel.Y, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                         <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="W"/>
-                        <TextBox Text="{x:Bind ViewModel.SelectionRectangleViewModel.Width,Mode=TwoWay}" extensions:TextBoxRegex.ValidationMode="Dynamic" extensions:TextBoxRegex.ValidationType="Number" />
+                        <mux:NumberBox Value="{x:Bind ViewModel.SelectionRectangleViewModel.Width, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                         <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="H"/>
-                        <TextBox Text="{x:Bind ViewModel.SelectionRectangleViewModel.Height,Mode=TwoWay}" extensions:TextBoxRegex.ValidationMode="Dynamic" extensions:TextBoxRegex.ValidationType="Number" />
-
+                        <mux:NumberBox Value="{x:Bind ViewModel.SelectionRectangleViewModel.Height, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                     </StackPanel>
                     
                     <Button Content="Remove selection" Click="{x:Bind ViewModel.RemoveSelection}" Padding="2" Margin="5,0"/>

@@ -26,7 +26,8 @@ namespace TremAn3.ViewModels
         public uint Y
         {
             get => _Y;
-            set {
+            set
+            {
                 //if (value > 1e6) return;   
                 Set(ref _Y, value);
             }
@@ -37,7 +38,17 @@ namespace TremAn3.ViewModels
         public uint Width
         {
             get => _Width;
-            set => Set(ref _Width, value);
+            set
+
+            {
+                if (X + value > MaxWidth)
+                {
+                    value = MaxWidth - X;
+                    if (value == _Width)//without this it would not update number in UI when set manualy from max to max+1
+                        RaisePropertyChanged();
+                }
+                Set(ref _Width, value);
+            }
         }
 
         private uint _height;
@@ -45,10 +56,19 @@ namespace TremAn3.ViewModels
         public uint Height
         {
             get => _height;
-            set => Set(ref _height, value);
+            set
+            {
+                if (Y + value > MaxHeight)
+                {
+                    value = MaxHeight - X;
+                    if (value == _height)//without this it would not update number in UI when set manualy from max to max+1
+                        RaisePropertyChanged();
+                }
+                Set(ref _height, value);
+            }
         }
 
-        
+
 
         private bool _IsVisible;
 
@@ -59,9 +79,9 @@ namespace TremAn3.ViewModels
 
         }
 
-        private int _BorderThickness = 2;
+        private double _BorderThickness = 2;
 
-        public int BorderThickness
+        public double BorderThickness
         {
             get => _BorderThickness;
             set => Set(ref _BorderThickness, value);
@@ -75,33 +95,33 @@ namespace TremAn3.ViewModels
             set => Set(ref _CornerSize, value);
         }
 
-        private int _MaxHeight;
+        private uint _MaxHeight;
 
-        public int MaxHeight
+        public uint MaxHeight
         {
             get => _MaxHeight;
-            set => Set(ref _MaxHeight, value);
+            set
+            {
+                Set(ref _MaxHeight, value);
+                SetUiSizes();
+            }
         }
 
-        private int _MaxWidth;
+        private void SetUiSizes()
+        {
+            var ratio = MaxHeight / 300;
+            CornerSize = (int)Math.Round(30d * ratio);
+            BorderThickness = 2 * ratio;
+        }
 
-        public int MaxWidth
+        private uint _MaxWidth;
+
+        public uint MaxWidth
         {
             get => _MaxWidth;
             set => Set(ref _MaxWidth, value);
         }
 
-
-
-
-        int _mul;
-        public int MultiplicatorForUiValues { get { return _mul; }
-            internal set {
-                _mul = value;
-                CornerSize = 30 * value;
-                BorderThickness = 2 * value;
-
-            } }
 
         internal void SetValues(double x, double y, double width, double height)
         {

@@ -26,7 +26,7 @@ namespace TremAn3.Helpers
         //public static Visibility NullToVisibility(object obj) => obj != null ? Visibility.Visible : Visibility.Collapsed;
 
         public static bool InverseBool(bool val) => !val;
-        public static Thickness IntToThickness(int val) => new Thickness(val);
+        public static Thickness IntToThickness(double val) => new Thickness(val);
 
 
 

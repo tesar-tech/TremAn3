@@ -50,6 +50,8 @@ namespace TremAn3.ViewModels
             FreqCounterViewModel.ResetResultDisplay();
             FreqCounterViewModel.RemoveSelection();
             FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
+            FreqCounterViewModel.SelectionRectangleViewModel.MaxHeight = MediaPlayerViewModel.VideoPropsViewModel.Height;
+            FreqCounterViewModel.SelectionRectangleViewModel.MaxWidth = MediaPlayerViewModel.VideoPropsViewModel.Width;
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();

@@ -44,35 +44,35 @@ namespace TremAn3.Views
 
        
 
-        public double CanvasHeight
-        {
-            get { return (double)GetValue(CanvasHeightProperty); }
-            set
-            {
-                SetValue(CanvasHeightProperty, value);
-                if (loaded)//otherwise it throws invalidcast (???) ex
-                {
-                    SelectionRectangleViewModel.MultiplicatorForUiValues = (int)value / 300;//changes sizes of thickenes and grag cornerc acording to video FramSize
-                    minsize = 50 * (uint)SelectionRectangleViewModel.MultiplicatorForUiValues;
-                }
-            }
-        }
+        //public double CanvasHeight
+        //{
+        //    get { return (double)GetValue(CanvasHeightProperty); }
+        //    set
+        //    {
+        //        SetValue(CanvasHeightProperty, value);
+        //        if (loaded)//otherwise it throws invalidcast (???) ex
+        //        {
+        //            SelectionRectangleViewModel.MultiplicatorForUiValues = (int)value / 300;//changes sizes of thickenes and grag cornerc acording to video FramSize
+        //            minsize = 50 * (uint)SelectionRectangleViewModel.MultiplicatorForUiValues;
+        //        }
+        //    }
+        //}
 
-        // Using a DependencyProperty as the backing store for CanvasHeight.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CanvasHeightProperty =
-            DependencyProperty.Register("CanvasHeight", typeof(double), typeof(DrawingRectangleUc), new PropertyMetadata(0));
+        //// Using a DependencyProperty as the backing store for CanvasHeight.  This enables animation, styling, binding, etc...
+        //public static readonly DependencyProperty CanvasHeightProperty =
+        //    DependencyProperty.Register("CanvasHeight", typeof(double), typeof(DrawingRectangleUc), new PropertyMetadata(0));
 
 
 
-        public double CanvasWidth
-        {
-            get { return (double)GetValue(CanvasWidthProperty); }
-            set { SetValue(CanvasWidthProperty, value); }
-        }
+        //public double CanvasWidth
+        //{
+        //    get { return (double)GetValue(CanvasWidthProperty); }
+        //    set { SetValue(CanvasWidthProperty, value); }
+        //}
 
-        // Using a DependencyProperty as the backing store for CanvasWidth.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CanvasWidthProperty =
-            DependencyProperty.Register("CanvasWidth", typeof(double), typeof(DrawingRectangleUc), new PropertyMetadata(0));
+        //// Using a DependencyProperty as the backing store for CanvasWidth.  This enables animation, styling, binding, etc...
+        //public static readonly DependencyProperty CanvasWidthProperty =
+        //    DependencyProperty.Register("CanvasWidth", typeof(double), typeof(DrawingRectangleUc), new PropertyMetadata(0));
 
 
         public SelectionRectangleViewModel SelectionRectangleViewModel
