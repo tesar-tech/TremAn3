@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     x:Uid="WhatsNewDialog"
     mc:Ignorable="d"
     d:DesignHeight="345"
@@ -18,9 +19,10 @@
     </ContentDialog.TitleTemplate>
     <ScrollViewer>
         <StackPanel>
-            <TextBlock
+            <!--<TextBlock
                 x:Uid="WhatsNew_Body"
-                TextWrapping="WrapWholeWords" />
+                TextWrapping="WrapWholeWords" />-->
+            <controls:MarkdownTextBlock x:Name="MarkdownText" Margin="6"/>
         </StackPanel>
     </ScrollViewer>
 </ContentDialog>
