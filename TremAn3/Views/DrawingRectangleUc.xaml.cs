@@ -30,15 +30,19 @@ namespace TremAn3.Views
         }
 
         bool enterWithContact;
+        double multiplicatorForVideoSize = 1;
         public void ClearCanvas()
         {
             canvas.Children.Clear();
         }
-
+        //this is basicly height of video
         public double CanvasHeight
         {
             get { return (double)GetValue(CanvasHeightProperty); }
-            set { SetValue(CanvasHeightProperty, value); }
+            set {
+                SetValue(CanvasHeightProperty, value);
+                multiplicatorForVideoSize = value / 300;//changes sizes of thickenes and grag cornerc acording to video FramSize
+            }
         }
 
         // Using a DependencyProperty as the backing store for CanvasHeight.  This enables animation, styling, binding, etc...
@@ -96,7 +100,7 @@ namespace TremAn3.Views
            var bor = new Border()
             {
                 Background = new SolidColorBrush(Color.FromArgb(30, 112, 255, 0)),
-                BorderThickness = new Thickness(2),
+                BorderThickness = new Thickness(2* multiplicatorForVideoSize),
                 BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 0, 112)),
             };
             gr = new Grid();
@@ -125,8 +129,8 @@ namespace TremAn3.Views
                 gr.Children.Add(re);
                 re.Fill = new SolidColorBrush(Color.FromArgb(50, 143, 0, 255));
                 re.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-                re.Height = 30;
-                re.Width = 30;
+                re.Height = 30* multiplicatorForVideoSize;
+                re.Width = 30* multiplicatorForVideoSize;
                 re.HorizontalAlignment = a.Item1;
                 re.VerticalAlignment = a.Item2;
                 re.ManipulationDelta += CornerRectangle_ManipulationDelta;
@@ -152,7 +156,7 @@ namespace TremAn3.Views
             double left = Canvas.GetLeft(gr);
             double ytop;
             double wleft;
-            double minsize = 50;
+            double minsize = 50* multiplicatorForVideoSize;
 
             switch ((string)el.Tag)
             {
