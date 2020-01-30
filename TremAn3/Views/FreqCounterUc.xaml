@@ -29,13 +29,13 @@
                 <StackPanel Orientation="Horizontal" Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(ViewModel.SelectionRectangleViewModel.IsVisible), Mode=OneWay}">
                     <StackPanel Background="Gray" Orientation="Horizontal">
                         <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="X"/>
-                        <mux:NumberBox Value="{x:Bind ViewModel.SelectionRectangleViewModel.X, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                        <mux:NumberBox Minimum="0" Value="{x:Bind ViewModel.SelectionRectangleViewModel.X, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                         <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="Y"/>
-                        <mux:NumberBox Value="{x:Bind ViewModel.SelectionRectangleViewModel.Y, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                        <mux:NumberBox Minimum="0" Value="{x:Bind ViewModel.SelectionRectangleViewModel.Y, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                         <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="W"/>
-                        <mux:NumberBox Value="{x:Bind ViewModel.SelectionRectangleViewModel.Width, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                        <mux:NumberBox Minimum="0" Value="{x:Bind ViewModel.SelectionRectangleViewModel.Width, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                         <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="H"/>
-                        <mux:NumberBox Value="{x:Bind ViewModel.SelectionRectangleViewModel.Height, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                        <mux:NumberBox Minimum="0" Value="{x:Bind ViewModel.SelectionRectangleViewModel.Height, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                     </StackPanel>
                     
                     <Button Content="Remove selection" Click="{x:Bind ViewModel.RemoveSelection}" Padding="2" Margin="5,0"/>
