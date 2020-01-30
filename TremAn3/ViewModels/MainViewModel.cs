@@ -33,7 +33,7 @@ namespace TremAn3.ViewModels
         //public event EventHandler NotificationHandler;
 
 
-        public async void LoadedAsync()
+        public  void LoadedAsync()
         {
             //await MediaPlayerViewModel.SetDefaultSourceAsync();
             //FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
@@ -55,7 +55,7 @@ namespace TremAn3.ViewModels
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();
-        public async Task CountFreqAsync()
+        public async void CountFreqAsync()
         {
             if (MediaPlayerViewModel.Source == null)
             {
@@ -71,7 +71,7 @@ namespace TremAn3.ViewModels
             var frameRate = MediaPlayerViewModel.VideoPropsViewModel.FrameRate;
             comAlg = new CenterOfMotionAlgorithm(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight,frameRate,rect);
 
-            int counter = 0;
+            //int counter = 0;
             double grabbingtime = 0;
             double getComTime = 0;
             Stopwatch sw = new Stopwatch();
@@ -114,7 +114,7 @@ namespace TremAn3.ViewModels
 
 
 
-        public async Task ExportCoMsAsync()
+        public async void ExportCoMsAsync()
         {
             if (comAlg == null)
             {
@@ -129,7 +129,7 @@ namespace TremAn3.ViewModels
             NotifBasedOnStatus(status, name);
         }
 
-        public async Task ExportPsdAsync()
+        public async void ExportPsdAsync()
         {
             if (comAlg == null)
             {

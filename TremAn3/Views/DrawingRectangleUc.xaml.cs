@@ -34,12 +34,12 @@ namespace TremAn3.Views
             GridRoi.ManipulationDelta += Roi_ManipulationDelta;
         }
 
-        bool loaded;
+        //bool loaded;
         bool enterWithContact;
         uint minsize = 50;
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            loaded = true;
+            //loaded = true;
         }
 
        
