@@ -10,7 +10,7 @@
   <Identity
     Name="26872JanTesa.TremAn3"
     Publisher="CN=5981E6E6-8952-4365-82F4-62FDCB563115"
-    Version="1.0.11.0" />
+    Version="1.0.13.0" />
 
   <mp:PhoneIdentity PhoneProductId="3ec6fe8b-b4e5-4ee0-9fef-ea2f3684bb67" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
