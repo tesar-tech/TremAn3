@@ -32,9 +32,8 @@ namespace TremAn3.ViewModels
         }
         //public event EventHandler NotificationHandler;
 
-        public event Action<string> NotificationHandler;
 
-        public async void LoadedAsync()
+        public  void LoadedAsync()
         {
             //await MediaPlayerViewModel.SetDefaultSourceAsync();
             //FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
@@ -49,26 +48,30 @@ namespace TremAn3.ViewModels
             var file = await DataService.OpenFileDialogueAsync();
             await MediaPlayerViewModel.ChangeSourceAsync(file);
             FreqCounterViewModel.ResetResultDisplay();
+            FreqCounterViewModel.RemoveSelection();
             FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
+            FreqCounterViewModel.SelectionRectangleViewModel.MaxHeight = MediaPlayerViewModel.VideoPropsViewModel.Height;
+            FreqCounterViewModel.SelectionRectangleViewModel.MaxWidth = MediaPlayerViewModel.VideoPropsViewModel.Width;
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();
-        public async Task CountFreqAsync()
+        public async void CountFreqAsync()
         {
             if (MediaPlayerViewModel.Source == null)
             {
-                NotificationHandler.Invoke("Load video first!");
+                ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Load video first!");
                 return;
             }
             FreqCounterViewModel.IsComputationInProgress = true;
             FreqCounterViewModel.ResetResultDisplay();
-            
+
+            SelectionRectangle rect = FreqCounterViewModel.SelectionRectangleViewModel.GetModel(FreqCounterViewModel.PercentageOfResolution);
             FramesGrabber grabber = await FramesGrabber.CtorAsync(MediaPlayerViewModel.CurrentStorageFile,MediaPlayerViewModel.VideoPropsViewModel,
                     FreqCounterViewModel.PercentageOfResolution, TimeSpan.FromSeconds( FreqCounterViewModel.Minrange), TimeSpan.FromSeconds(FreqCounterViewModel.Maxrange));
             var frameRate = MediaPlayerViewModel.VideoPropsViewModel.FrameRate;
-            comAlg = new CenterOfMotionAlgorithm(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate);
+            comAlg = new CenterOfMotionAlgorithm(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight,frameRate,rect);
 
-            int counter = 0;
+            //int counter = 0;
             double grabbingtime = 0;
             double getComTime = 0;
             Stopwatch sw = new Stopwatch();
@@ -111,11 +114,12 @@ namespace TremAn3.ViewModels
 
 
 
-        public async Task ExportCoMsAsync()
+        public async void ExportCoMsAsync()
         {
             if (comAlg == null)
             {
-                NotificationHandler.Invoke("Nothing to export");
+                ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Nothing to export");
+
                 return;
             }
             var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
@@ -125,11 +129,12 @@ namespace TremAn3.ViewModels
             NotifBasedOnStatus(status, name);
         }
 
-        public async Task ExportPsdAsync()
+        public async void ExportPsdAsync()
         {
             if (comAlg == null)
             {
-                NotificationHandler.Invoke("Nothing to export");
+                ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Nothing to export");
+
                 return;
             }
             var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
@@ -147,10 +152,10 @@ namespace TremAn3.ViewModels
             switch (status)
             {
                 case CsvExport.CsvExportStatus.Completed:
-                    NotificationHandler.Invoke($"File ({filename}) was saved");
+                    ViewModelLocator.Current.NoificationViewModel.SimpleNotification($"File ({filename}) was saved");
                     break;
                 case CsvExport.CsvExportStatus.NotCompleted:
-                    NotificationHandler.Invoke("File couldn't be saved");
+                    ViewModelLocator.Current.NoificationViewModel.SimpleNotification("File couldn't be saved");
                     break;
                 default:
                     break;

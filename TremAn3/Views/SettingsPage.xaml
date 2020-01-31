@@ -97,8 +97,7 @@
                         <!--need to be exact because of overflow-->
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Image Margin="0,0,5,5" Source="ms-appx:///Assets/StoreLogo.scale-100.png" />
-
+                    <Image Margin="0,0,5,5" Source="ms-appx:///Assets/StoreLogo.png" Width="40" Height="40" />
                     <RichTextBlock Grid.Column="1" TextAlignment="Justify" OverflowContentTarget="{x:Bind firstOverflowContainer}">
                         <Paragraph  >
                             <Run  x:Uid="Settings_AboutDescription"  />
@@ -106,7 +105,6 @@
                     </RichTextBlock>
                     <RichTextBlockOverflow Grid.Row="1" Grid.ColumnSpan="2" x:Name="firstOverflowContainer" />
                 </Grid>
-
                 <HyperlinkButton
                     x:Uid="Settings_GitHubLink"
                     Margin="{StaticResource XSmallTopMargin}" />

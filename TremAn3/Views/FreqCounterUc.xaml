@@ -9,6 +9,9 @@
     xmlns:helpers="using:TremAn3.Helpers"
     xmlns:oxyplot="using:OxyPlot.Windows"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+    xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -23,8 +26,21 @@
                 <StackPanel   Orientation="Vertical"   Padding="5" >
 
                 <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" />
-
-                <Grid  Grid.Row="2" Visibility="{x:Bind helpers:StaticConverters.BoolToVisiblity(ViewModel.IsComputationInProgress),Mode=OneWay}" >
+                <StackPanel Orientation="Horizontal" Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(ViewModel.SelectionRectangleViewModel.IsVisible), Mode=OneWay}">
+                    <StackPanel Background="Gray" Orientation="Horizontal">
+                        <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="X"/>
+                        <mux:NumberBox Minimum="0" Value="{x:Bind ViewModel.SelectionRectangleViewModel.X, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                        <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="Y"/>
+                        <mux:NumberBox Minimum="0" Value="{x:Bind ViewModel.SelectionRectangleViewModel.Y, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                        <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="W"/>
+                        <mux:NumberBox Minimum="0" Value="{x:Bind ViewModel.SelectionRectangleViewModel.Width, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                        <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="H"/>
+                        <mux:NumberBox Minimum="0" Value="{x:Bind ViewModel.SelectionRectangleViewModel.Height, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                    </StackPanel>
+                    
+                    <Button Content="Remove selection" Click="{x:Bind ViewModel.RemoveSelection}" Padding="2" Margin="5,0"/>
+                </StackPanel>
+                <Grid  Grid.Row="2" Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(ViewModel.IsComputationInProgress),Mode=OneWay}" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition/>

@@ -9,7 +9,7 @@ ShortDescription,8,Text,,
 DevStudio,9,Text,,
 CopyrightTrademarkInformation,12,Text,,
 AdditionalLicenseTerms,13,Text,,
-DesktopScreenshot1,100,Relative path (or URL to file in Partner Center),,Store/screenshot02.png
+DesktopScreenshot1,100,Relative path (or URL to file in Partner Center),,Store/screenshot03.png
 DesktopScreenshot2,101,Relative path (or URL to file in Partner Center),,Store/screenshot01.png
 DesktopScreenshot3,102,Relative path (or URL to file in Partner Center),,
 DesktopScreenshot4,103,Relative path (or URL to file in Partner Center),,
@@ -104,12 +104,12 @@ OptionalPromo358x358,611,Relative path (or URL to file in Partner Center),,
 OptionalPromo1000x800,612,Relative path (or URL to file in Partner Center),,
 OptionalPromo414x180,613,Relative path (or URL to file in Partner Center),,
 Feature1,700,Text,,Measures frequency of tremor from video
-Feature2,701,Text,,Opens and plays videos
-Feature3,702,Text,,Displayes plotwith powerspectral density
-Feature4,703,Text,,Displays plotwith CoMvalues
-Feature5,704,Text,,Export valuesto.csv format
-Feature6,705,Text,,Set timerange for computation
-Feature7,706,Text,,
+Feature2,701,Text,,Enables ROI selection
+Feature3,702,Text,,Opens and plays videos
+Feature4,703,Text,,Displayes plot with power spectral density
+Feature5,704,Text,,Displays plot with CoM values
+Feature6,705,Text,,Export values to.csv format
+Feature7,706,Text,,Set time range for computation
 Feature8,707,Text,,
 Feature9,708,Text,,
 Feature10,709,Text,,

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TremAn3.Core;
 using Windows.UI;
 
 namespace TremAn3.ViewModels
@@ -32,6 +33,35 @@ namespace TremAn3.ViewModels
         //    get => _PlotModelFreqInTime;
         //    set => Set(ref _PlotModelFreqInTime, value);
         //}
+        public void RemoveSelection()
+        {
+            //Rect = (0, 0, 0, 0);
+            //RemoveSelectionHandler?.Invoke();
+            SelectionRectangleViewModel.IsVisible = false;
+        }
+
+        //public event Action RemoveSelectionHandler;
+
+
+        private SelectionRectangleViewModel _SelectionRectangleViewModel = new SelectionRectangleViewModel();
+
+        public SelectionRectangleViewModel SelectionRectangleViewModel
+        {
+            get => _SelectionRectangleViewModel;
+            set => Set(ref _SelectionRectangleViewModel, value);
+        }
+
+        //private (uint X, uint Y, uint width, uint height) _Rect;
+
+        //public (uint X, uint Y, uint width, uint height) Rect
+        //{
+        //    get => _Rect;
+        //    set
+        //    {
+        //        Set(ref _Rect, value);
+        //    }
+        //}
+
 
         private double _ProgressPercentage;
 

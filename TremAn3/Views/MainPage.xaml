@@ -36,6 +36,7 @@
                     <VisualState.Setters>
                         <Setter Target="MainOpenButtonPanel.Visibility" Value="Collapsed"/>
                         <Setter Target="Mpe.Visibility" Value="Visible"/>
+                        <Setter Target="DrawingRectangle.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <StateTrigger  IsActive="{x:Bind  helpers:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay}" />
@@ -60,6 +61,10 @@
                 </StackPanel>
             </HyperlinkButton>
         </StackPanel>
+
+        <views:DrawingRectangleUc x:Name="DrawingRectangle" Visibility="Collapsed" Canvas.ZIndex="2"
+                                  IsEnabled="{x:Bind  ViewModel.IsFreqCounterOpen, Mode=OneWay}" SelectionRectangleViewModel="{x:Bind ViewModel.FreqCounterViewModel.SelectionRectangleViewModel,Mode=TwoWay}"
+                                   />
         <MediaPlayerElement x:Name="Mpe" Visibility="Collapsed"
             AutoPlay="False" AreTransportControlsEnabled="True"
             Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
@@ -67,10 +72,10 @@
                 <MediaTransportControls IsCompact="False"/>
             </MediaPlayerElement.TransportControls>
         </MediaPlayerElement>
-        
-        <controls:GridSplitter CursorBehavior="ChangeOnSplitterHover"   Grid.Column="1" >
-           
-        </controls:GridSplitter>
+
+        <controls:GridSplitter CursorBehavior="ChangeOnSplitterHover"   Grid.Column="1" />
+
+
         <views:FreqCounterUc IsEnabled="{x:Bind helpers:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay }"  Grid.Column="2" ViewModel="{x:Bind ViewModel.FreqCounterViewModel}"/>
     </Grid>
 </Page>

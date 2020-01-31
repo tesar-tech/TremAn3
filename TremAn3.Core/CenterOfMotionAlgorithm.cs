@@ -8,15 +8,27 @@ namespace TremAn3.Core
 {
     public class CenterOfMotionAlgorithm
     {
-        public CenterOfMotionAlgorithm(int width, int height, double frameRate)
+        public CenterOfMotionAlgorithm(int widthOfFrame, int heightOfFrame, double frameRate,SelectionRectangle rectangle)
         {
+            if ( rectangle.IsZeroSum)
+                rectangle.FullFromResolution(widthOfFrame, heightOfFrame);
+            rect = rectangle;
+            this.widthOfFrame = (uint)widthOfFrame;
+
             this.frameRate = frameRate;
-            previousValueX = (width - 1) / 2d;//previous is set to half in case of first and second frame are same
-            previousValueY = (height - 1) / 2d;
-            vecOfx = Enumerable.Repeat(Enumerable.Range(0, width), height).SelectMany(x => x).ToList();
-            vecOfy = Enumerable.Range(0, height).Select(x => Enumerable.Repeat(x, width)).SelectMany(x => x).ToList();
+            previousValueX = (rectangle.Width - 1) / 2d;//previous is set to half in case of first and second frame are same
+            previousValueY = (rectangle.Height - 1) / 2d;
+            vecOfx = Enumerable.Repeat(Enumerable.Range(0, (int)rectangle.Width), (int)rectangle.Height).SelectMany(x => x).ToList();
+            vecOfy = Enumerable.Range(0, (int)rectangle.Height).Select(x => Enumerable.Repeat(x, (int)rectangle.Width)).SelectMany(x => x).ToList();
+            startInd = this.widthOfFrame * rectangle.Y + rectangle.X;
+            endInd = startInd + (rectangle.Height - 1) * this.widthOfFrame + rectangle.Width - 1;
         }
 
+        private uint widthOfFrame;
+        //private uint heightOfFrame;
+        uint startInd;
+        uint endInd;
+        SelectionRectangle rect;
         public byte[] Frame1 { get; set; }
         public byte[] Frame2 { get; set; }
 
@@ -65,21 +77,42 @@ namespace TremAn3.Core
             //tdiffminmaxList += sw.ElapsedMilliseconds;
             sw.Restart();
 
-            var diffA = new double[Frame1.Length / 4];//bcs ARGB -> gray
+            var diffA = new double[rect.Height*rect.Width];
             double maxA = double.MinValue;
             double minA = double.MaxValue;
 
+            //int iter = 0;
+            //for (int i = 0; i < Frame1.Length; i += 4)
+            //{
+            //    byte f1 = (byte)(0.2989 * Frame1[i] + 0.5870 * Frame1[i + 1] + 0.1140 * Frame1[i + 2]);//to gray
+            //    byte f2 = (byte)(0.2989 * Frame2[i] + 0.5870 * Frame2[i + 1] + 0.1140 * Frame2[i + 2]);
+            //    diffA[iter] = (double)f2 - f1;
+            //    //min max counting
+            //    maxA = maxA < diffA[iter] ? diffA[iter] : maxA;//counting max in one loop
+            //    minA = minA > diffA[iter] ? diffA[iter] : minA;//counting min in one loop
+            //    iter++;
+            //}
+
+
+           
             int iter = 0;
-            for (int i = 0; i < Frame1.Length; i += 4)
-            {   
-                byte f1 = (byte)(0.2989 * Frame1[i] + 0.5870 * Frame1[i + 1] + 0.1140 * Frame1[i + 2]);//to gray
-                byte f2 = (byte)(0.2989 * Frame2[i] + 0.5870 * Frame2[i + 1] + 0.1140 * Frame2[i + 2]);
-                diffA[iter] = (double)f2 - f1;
-                maxA = maxA < diffA[iter] ? diffA[iter] : maxA;
-                minA = minA > diffA[iter] ? diffA[iter] : minA;
-                iter++;
+            for (uint s = startInd; s < endInd; s += widthOfFrame)//jumps on begining of lines of rect
+            {
+                for (uint c = 0; c < rect.Width; c++)//iterates on single line
+                {
+                    uint i = (s + c) * 4;//index to RGBA Array
+                    byte f1 = (byte)(0.2989 * Frame1[i] + 0.5870 * Frame1[i + 1] + 0.1140 * Frame1[i + 2]);//to gray
+                    byte f2 = (byte)(0.2989 * Frame2[i] + 0.5870 * Frame2[i + 1] + 0.1140 * Frame2[i + 2]);
+
+                    diffA[iter] = (double)f2 - f1;
+                    //max and min computation
+                    maxA = maxA < diffA[iter] ? diffA[iter] : maxA;//counting max in one loop
+                    minA = minA > diffA[iter] ? diffA[iter] : minA;//counting min in one loop
+                    iter++;
+                }
             }
 
+         
 
             tdiffminmaxArr += sw.ElapsedMilliseconds;
             sw.Restart();
