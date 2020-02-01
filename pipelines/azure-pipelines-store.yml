@@ -1,6 +1,6 @@
 trigger:
 - master
-pr: none #don't run build won pull requests
+pr: none #don't run build on pull requests
 
 pool:
   vmImage: 'windows-latest'
