@@ -33,7 +33,12 @@ steps:
   displayName: Display version of app
   inputs:
     targetType: 'inline'
-    script: 'Write-Host "Version of app: ${verionOfApp}"'
+    script: ${verionOfApp}
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: echo '${verionOfApp}'
 
 - task: VSBuild@1
   inputs:
