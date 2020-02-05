@@ -104,8 +104,8 @@ namespace TremAn3.ViewModels
             var xComs = comAlg.ListComXNoAvg.Select((x, i) => ((double)i, x)).ToList();
             FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.XCoM, xComs);
 
-            var YComs = comAlg.ListComYNoAvg.Select((x, i) => ((double)i, x)).ToList();
-            FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.YCoM, xComs);
+            var yComs = comAlg.ListComYNoAvg.Select((x, i) => ((double)i, x)).ToList();
+            FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.YCoM, yComs);
 
             FreqCounterViewModel.IsComputationInProgress = false;
         }
