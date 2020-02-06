@@ -33,13 +33,9 @@ steps:
   displayName: Display version of app
   inputs:
     targetType: 'inline'
-    script: '"$(versionOfApp)"'
+    script: '"App version is: $(versionOfApp)"'
 
-- task: PowerShell@2
-  displayName: ls package dir
-  inputs:
-    targetType: 'inline'
-    script: ls $(appxPackageDir)
+
 
 - task: VSBuild@1
   inputs:
