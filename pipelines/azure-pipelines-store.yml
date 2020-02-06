@@ -35,6 +35,11 @@ steps:
     targetType: 'inline'
     script: '"$(versionOfApp)"'
 
+- task: PowerShell@2
+  displayName: ls package dir
+  inputs:
+    targetType: 'inline'
+    script: ls $(appxPackageDir)
 
 - task: VSBuild@1
   inputs:
@@ -45,12 +50,6 @@ steps:
                   /p:AppxPackageSigningEnabled=false' #store will sign package
     configuration: '$(buildConfiguration)'
 
-
-- task: PowerShell@2
-  displayName: Display version of app
-  inputs:
-    targetType: 'inline'
-    script: '"$(verionOfApp)"'
 
 - task: PowerShell@2
   displayName: ls package dir
