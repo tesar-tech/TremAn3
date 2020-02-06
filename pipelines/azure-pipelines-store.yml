@@ -33,7 +33,7 @@ steps:
   displayName: Display version of app
   inputs:
     targetType: 'inline'
-    script: '"$(verionOfApp)"'
+    script: '"$(versionOfApp)"'
 
 
 - task: VSBuild@1
@@ -51,6 +51,12 @@ steps:
   inputs:
     targetType: 'inline'
     script: '"$(verionOfApp)"'
+
+- task: PowerShell@2
+  displayName: ls package dir
+  inputs:
+    targetType: 'inline'
+    script: ls $(appxPackageDir)
     
 - task: store-publish@0
   inputs:
