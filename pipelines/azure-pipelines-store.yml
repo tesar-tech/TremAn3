@@ -29,14 +29,6 @@ steps:
     VersionRegex: '(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])(\.(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])){3}'
     OutputVersion: 'OutputedVersion'
 
-- task: PowerShell@2
-  displayName: Display version of app
-  inputs:
-    targetType: 'inline'
-    script: '"App version is: $(versionOfApp)"'
-
-
-
 - task: VSBuild@1
   inputs:
     platform: 'x86'
@@ -48,10 +40,12 @@ steps:
 
 
 - task: PowerShell@2
-  displayName: ls package dir
+  displayName: Debug info ls package dir. App version.
   inputs:
     targetType: 'inline'
-    script: ls $(appxPackageDir)
+    script: | 
+        ls $(appxPackageDir)
+        '"App version is: $(versionOfApp)"'
     
 - task: store-publish@0
   inputs:
@@ -62,6 +56,6 @@ steps:
     updateImages: true
     packagePath: '$(appxPackageDir)\*.appxupload'
     force: false #force will delete any in progess submission
-    skipPolling: false #pipeline will finish after package is approved (or declined)
+    skipPolling: true #pipeline will finish after package is approved (or declined)
     deletePackages: true
     numberOfPackagesToKeep: '5'
