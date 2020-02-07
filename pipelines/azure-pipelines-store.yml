@@ -15,7 +15,8 @@ variables:
   versionOfApp: '$(majorMinorBuildVer).$(buildNum).0' #revision number has to be 0, otherwise it will drop the package in store.
 
 steps:
-- script:  '"App version is: $(versionOfApp)"'
+- script:  '"App version is: $(versionOfApp)";ls'
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
