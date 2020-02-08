@@ -33,12 +33,8 @@ steps:
   displayName: Display version of app
   inputs:
     targetType: 'inline'
-    script: ${verionOfApp}
+    script: '"$(verionOfApp)"'
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: echo '${verionOfApp}'
 
 - task: VSBuild@1
   inputs:
@@ -49,6 +45,13 @@ steps:
                   /p:AppxPackageSigningEnabled=false' #store will sign package
     configuration: '$(buildConfiguration)'
 
+
+- task: PowerShell@2
+  displayName: Display version of app
+  inputs:
+    targetType: 'inline'
+    script: '"$(verionOfApp)"'
+    
 - task: store-publish@0
   inputs:
     serviceEndpoint: 'NaWinDevCenter'
@@ -56,7 +59,7 @@ steps:
     metadataUpdateMethod: 'JsonMetadata'
     metadataPath: '$(system.defaultworkingdirectory)\NoApp\Store\appMetadata' # path where storeListing exists (with images)
     updateImages: true
-    packagePath: '$(appxPackageDir)\*.*upload'
+    packagePath: '$(appxPackageDir)\*.appxupload'
     force: false #force will delete any in progess submission
     skipPolling: false #pipeline will finish after package is approved (or declined)
     deletePackages: true
