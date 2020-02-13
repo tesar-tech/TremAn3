@@ -31,12 +31,22 @@ steps:
 
 - task: VSBuild@1
   inputs:
+    platform: 'x86'
     solution: '$(solution)'
     msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always 
                   /p:UapAppxPackageBuildMode=StoreUpload 
                   /p:AppxPackageSigningEnabled=false' #store will sign package
     configuration: '$(buildConfiguration)'
 
+
+- task: PowerShell@2
+  displayName: Debug info ls package dir. App version.
+  inputs:
+    targetType: 'inline'
+    script: | 
+        ls $(appxPackageDir)
+        '"App version is: $(versionOfApp)"'
+    
 - task: store-publish@0
   inputs:
     serviceEndpoint: 'NaWinDevCenter'
@@ -44,8 +54,8 @@ steps:
     metadataUpdateMethod: 'JsonMetadata'
     metadataPath: '$(system.defaultworkingdirectory)\NoApp\Store\appMetadata' # path where storeListing exists (with images)
     updateImages: true
-    packagePath: '$(appxPackageDir)\*.msixupload'
-    force: false #force will delete any in progess submission
-    skipPolling: false #pipeline will finish after package is approved (or declined)
+    packagePath: '$(appxPackageDir)\*.appxupload'
+    force: true #force will delete any in progess submission
+    skipPolling: true #pipeline will finish after package is approved (or declined)
     deletePackages: true
     numberOfPackagesToKeep: '5'

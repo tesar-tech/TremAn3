@@ -75,7 +75,13 @@ namespace TremAn3.ViewModels
         public bool IsVisible
         {
             get => _IsVisible;
-            set => Set(ref _IsVisible, value);
+            set  {
+
+                if (Set(ref _IsVisible, value))
+                    if (!value)//hiding selection will delete the recatngle (and computation will be frome whole frame)
+                        X = Y = Height = Width = 0;
+
+            }
 
         }
 
