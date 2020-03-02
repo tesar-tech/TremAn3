@@ -33,12 +33,15 @@ namespace TremAn3.ViewModels
         //public event EventHandler NotificationHandler;
 
 
-        public  void LoadedAsync()
+        public async  void LoadedAsync()
         {
-            //await MediaPlayerViewModel.SetDefaultSourceAsync();
-            //FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
-            //FreqCounterViewModel.Minrange = 0d;
-            IsFreqCounterOpen = false;// more info in IsFreqCounterOpen comment
+        #if DEBUG
+            var videoFile = await KnownFolders.PicturesLibrary.GetFileAsync("hand.mp4");
+            await MediaPlayerViewModel.ChangeSourceAsync(videoFile);
+            FreqCounterViewModel.ResetFreqCounter();
+            IsFreqCounterOpen = true;
+        #endif
+
         }
 
 
@@ -46,12 +49,13 @@ namespace TremAn3.ViewModels
         public async void OpenVideo_ButtonClickAsync()
         {
             var file = await DataService.OpenFileDialogueAsync();
-            await MediaPlayerViewModel.ChangeSourceAsync(file);
-            FreqCounterViewModel.ResetResultDisplay();
-            FreqCounterViewModel.RemoveSelection();
-            FreqCounterViewModel.Maximum = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
-            FreqCounterViewModel.SelectionRectangleViewModel.MaxHeight = MediaPlayerViewModel.VideoPropsViewModel.Height;
-            FreqCounterViewModel.SelectionRectangleViewModel.MaxWidth = MediaPlayerViewModel.VideoPropsViewModel.Width;
+            if (file != null)
+            {
+                await MediaPlayerViewModel.ChangeSourceAsync(file);
+                FreqCounterViewModel.ResetFreqCounter();
+                IsFreqCounterOpen = true;
+
+            }
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
         public DataService DataService { get; set; } = new DataService();
@@ -165,7 +169,7 @@ namespace TremAn3.ViewModels
 
    
 
-        private bool _IsFreqCounterOpen = true;//this is necessary workaround for splitView not showinx oxyplot. Freq counter is closed after page is loaded. 
+        private bool _IsFreqCounterOpen = false;//this is necessary workaround for splitView not showinx oxyplot. Freq counter is closed after page is loaded. 
 
         public bool IsFreqCounterOpen
         {

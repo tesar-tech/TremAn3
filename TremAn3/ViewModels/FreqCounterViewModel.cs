@@ -26,6 +26,16 @@ namespace TremAn3.ViewModels
 
         public MainViewModel ParentVm { get;private set; }
 
+        public void ResetFreqCounter()
+        {
+            ResetResultDisplay();
+            RemoveSelection();
+            Maximum = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
+            SelectionRectangleViewModel.MaxHeight = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Height;
+            SelectionRectangleViewModel.MaxWidth = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Width;
+
+        }
+
         //private PlotModel _PlotModelFreqInTime = new PlotModel();
 
         //public PlotModel PlotModelFreqInTime
