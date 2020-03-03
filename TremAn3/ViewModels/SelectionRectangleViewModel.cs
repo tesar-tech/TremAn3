@@ -113,11 +113,23 @@ namespace TremAn3.ViewModels
             }
         }
 
+        private double _MinSize ;
+
+        public double MinSize
+        {
+            get => _MinSize;
+            set => Set(ref _MinSize, value);
+        }
+
+
         private void SetUiSizes()
         {
+            //keep selection rect to appear same no matter the size of a video
             var ratio = MaxHeight / 300;
+            //this method also keeps default values 
             CornerSize = (int)Math.Round(30d * ratio);
             BorderThickness = 2 * ratio;
+            MinSize = ratio * 50;
         }
 
         private uint _MaxWidth;
