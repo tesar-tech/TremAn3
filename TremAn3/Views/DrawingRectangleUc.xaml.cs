@@ -28,15 +28,13 @@ namespace TremAn3.Views
             canvas.PointerMoved += canvas_PointerMoved;
             canvas.PointerEntered += (s, e) => enterWithContact = e.Pointer.IsInContact;
             canvas.PointerReleased += (s, e) => enterWithContact = false;
-            GridRoi.PointerPressed += (s, ee) => manipulationWithRect = true;
-            GridRoi.ManipulationStarted += (s, ee) => GridRoi.Opacity = 0.5;
-            GridRoi.ManipulationCompleted += (s, ee) => { GridRoi.Opacity = 1; manipulationWithRect = false; };
-            GridRoi.ManipulationDelta += Roi_ManipulationDelta;
+            
+
         }
 
         //bool loaded;
         bool enterWithContact;
-        uint minsize = 50;
+       
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //loaded = true;
@@ -75,18 +73,6 @@ namespace TremAn3.Views
         //    DependencyProperty.Register("CanvasWidth", typeof(double), typeof(DrawingRectangleUc), new PropertyMetadata(0));
 
 
-        public SelectionRectangleViewModel SelectionRectangleViewModel
-        {
-            get { return (SelectionRectangleViewModel)GetValue(SelectionRectangleViewModelProperty); }
-            set
-            {
-                SetValue(SelectionRectangleViewModelProperty, value);
-            }
-        }
-
-        // Using a DependencyProperty as the backing store for SelectionRectangleViewModel.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectionRectangleViewModelProperty =
-            DependencyProperty.Register("SelectionRectangleViewModel", typeof(SelectionRectangleViewModel), typeof(DrawingRectangleUc), new PropertyMetadata(0));
 
         private Point startPoint;
         private bool manipulationWithRect;
@@ -95,100 +81,16 @@ namespace TremAn3.Views
 
             if (manipulationWithRect)
                 return;
-            SelectionRectangleViewModel.IsVisible = true;
+            //SelectionRectangleViewModel.IsVisible = true; obnovit
             startPoint = e.GetCurrentPoint(canvas).Position;
-            SelectionRectangleViewModel.SetValues(startPoint.X,startPoint.Y,0,0);
-            
+            //SelectionRectangleViewModel.SetValues(startPoint.X, startPoint.Y, 0, 0); obnovit
+
         }
 
-        /// <summary>
-        /// dragging corner for roi customization
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CornerRectangle_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        {
 
-            FrameworkElement el = (FrameworkElement)sender;
-            double x = (e.Delta.Translation.X / viewbox.ActualWidth * canvas.ActualWidth);
-            double y = (e.Delta.Translation.Y / viewbox.ActualHeight * canvas.ActualHeight);
+       
 
-            uint top = SelectionRectangleViewModel.Y;
-            uint left = SelectionRectangleViewModel.X;
-            uint ytop;
-            uint wleft;
-
-            switch ((string)el.Tag)
-            {
-                case "lt"://left top
-                    wleft = (uint)Math.Round(Math.Max(0, left + x));//dont be smaller that top lef cornet (0,0)
-                    if (wleft != 0)
-                        SelectionRectangleViewModel.Width = (uint)Math.Round(Math.Max(minsize, SelectionRectangleViewModel.Width - x));
-                    if (SelectionRectangleViewModel.Width != minsize)//move roi with drag
-                        SelectionRectangleViewModel.X = wleft;
-
-                    ytop = (uint)Math.Round(Math.Max(0, top + y));
-                    if (ytop != 0)
-                        SelectionRectangleViewModel.Height = (uint)Math.Round(Math.Max(minsize, SelectionRectangleViewModel.Height - y));
-                    if (SelectionRectangleViewModel.Height != minsize)
-                        SelectionRectangleViewModel.Y = ytop;
-                    break;
-                case "rt":
-                    wleft = (uint)Math.Round(Math.Min(canvas.Width - left, SelectionRectangleViewModel.Width + x));
-                    SelectionRectangleViewModel.Width = Math.Max(minsize, wleft);
-
-                    ytop = (uint)Math.Round(Math.Max(0, top + y));
-                    if (ytop != 0)
-                        SelectionRectangleViewModel.Height = (uint)Math.Round(Math.Max(minsize, SelectionRectangleViewModel.Height - y));
-                    if (SelectionRectangleViewModel.Height != minsize)
-                    SelectionRectangleViewModel.Y = ytop;
-
-                    break;
-                case "rb":
-                    wleft = (uint)Math.Round(Math.Min(canvas.Width - left, SelectionRectangleViewModel.Width + x));
-                    SelectionRectangleViewModel.Width = Math.Max(minsize, wleft);
-
-                    ytop = (uint)Math.Min(canvas.Height - top, SelectionRectangleViewModel.Height + y);
-                    SelectionRectangleViewModel.Height = Math.Max(minsize, ytop);
-                    break;
-                case "lb":
-                    wleft = (uint)Math.Round(Math.Max(0, left + x));
-                    if (wleft != 0)
-                        SelectionRectangleViewModel.Width = (uint)Math.Round(Math.Max(minsize, SelectionRectangleViewModel.Width - x));
-                    if (SelectionRectangleViewModel.Width != minsize)
-
-                    SelectionRectangleViewModel.X = wleft;
-
-                    ytop = (uint)Math.Round(Math.Min(canvas.Height - top, SelectionRectangleViewModel.Height + y));
-                    SelectionRectangleViewModel.Height = Math.Max(minsize, ytop);
-                    break;
-                default:
-                    break;
-            }
-
-
-            e.Handled = true;//donot bubble lower
-        }
-
-        /// <summary>
-        /// gragging roi
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Roi_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        {
-            var trX = e.Delta.Translation.X / viewbox.ActualWidth * canvas.ActualWidth;
-            var trY = e.Delta.Translation.Y / viewbox.ActualHeight * canvas.ActualHeight;
-
-            var setleft = Math.Max(0, SelectionRectangleViewModel.X + trX);//do not cross left upper
-            var settop = Math.Max(0, SelectionRectangleViewModel.Y + trY);
-
-            setleft = Math.Min(setleft, canvas.Width - SelectionRectangleViewModel.Width);//do not cross rigth bottom
-            settop = Math.Min(settop, canvas.Height - SelectionRectangleViewModel.Height);
-
-            SelectionRectangleViewModel.X = (uint)setleft;
-            SelectionRectangleViewModel.Y = (uint)settop;
-        }
+        
 
         /// <summary>
         /// start of roi drawing
@@ -197,7 +99,7 @@ namespace TremAn3.Views
         /// <param name="e"></param>
         private void canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (manipulationWithRect||!e.Pointer.IsInContact || enterWithContact)
+            if (/*manipulationWithRect ||*/ !e.Pointer.IsInContact || enterWithContact) //obnovit
                 return;
 
             var pos = e.GetCurrentPoint(canvas).Position;
@@ -208,9 +110,8 @@ namespace TremAn3.Views
             var w = Math.Max(pos.X, startPoint.X) - x;
             var h = Math.Max(pos.Y, startPoint.Y) - y;
 
-          SelectionRectangleViewModel.SetValues(x, y, w, h);
+            //SelectionRectangleViewModel.SetValues(x, y, w, h);//obnovit
         }
-
 
     }
 }

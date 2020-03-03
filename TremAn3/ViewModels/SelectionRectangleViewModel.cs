@@ -153,5 +153,10 @@ namespace TremAn3.ViewModels
         {
             return new SelectionRectangle((X, Y, Width, Height), percentageOfResolution);
         }
+
+        public void DeleteMe()
+        {
+
+        }
     }
 }
