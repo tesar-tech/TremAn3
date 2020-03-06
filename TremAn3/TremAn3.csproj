@@ -181,6 +181,7 @@
     <Compile Include="Services\ViewLifetimeControl.cs" />
     <Compile Include="Services\WhatsNewDisplayService.cs" />
     <Compile Include="Services\WindowManagerService.cs" />
+    <Compile Include="ViewModels\DrawingRectanglesViewModel.cs" />
     <Compile Include="ViewModels\FreqCounterViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MediaPlayerViewModel.cs" />
@@ -193,8 +194,8 @@
     <Compile Include="ViewModels\VideoInfoViewModel.cs" />
     <Compile Include="ViewModels\VideoPropsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
-    <Compile Include="Views\DrawingRectangleUc.xaml.cs">
-      <DependentUpon>DrawingRectangleUc.xaml</DependentUpon>
+    <Compile Include="Views\DrawingRectanglesUc.xaml.cs">
+      <DependentUpon>DrawingRectanglesUc.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FirstRunDialog.xaml.cs">
       <DependentUpon>FirstRunDialog.xaml</DependentUpon>
@@ -261,7 +262,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DrawingRectangleUc.xaml">
+    <Page Include="Views\DrawingRectanglesUc.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

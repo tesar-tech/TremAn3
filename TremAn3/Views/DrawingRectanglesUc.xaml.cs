@@ -20,10 +20,16 @@ using Windows.UI.Xaml.Shapes;
 
 namespace TremAn3.Views
 {
-    public sealed partial class DrawingRectangleUc : UserControl
+    public sealed partial class DrawingRectanglesUc : UserControl
     {
-        public DrawingRectangleUc()
+
+        private DrawingRectanglesViewModel ViewModel
         {
+            get { return ViewModelLocator.Current.DrawingRectanglesViewModel; }
+        }
+        public DrawingRectanglesUc()
+        {
+
             this.InitializeComponent();
             canvas.PointerMoved += canvas_PointerMoved;
             canvas.PointerEntered += (s, e) => enterWithContact = e.Pointer.IsInContact;
@@ -78,7 +84,7 @@ namespace TremAn3.Views
         private bool manipulationWithRect;
         private void canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-
+            ViewModel.SelectionRectanglesViewModels[0].SetValues(100,200,80,70);
             if (manipulationWithRect)
                 return;
             //SelectionRectangleViewModel.IsVisible = true; obnovit

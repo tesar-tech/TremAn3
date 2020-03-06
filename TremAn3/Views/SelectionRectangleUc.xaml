@@ -8,7 +8,9 @@
     xmlns:helpers="using:TremAn3.Helpers"
     mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+
+    >
 
         <Grid x:Name="GridRoi" Width="{x:Bind  ViewModel.Width,Mode=TwoWay}" Height="{x:Bind  ViewModel.Height,Mode=TwoWay}" Canvas.Left="{x:Bind  ViewModel.X,Mode=TwoWay}" Canvas.Top="{x:Bind  ViewModel.Y,Mode=TwoWay}" ManipulationMode="TranslateY,TranslateX"  Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility( ViewModel.IsVisible), Mode=OneWay}" >
             <Border Background="#1e70ff00" BorderThickness="{x:Bind helpers:StaticConverters.IntToThickness( ViewModel.BorderThickness), Mode=OneWay}" BorderBrush="#88dd000c" />

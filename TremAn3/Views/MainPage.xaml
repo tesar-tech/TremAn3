@@ -62,7 +62,7 @@
             </HyperlinkButton>
         </StackPanel>
 
-        <views:DrawingRectangleUc x:Name="DrawingRectangle"  Canvas.ZIndex="5"
+        <views:DrawingRectanglesUc x:Name="DrawingRectangle"  Canvas.ZIndex="5"
                                   IsEnabled="{x:Bind  ViewModel.IsFreqCounterOpen, Mode=OneWay}" />
 
         <!--<views:DrawingRectangleUc x:Name="DrawingRectangle" Visibility="Collapsed" Canvas.ZIndex="2"
