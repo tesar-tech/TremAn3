@@ -32,14 +32,15 @@ namespace TremAn3.Views
 
             this.InitializeComponent();
             canvas.PointerMoved += canvas_PointerMoved;
-            canvas.PointerEntered += (s, e) => enterWithContact = e.Pointer.IsInContact;
-            canvas.PointerReleased += (s, e) => enterWithContact = false;
+            //canvas.PointerEntered += (s, e) => enterWithContact = e.Pointer.IsInContact;
+            canvas.PointerReleased += (s, e) => { ViewModel.CurrentRoiInCreationProcess.IsInCreationProcess = false; ViewModel.CurrentRoiInCreationProcess = null; };
+            
             
 
         }
 
         //bool loaded;
-        bool enterWithContact;
+        //bool enterWithContact;
        
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -89,7 +90,7 @@ namespace TremAn3.Views
 
             startPoint = e.GetCurrentPoint(canvas).Position;
             SelectionRectangleViewModel s =  ViewModel.CreateNewROI(startPoint.X,startPoint.Y);
-            ViewModel.CurrentRoiInManipulation = s;
+            ViewModel.CurrentRoiInCreationProcess = s;
             //SelectionRectangleViewModel.IsVisible = true; obnovit
             //SelectionRectangleViewModel.SetValues(startPoint.X, startPoint.Y, 0, 0); obnovit
 
@@ -107,7 +108,7 @@ namespace TremAn3.Views
         /// <param name="e"></param>
         private void canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (ViewModel.CurrentRoiInManipulation==null || !e.Pointer.IsInContact || enterWithContact) //obnovit
+            if (ViewModel.CurrentRoiInCreationProcess==null /*|| !e.Pointer.IsInContact*/ ) //obnovit
                 return;
 
             var pos = e.GetCurrentPoint(canvas).Position;
@@ -118,7 +119,7 @@ namespace TremAn3.Views
             var w = Math.Max(pos.X, startPoint.X) - x;
             var h = Math.Max(pos.Y, startPoint.Y) - y;
 
-            ViewModel.CurrentRoiInManipulation.SetValues(x, y, w, h);
+            ViewModel.CurrentRoiInCreationProcess.SetValues(x, y, w, h);
             //SelectionRectangleViewModel.SetValues(x, y, w, h);//obnovit
         }
 

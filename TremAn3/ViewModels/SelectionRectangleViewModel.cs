@@ -11,23 +11,16 @@ namespace TremAn3.ViewModels
     public class SelectionRectangleViewModel : ViewModelBase
     {
 
-
-        public SelectionRectangleViewModel(double x, double y, double width, double height, uint maxWidth, uint maxHeight)
-        {
-            X = (uint)Math.Round(x);
-            Y = (uint)Math.Round(y);
-            Width = (uint)Math.Round(width);
-            Height = (uint)Math.Round(height);
-            MaxWidth = maxWidth;
-            MaxHeight = maxHeight;
-        }
-
         public SelectionRectangleViewModel(double x, double y, uint maxWidth, uint maxHeight)
         {
+            //this order is neccessary
             X = (uint)Math.Round(x);
             Y = (uint)Math.Round(y);
-            MaxWidth = maxWidth;
+
+            MaxWidth = maxWidth;//also set ui sizes (and min value)
             MaxHeight = maxHeight;
+            IsInCreationProcess = true;
+
         }
 
         private uint _X;
@@ -67,6 +60,8 @@ namespace TremAn3.ViewModels
                     if (value == _Width)//without this it would not update number in UI when set manualy from max to max+1
                         RaisePropertyChanged();
                 }
+                if (value < MinSize && !IsInCreationProcess)//smaller than minsize
+                    value = (uint)Math.Round(MinSize);
                 Set(ref _Width, value);
             }
         }
@@ -78,12 +73,14 @@ namespace TremAn3.ViewModels
             get => _height;
             set
             {
-                if (Y + value > MaxHeight)
+                if (Y + value > MaxHeight)//bigger than max
                 {
                     value = MaxHeight - X;
                     if (value == _height)//without this it would not update number in UI when set manualy from max to max+1
                         RaisePropertyChanged();
                 }
+                if (value < MinSize && !IsInCreationProcess)//smaller than minsize
+                    value = (uint)Math.Round(MinSize);
                 Set(ref _height, value);
             }
         }
@@ -129,7 +126,7 @@ namespace TremAn3.ViewModels
         public uint MaxHeight
         {
             get => _MaxHeight;
-          set
+            set
             {
                 _MaxHeight = value;
                 //Set(ref _MaxHeight, value);
@@ -147,7 +144,7 @@ namespace TremAn3.ViewModels
         //    set => Set(ref _MaxWidth, value);
         //}
 
-        private double _MinSize ;
+        private double _MinSize;
 
         public double MinSize
         {
@@ -155,6 +152,21 @@ namespace TremAn3.ViewModels
             set => Set(ref _MinSize, value);
         }
 
+        private bool isInCreationProcess;
+
+        public bool IsInCreationProcess { get => isInCreationProcess;
+            set {
+                if (isInCreationProcess && !value)//from creation to completion
+                { //will fixes size after roi is created
+                 
+                    isInCreationProcess = false;
+                    Width = Width;
+                    Height = Height;
+
+                }else
+               isInCreationProcess = value;
+            }
+        }
 
         private void SetUiSizes()
         {

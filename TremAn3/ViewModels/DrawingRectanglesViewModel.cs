@@ -42,7 +42,7 @@ namespace TremAn3.ViewModels
             return s;
         }
 
-        public SelectionRectangleViewModel CurrentRoiInManipulation { get; set; }
+        public SelectionRectangleViewModel CurrentRoiInCreationProcess { get; set; }
 
         private uint _MaxHeight;
 
