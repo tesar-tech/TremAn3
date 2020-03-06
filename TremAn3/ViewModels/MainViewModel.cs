@@ -69,7 +69,7 @@ namespace TremAn3.ViewModels
             FreqCounterViewModel.IsComputationInProgress = true;
             FreqCounterViewModel.ResetResultDisplay();
 
-            SelectionRectangle rect = FreqCounterViewModel.SelectionRectangleViewModel.GetModel(FreqCounterViewModel.PercentageOfResolution);
+            SelectionRectangle rect = null;//FreqCounterViewModel.SelectionRectangleViewModel.GetModel(FreqCounterViewModel.PercentageOfResolution);
             FramesGrabber grabber = await FramesGrabber.CtorAsync(MediaPlayerViewModel.CurrentStorageFile,MediaPlayerViewModel.VideoPropsViewModel,
                     FreqCounterViewModel.PercentageOfResolution, TimeSpan.FromSeconds( FreqCounterViewModel.Minrange), TimeSpan.FromSeconds(FreqCounterViewModel.Maxrange));
             var frameRate = MediaPlayerViewModel.VideoPropsViewModel.FrameRate;

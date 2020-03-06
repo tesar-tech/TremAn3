@@ -10,6 +10,26 @@ namespace TremAn3.ViewModels
 {
     public class SelectionRectangleViewModel : ViewModelBase
     {
+
+
+        public SelectionRectangleViewModel(double x, double y, double width, double height, uint maxWidth, uint maxHeight)
+        {
+            X = (uint)Math.Round(x);
+            Y = (uint)Math.Round(y);
+            Width = (uint)Math.Round(width);
+            Height = (uint)Math.Round(height);
+            MaxWidth = maxWidth;
+            MaxHeight = maxHeight;
+        }
+
+        public SelectionRectangleViewModel(double x, double y, uint maxWidth, uint maxHeight)
+        {
+            X = (uint)Math.Round(x);
+            Y = (uint)Math.Round(y);
+            MaxWidth = maxWidth;
+            MaxHeight = maxHeight;
+        }
+
         private uint _X;
 
         public uint X
@@ -70,20 +90,20 @@ namespace TremAn3.ViewModels
 
 
 
-        private bool _IsVisible;
+        //private bool _IsVisible;
 
-        public bool IsVisible
-        {
-            get => _IsVisible;
-            set  {
+        //public bool IsVisible
+        //{
+        //    get => _IsVisible;
+        //    set  {
 
-                if (Set(ref _IsVisible, value))
-                    if (!value)//hiding selection will delete the recatngle (and computation will be frome whole frame)
-                        X = Y = Height = Width = 0;
+        //        if (Set(ref _IsVisible, value))
+        //            if (!value)//hiding selection will delete the recatngle (and computation will be frome whole frame)
+        //                X = Y = Height = Width = 0;
 
-            }
+        //    }
 
-        }
+        //}
 
         private double _BorderThickness = 2;
 
@@ -101,17 +121,31 @@ namespace TremAn3.ViewModels
             set => Set(ref _CornerSize, value);
         }
 
+
+
+
         private uint _MaxHeight;
 
         public uint MaxHeight
         {
             get => _MaxHeight;
-            set
+          set
             {
-                Set(ref _MaxHeight, value);
+                _MaxHeight = value;
+                //Set(ref _MaxHeight, value);
                 SetUiSizes();
             }
         }
+
+
+
+        public uint MaxWidth;
+
+        //public uint MaxWidth
+        //{
+        //    get => _MaxWidth;
+        //    set => Set(ref _MaxWidth, value);
+        //}
 
         private double _MinSize ;
 
@@ -132,13 +166,7 @@ namespace TremAn3.ViewModels
             MinSize = ratio * 50;
         }
 
-        private uint _MaxWidth;
 
-        public uint MaxWidth
-        {
-            get => _MaxWidth;
-            set => Set(ref _MaxWidth, value);
-        }
 
 
         internal void SetValues(double x, double y, double width, double height)

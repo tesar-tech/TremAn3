@@ -65,8 +65,8 @@
         <views:DrawingRectanglesUc x:Name="DrawingRectangle"  Canvas.ZIndex="5"
                                   IsEnabled="{x:Bind  ViewModel.IsFreqCounterOpen, Mode=OneWay}" />
 
-        <!--<views:DrawingRectangleUc x:Name="DrawingRectangle" Visibility="Collapsed" Canvas.ZIndex="2"
-                                  IsEnabled="{x:Bind  ViewModel.IsFreqCounterOpen, Mode=OneWay}" SelectionRectangleViewModel="{x:Bind ViewModel.FreqCounterViewModel.SelectionRectangleViewModel,Mode=TwoWay}"
+        <!--<views:DrawingRectanglesUc x:Name="DrawingRectangle" Visibility="Collapsed" Canvas.ZIndex="2"
+                                  IsEnabled="{x:Bind  ViewModel.IsFreqCounterOpen, Mode=OneWay}" DrawingRectanglesViewModel="{x:Bind ViewModel.FreqCounterViewModel.SelectionRectangleViewModel,Mode=TwoWay}"
                                    />-->
         <MediaPlayerElement x:Name="Mpe" Visibility="Collapsed"
             AutoPlay="False" AreTransportControlsEnabled="True"

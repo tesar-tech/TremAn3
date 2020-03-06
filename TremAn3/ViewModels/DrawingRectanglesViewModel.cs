@@ -13,18 +13,21 @@ namespace TremAn3.ViewModels
         public DrawingRectanglesViewModel()
         {
             //DEBUG data
-            SelectionRectangleViewModel s1 = new SelectionRectangleViewModel();
-            s1.MaxHeight = 376;s1.MaxWidth = 500;s1.IsVisible = true;
-            s1.SetValues(50, 60, 100, 200); SelectionRectanglesViewModels.Add(s1);
+           // SelectionRectangleViewModel s1 = new SelectionRectangleViewModel(50, 60, 100, 200,500,376);
+           //SelectionRectanglesViewModels.Add(s1);
 
-            SelectionRectangleViewModel s2 = new SelectionRectangleViewModel();
-            s2.MaxHeight = 376; s2.MaxWidth = 500; s2.IsVisible = true;
-            s2.SetValues(120, 80, 80, 60); SelectionRectanglesViewModels.Add(s2);
+           // SelectionRectangleViewModel s2 = new SelectionRectangleViewModel(120, 80, 80, 60,500,376);
+           //SelectionRectanglesViewModels.Add(s2);
 
            
         }
 
         private ObservableCollection<SelectionRectangleViewModel> _SelectionRectanglesViewModels = new ObservableCollection<SelectionRectangleViewModel>();
+
+        internal void RemoveRois()
+        {
+            SelectionRectanglesViewModels.Clear();
+        }
 
         public ObservableCollection<SelectionRectangleViewModel> SelectionRectanglesViewModels
         {
@@ -32,5 +35,32 @@ namespace TremAn3.ViewModels
             set => Set(ref _SelectionRectanglesViewModels, value);
         }
 
+        internal SelectionRectangleViewModel CreateNewROI(double x, double y)
+        {
+            SelectionRectangleViewModel s = new SelectionRectangleViewModel(x,y,MaxWidth,MaxHeight);
+            SelectionRectanglesViewModels.Add(s);
+            return s;
+        }
+
+        public SelectionRectangleViewModel CurrentRoiInManipulation { get; set; }
+
+        private uint _MaxHeight;
+
+        public uint MaxHeight
+        {
+            get => _MaxHeight;
+            set
+            {
+                Set(ref _MaxHeight, value);
+                //SetUiSizes();
+            }
+        }
+
+        private uint _MaxWidth;
+        public uint MaxWidth
+        {
+            get => _MaxWidth;
+            set => Set(ref _MaxWidth, value);
+        }
     }
 }

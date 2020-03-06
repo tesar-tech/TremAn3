@@ -84,11 +84,13 @@ namespace TremAn3.Views
         private bool manipulationWithRect;
         private void canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            ViewModel.SelectionRectanglesViewModels[0].SetValues(100,200,80,70);
             if (manipulationWithRect)
                 return;
-            //SelectionRectangleViewModel.IsVisible = true; obnovit
+
             startPoint = e.GetCurrentPoint(canvas).Position;
+            SelectionRectangleViewModel s =  ViewModel.CreateNewROI(startPoint.X,startPoint.Y);
+            ViewModel.CurrentRoiInManipulation = s;
+            //SelectionRectangleViewModel.IsVisible = true; obnovit
             //SelectionRectangleViewModel.SetValues(startPoint.X, startPoint.Y, 0, 0); obnovit
 
         }
@@ -105,7 +107,7 @@ namespace TremAn3.Views
         /// <param name="e"></param>
         private void canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (/*manipulationWithRect ||*/ !e.Pointer.IsInContact || enterWithContact) //obnovit
+            if (ViewModel.CurrentRoiInManipulation==null || !e.Pointer.IsInContact || enterWithContact) //obnovit
                 return;
 
             var pos = e.GetCurrentPoint(canvas).Position;
@@ -116,6 +118,7 @@ namespace TremAn3.Views
             var w = Math.Max(pos.X, startPoint.X) - x;
             var h = Math.Max(pos.Y, startPoint.Y) - y;
 
+            ViewModel.CurrentRoiInManipulation.SetValues(x, y, w, h);
             //SelectionRectangleViewModel.SetValues(x, y, w, h);//obnovit
         }
 

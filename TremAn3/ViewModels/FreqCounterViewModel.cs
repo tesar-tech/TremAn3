@@ -29,10 +29,11 @@ namespace TremAn3.ViewModels
         public void ResetFreqCounter()
         {
             ResetResultDisplay();
-            RemoveSelection();
+            DrawingRectanglesViewModel.RemoveRois();
+            //RemoveSelection();
             Maximum = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
-            SelectionRectangleViewModel.MaxHeight = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Height;
-            SelectionRectangleViewModel.MaxWidth = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Width;
+            DrawingRectanglesViewModel.MaxHeight = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Height;
+            DrawingRectanglesViewModel.MaxWidth = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Width;
 
         }
 
@@ -43,22 +44,27 @@ namespace TremAn3.ViewModels
         //    get => _PlotModelFreqInTime;
         //    set => Set(ref _PlotModelFreqInTime, value);
         //}
-        public void RemoveSelection()
-        {
-            //Rect = (0, 0, 0, 0);
-            //RemoveSelectionHandler?.Invoke();
-            SelectionRectangleViewModel.IsVisible = false;
-        }
+        //public void RemoveSelection()
+        //{
+        //    //Rect = (0, 0, 0, 0);
+        //    //RemoveSelectionHandler?.Invoke();
+        //    SelectionRectangleViewModel.IsVisible = false;
+        //}
 
         //public event Action RemoveSelectionHandler;
 
 
-        private SelectionRectangleViewModel _SelectionRectangleViewModel = new SelectionRectangleViewModel();
+        //private SelectionRectangleViewModel _SelectionRectangleViewModel = new SelectionRectangleViewModel();
 
-        public SelectionRectangleViewModel SelectionRectangleViewModel
+        //public SelectionRectangleViewModel SelectionRectangleViewModel
+        //{
+        //    get => _SelectionRectangleViewModel;
+        //    set => Set(ref _SelectionRectangleViewModel, value);
+        //}
+
+        private DrawingRectanglesViewModel DrawingRectanglesViewModel
         {
-            get => _SelectionRectangleViewModel;
-            set => Set(ref _SelectionRectangleViewModel, value);
+            get { return ViewModelLocator.Current.DrawingRectanglesViewModel; }
         }
 
         //private (uint X, uint Y, uint width, uint height) _Rect;
