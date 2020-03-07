@@ -34,9 +34,6 @@ namespace TremAn3.Views
             canvas.PointerMoved += canvas_PointerMoved;
             //canvas.PointerEntered += (s, e) => enterWithContact = e.Pointer.IsInContact;
             canvas.PointerReleased += canvas_PointerReleased;
-            
-            
-
         }
 
         private void canvas_PointerReleased(object sender, PointerRoutedEventArgs e)

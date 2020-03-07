@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helpers="using:TremAn3.Helpers"
+    xmlns:mux="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -23,8 +24,28 @@
             <Viewbox Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}">
                 <SymbolIcon  Symbol="Edit"/>
             </Viewbox>
+            <Button.Flyout >
+                <Flyout >
+                        <StackPanel  Orientation="Horizontal"  x:DefaultBindMode="TwoWay" >
+                            <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="X"/>
+                            <mux:NumberBox Minimum="0" x:Name="nb1"  Value="{x:Bind ViewModel.X}"  SpinButtonPlacementMode="Compact" LargeChange="10" />
+                            <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="Y"/>
+                            <mux:NumberBox Minimum="0" x:Name="nb2" Value="{x:Bind ViewModel.Y, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                            <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="W"/>
+                            <mux:NumberBox x:Name="nb3" Minimum="{x:Bind ViewModel.MinSize, Mode=OneWay}" Value="{x:Bind ViewModel.Width, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                            <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="H"/>
+                            <mux:NumberBox x:Name="nb4" Minimum="{x:Bind ViewModel.MinSize, Mode=OneWay}" Value="{x:Bind ViewModel.Height, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                        </StackPanel>
+                    <Flyout.FlyoutPresenterStyle>
+                        <Style TargetType="FlyoutPresenter">
+                            <Setter Property="Padding" Value="0" />
+                        </Style>
+                    </Flyout.FlyoutPresenterStyle>
+                </Flyout>
+            </Button.Flyout>
+
         </Button>
-        <Button Canvas.ZIndex="5" Click="{x:Bind  ViewModel.DeleteMe}" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+        <Button  Click="{x:Bind  ViewModel.DeleteMe}" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Bottom">
             <Viewbox Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}">
                 <SymbolIcon  Symbol="Cancel"/>
             </Viewbox>

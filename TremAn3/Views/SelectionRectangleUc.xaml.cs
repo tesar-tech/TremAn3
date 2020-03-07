@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using TremAn3.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Globalization.NumberFormatting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -44,7 +45,26 @@ namespace TremAn3.Views
             GridRoi.ManipulationStarted += (s, ee) => GridRoi.Opacity = 0.5;
             GridRoi.ManipulationCompleted += (s, ee) => { GridRoi.Opacity = 1; manipulationWithRect = false; };
             GridRoi.ManipulationDelta += Roi_ManipulationDelta;
+            SetFormatersForNumberBoxes();
+
         }
+
+        private void SetFormatersForNumberBoxes()
+        {
+            IncrementNumberRounder rounder = new IncrementNumberRounder();
+            rounder.Increment = 1;
+            rounder.RoundingAlgorithm = RoundingAlgorithm.RoundHalfUp;
+            DecimalFormatter formatter = new DecimalFormatter();
+            formatter.IntegerDigits = 1;
+            formatter.FractionDigits = 0;
+            formatter.NumberRounder = rounder;
+            nb1.NumberFormatter = formatter;
+            nb2.NumberFormatter = formatter;
+            nb3.NumberFormatter = formatter;
+            nb4.NumberFormatter = formatter;
+        }
+
+
         bool manipulationWithRect;
         /// <summary>
         /// gragging roi
@@ -116,9 +136,9 @@ namespace TremAn3.Views
                     wleft = Math.Min(ViewModel.MaxWidth - left,  ViewModel.Width + trX);
                      ViewModel.Width = Math.Max(ViewModel.MinSize, wleft);
 
+                    // max height for current location vs what i want with drag
                     ytop = Math.Min(ViewModel.MaxHeight - top,  ViewModel.Height + trY);
                      ViewModel.Height = Math.Max(ViewModel.MinSize, ytop);
-                    Debug.WriteLine($"ytop:{ytop} hei {ViewModel.Height}");
                     break;
                 case "lb":
                     wleft = Math.Max(0, left + trX);
