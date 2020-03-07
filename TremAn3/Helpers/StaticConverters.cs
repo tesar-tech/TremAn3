@@ -1,10 +1,10 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
@@ -37,7 +37,7 @@ namespace TremAn3.Helpers
 
         public static bool NullToBool(object obj) => obj != null;
 
-        public static Brush ColorToBrush(Color color) => new SolidColorBrush(color);
+        public static Brush ColorToBrush(Color color) => new SolidColorBrush(Windows.UI.Color.FromArgb(255,color.R,color.G,color.B));
 
         //public static Visibility MoreThanZeroToCollapsed(int count) => count > 0 ? Visibility.Collapsed : Visibility.Visible;
     }

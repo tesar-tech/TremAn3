@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TremAn3.Core.Helpers;
 
 namespace TremAn3.ViewModels
 {
@@ -38,7 +39,8 @@ namespace TremAn3.ViewModels
 
         internal SelectionRectangleViewModel CreateNewROI(double x, double y)
         {
-            SelectionRectangleViewModel s = new SelectionRectangleViewModel(x,y,MaxWidth,MaxHeight,currentSizeProportion);
+            var color = ColorHelper.GetNextColorThatIsNotInList( SelectionRectanglesViewModels.Select(c => c.Color).ToList());
+            SelectionRectangleViewModel s = new SelectionRectangleViewModel(x,y,MaxWidth,MaxHeight,currentSizeProportion,color);
             SelectionRectanglesViewModels.Add(s);
             s.DeleteMeAction += selectionToDelete => SelectionRectanglesViewModels.Remove(selectionToDelete);
             return s;

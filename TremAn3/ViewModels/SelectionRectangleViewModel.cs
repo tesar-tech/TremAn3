@@ -1,18 +1,18 @@
 ﻿using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TremAn3.Core;
-using Windows.UI;
 
 namespace TremAn3.ViewModels
 {
     public class SelectionRectangleViewModel : ViewModelBase
     {
 
-        public SelectionRectangleViewModel(double x, double y, uint maxWidth, uint maxHeight,double sizeProportion)
+        public SelectionRectangleViewModel(double x, double y, uint maxWidth, uint maxHeight,double sizeProportion, Color color)
         {
             X = (uint)Math.Round(x);
             Y = (uint)Math.Round(y);
@@ -21,8 +21,7 @@ namespace TremAn3.ViewModels
             MaxHeight = maxHeight;
             IsInCreationProcess = true;
             SizeProportion = sizeProportion;
-            Random rnd = new Random();
-            Color = Color.FromArgb((byte)255,(byte) rnd.Next(0, 255), (byte)rnd.Next(0, 255), (byte)rnd.Next(0, 255));
+            Color = color;
         }
 
         private Color _Color;
@@ -73,7 +72,11 @@ namespace TremAn3.ViewModels
                         RaisePropertyChanged();
                 }
                 if (value < MinSize && !IsInCreationProcess)//smaller than minsize
-                    value = (uint)Math.Round(MinSize);
+                {
+                    value = MinSize;
+                    RaisePropertyChanged();//otherwise it willnot update the ui (prop is not changed here, but on ui is)
+                }
+
                 Set(ref _Width, value);
             }
         }
@@ -92,7 +95,10 @@ namespace TremAn3.ViewModels
                         RaisePropertyChanged();
                 }
                 if (value < MinSize && !IsInCreationProcess)//smaller than minsize
-                    value = (uint)Math.Round(MinSize);
+                {
+                    value = MinSize;
+                    RaisePropertyChanged();//otherwise it willnot update the ui (prop is not changed here, but on ui is)
+                }
                 Set(ref _height, value);
             }
         }

@@ -14,27 +14,27 @@
     >
 
         <Grid x:Name="GridRoi" Width="{x:Bind  ViewModel.Width,Mode=TwoWay}" Height="{x:Bind  ViewModel.Height,Mode=TwoWay}"  ManipulationMode="TranslateY,TranslateX"  >
-        <Border Background="#1e70ff00" BorderThickness="{x:Bind helpers:StaticConverters.IntToThickness( ViewModel.BorderThickness), Mode=OneWay}" BorderBrush="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}" />
+        <Border  Background="#1e70ff00" BorderThickness="{x:Bind helpers:StaticConverters.IntToThickness( ViewModel.BorderThickness), Mode=OneWay}" BorderBrush="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}" />
             <Rectangle Tag="lt" HorizontalAlignment="Left" VerticalAlignment="Top" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
             <Rectangle Tag="rt" HorizontalAlignment="Right" VerticalAlignment="Top" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
             <Rectangle Tag="rb" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
             <Rectangle Tag="lb" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
 
-        <Button  Padding="0" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <Viewbox Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}">
-                <SymbolIcon  Symbol="Edit"/>
+        <Button  Padding="8" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Viewbox >
+                <SymbolIcon  Symbol="Edit" Foreground="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}"/>
             </Viewbox>
             <Button.Flyout >
                 <Flyout>
                         <StackPanel  Orientation="Horizontal"  x:DefaultBindMode="TwoWay" >
-                            <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="X"/>
+                            <TextBlock Margin="0,0,2,0" VerticalAlignment="Center" Text="X"/>
                             <mux:NumberBox Minimum="0" x:Name="nb1"  Value="{x:Bind ViewModel.X}"  SpinButtonPlacementMode="Compact" LargeChange="10" />
                             <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="Y"/>
-                            <mux:NumberBox Minimum="0" x:Name="nb2" Value="{x:Bind ViewModel.Y, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                            <mux:NumberBox Minimum="0" x:Name="nb2" Value="{x:Bind ViewModel.Y}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                             <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="W"/>
-                            <mux:NumberBox x:Name="nb3" Minimum="{x:Bind ViewModel.MinSize, Mode=OneWay}" Value="{x:Bind ViewModel.Width, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                            <mux:NumberBox x:Name="nb3"  Value="{x:Bind ViewModel.Width}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                             <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="H"/>
-                            <mux:NumberBox x:Name="nb4" Minimum="{x:Bind ViewModel.MinSize, Mode=OneWay}" Value="{x:Bind ViewModel.Height, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                            <mux:NumberBox x:Name="nb4"  Value="{x:Bind ViewModel.Height}" SpinButtonPlacementMode="Compact" LargeChange="10" />
                         </StackPanel>
                     <Flyout.FlyoutPresenterStyle>
                         <Style TargetType="FlyoutPresenter">
@@ -45,9 +45,9 @@
             </Button.Flyout>
 
         </Button>
-        <Button  Click="{x:Bind  ViewModel.DeleteMe}" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-            <Viewbox Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}">
-                <SymbolIcon  Symbol="Cancel"/>
+        <Button  Click="{x:Bind  ViewModel.DeleteMe}" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Padding="5" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Viewbox >
+                <SymbolIcon    Symbol="Cancel" Foreground="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}"/>
             </Viewbox>
         </Button>
 
