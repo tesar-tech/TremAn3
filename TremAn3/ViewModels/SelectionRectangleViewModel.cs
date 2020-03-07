@@ -11,21 +11,20 @@ namespace TremAn3.ViewModels
     public class SelectionRectangleViewModel : ViewModelBase
     {
 
-        public SelectionRectangleViewModel(double x, double y, uint maxWidth, uint maxHeight)
+        public SelectionRectangleViewModel(double x, double y, uint maxWidth, uint maxHeight,double sizeProportion)
         {
-            //this order is neccessary
             X = (uint)Math.Round(x);
             Y = (uint)Math.Round(y);
 
-            MaxWidth = maxWidth;//also set ui sizes (and min value)
+            MaxWidth = maxWidth;
             MaxHeight = maxHeight;
             IsInCreationProcess = true;
-
+            SizeProportion = sizeProportion;
         }
 
-        private uint _X;
+        private double _X;
 
-        public uint X
+        public double X
         {
             get => _X;
             set
@@ -34,9 +33,9 @@ namespace TremAn3.ViewModels
                 Set(ref _X, value);
             }
         }
-        private uint _Y;
+        private double _Y;
 
-        public uint Y
+        public double Y
         {
             get => _Y;
             set
@@ -46,9 +45,9 @@ namespace TremAn3.ViewModels
             }
         }
 
-        private uint _Width;
+        private double _Width;
 
-        public uint Width
+        public double Width
         {
             get => _Width;
             set
@@ -66,16 +65,16 @@ namespace TremAn3.ViewModels
             }
         }
 
-        private uint _height;
+        private double _height;
 
-        public uint Height
+        public double Height
         {
             get => _height;
             set
             {
                 if (Y + value > MaxHeight)//bigger than max
                 {
-                    value = MaxHeight - X;
+                    value = MaxHeight - Y;//this little forgotten X took me 30 minutes..
                     if (value == _height)//without this it would not update number in UI when set manualy from max to max+1
                         RaisePropertyChanged();
                 }
@@ -168,6 +167,8 @@ namespace TremAn3.ViewModels
             }
         }
 
+        public double SizeProportion { get; internal set; }
+
         private void SetUiSizes()
         {
             //keep selection rect to appear same no matter the size of a video
@@ -183,10 +184,10 @@ namespace TremAn3.ViewModels
 
         internal void SetValues(double x, double y, double width, double height)
         {
-            X = (uint)Math.Round(x);
-            Y = (uint)Math.Round(y);
-            Width = (uint)Math.Round(width);
-            Height = (uint)Math.Round(height);
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
         }
 
         internal SelectionRectangle GetModel(double percentageOfResolution)
@@ -194,9 +195,8 @@ namespace TremAn3.ViewModels
             return new SelectionRectangle((X, Y, Width, Height), percentageOfResolution);
         }
 
-        public void DeleteMe()
-        {
+        public event Action<SelectionRectangleViewModel> DeleteMeAction;
 
-        }
+        public void DeleteMe()=> DeleteMeAction.Invoke(this);//it is subscribed in drawing rectangles
     }
 }

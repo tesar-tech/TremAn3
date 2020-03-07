@@ -13,7 +13,7 @@
     Loaded="UserControl_Loaded"
     >
 
-    <Viewbox   >
+    <Viewbox  SizeChanged="Viewbox_SizeChanged"  >
 
         <!--<ItemsControl x:Name="canvas" Background="Transparent" PointerPressed="canvas_PointerPressed"
                       Height="{x:Bind SelectionRectangleViewModel.MaxHeight,Mode=OneWay}"

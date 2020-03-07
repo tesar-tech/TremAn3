@@ -7,13 +7,13 @@ namespace TremAn3.Core
     public class SelectionRectangle
     {
 
-        public SelectionRectangle((uint X, uint Y, uint width, uint height) value, double percentageOfResolution = 100)
+        public SelectionRectangle((double X, double Y, double width, double height) value, double percentageOfResolution = 100)
         {
             sizeReductionFactor = percentageOfResolution / 100;
-            x = value.X;
-            y = value.Y;
-            width= value.width;
-            height = value.height;
+            x = (uint)Math.Round(value.X);
+            y = (uint)Math.Round(value.Y);
+            width= (uint)Math.Round(value.width);
+            height =(uint)Math.Round(value.height);
         }
 
         private double sizeReductionFactor;

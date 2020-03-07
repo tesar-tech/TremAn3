@@ -22,12 +22,13 @@ namespace TremAn3.ViewModels
            
         }
 
-        private ObservableCollection<SelectionRectangleViewModel> _SelectionRectanglesViewModels = new ObservableCollection<SelectionRectangleViewModel>();
 
         internal void RemoveRois()
         {
             SelectionRectanglesViewModels.Clear();
         }
+
+        private ObservableCollection<SelectionRectangleViewModel> _SelectionRectanglesViewModels = new ObservableCollection<SelectionRectangleViewModel>();
 
         public ObservableCollection<SelectionRectangleViewModel> SelectionRectanglesViewModels
         {
@@ -37,8 +38,9 @@ namespace TremAn3.ViewModels
 
         internal SelectionRectangleViewModel CreateNewROI(double x, double y)
         {
-            SelectionRectangleViewModel s = new SelectionRectangleViewModel(x,y,MaxWidth,MaxHeight);
+            SelectionRectangleViewModel s = new SelectionRectangleViewModel(x,y,MaxWidth,MaxHeight,currentSizeProportion);
             SelectionRectanglesViewModels.Add(s);
+            s.DeleteMeAction += selectionToDelete => SelectionRectanglesViewModels.Remove(selectionToDelete);
             return s;
         }
 
@@ -62,5 +64,17 @@ namespace TremAn3.ViewModels
             get => _MaxWidth;
             set => Set(ref _MaxWidth, value);
         }
+
+
+        private double currentSizeProportion;
+        public void ChangeSizeProportion(double viewBoxWidth)
+        {
+            currentSizeProportion = MaxWidth / viewBoxWidth;
+            foreach (var roi in SelectionRectanglesViewModels)
+                roi.SizeProportion = currentSizeProportion;
+        }
+
+
+
     }
 }

@@ -131,5 +131,11 @@ namespace TremAn3.Views
             //SelectionRectangleViewModel.SetValues(x, y, w, h);//obnovit
         }
 
+        private void Viewbox_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ViewModel.ChangeSizeProportion(e.NewSize.Width);
+        }
+
+
     }
 }

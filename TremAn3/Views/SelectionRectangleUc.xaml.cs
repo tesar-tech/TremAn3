@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -52,9 +53,8 @@ namespace TremAn3.Views
         /// <param name="e"></param>
         void Roi_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            var trX = e.Delta.Translation.X /*/ viewbox.ActualWidth * canvas.ActualWidth*/;//obnovit
-            
-            var trY = e.Delta.Translation.Y /*/ viewbox.ActualHeight * canvas.ActualHeight*/;//obnovit
+            var trX = e.Delta.Translation.X * ViewModel.SizeProportion;
+            var trY = e.Delta.Translation.Y * ViewModel.SizeProportion;
 
             var setleft = Math.Max(0,  ViewModel.X + trX);//do not cross left upper
             var settop = Math.Max(0,  ViewModel.Y + trY);
@@ -62,11 +62,11 @@ namespace TremAn3.Views
             setleft = Math.Min(setleft, ViewModel.MaxWidth-  ViewModel.Width);//do not cross rigth bottom
             settop = Math.Min(settop, ViewModel.MaxHeight -  ViewModel.Height);
 
-             ViewModel.X = (uint)setleft;
-             ViewModel.Y = (uint)settop;
+             ViewModel.X = setleft;
+             ViewModel.Y = settop;
         }
 
-        uint minsize = 50;
+        //uint minsize = 50;
 
 
         /// <summary>
@@ -78,60 +78,58 @@ namespace TremAn3.Views
         {
 
             FrameworkElement el = (FrameworkElement)sender;
-            var trX = e.Delta.Translation.X /*/ viewbox.ActualWidth * canvas.ActualWidth*/;//obnovit
-            var trY = e.Delta.Translation.Y /*/ viewbox.ActualHeight * canvas.ActualHeight*/;//obnovit
+            var trX = e.Delta.Translation.X * ViewModel.SizeProportion;
+            var trY = e.Delta.Translation.Y * ViewModel.SizeProportion;
 
-            //double trX = (e.Delta.Translation.X / viewbox.ActualWidth * canvas.ActualWidth);
-            //double trY = (e.Delta.Translation.Y / viewbox.ActualHeight * canvas.ActualHeight);
-
-            uint top =  ViewModel.Y;
-            uint left =  ViewModel.X;
-            uint ytop;
-            uint wleft;
+            double top =  ViewModel.Y;
+            double left = ViewModel.X;
+            double ytop;
+            double wleft;
 
             switch ((string)el.Tag)
             {
                 case "lt"://left top
-                    wleft = (uint)Math.Round(Math.Max(0, left + trX));//dont be smaller that top lef cornet (0,0)
+                    wleft = Math.Max(0, left + trX);//dont be smaller that top lef cornet (0,0)
                     if (wleft != 0)
-                         ViewModel.Width = (uint)Math.Round(Math.Max(minsize,  ViewModel.Width - trX));
-                    if ( ViewModel.Width != minsize)//move roi with drag
+                         ViewModel.Width = Math.Max(ViewModel.MinSize,  ViewModel.Width - trX);
+                    if ( ViewModel.Width != ViewModel.MinSize)//move roi with drag
                          ViewModel.X = wleft;
 
-                    ytop = (uint)Math.Round(Math.Max(0, top + trY));
+                    ytop = Math.Max(0, top + trY);
                     if (ytop != 0)
-                         ViewModel.Height = (uint)Math.Round(Math.Max(minsize,  ViewModel.Height - trY));
-                    if ( ViewModel.Height != minsize)
+                         ViewModel.Height = Math.Max(ViewModel.MinSize,  ViewModel.Height - trY);
+                    if ( ViewModel.Height != ViewModel.MinSize)
                          ViewModel.Y = ytop;
                     break;
                 case "rt":
-                    wleft = (uint)Math.Round(Math.Min(ViewModel.MaxWidth- left,  ViewModel.Width + trX));
-                     ViewModel.Width = Math.Max(minsize, wleft);
+                    wleft = Math.Min(ViewModel.MaxWidth- left,  ViewModel.Width + trX);
+                     ViewModel.Width = Math.Max(ViewModel.MinSize, wleft);
 
-                    ytop = (uint)Math.Round(Math.Max(0, top + trY));
+                    ytop = Math.Max(0, top + trY);
                     if (ytop != 0)
-                         ViewModel.Height = (uint)Math.Round(Math.Max(minsize,  ViewModel.Height - trY));
-                    if ( ViewModel.Height != minsize)
+                         ViewModel.Height = Math.Max(ViewModel.MinSize,  ViewModel.Height - trY);
+                    if ( ViewModel.Height != ViewModel.MinSize)
                          ViewModel.Y = ytop;
 
                     break;
                 case "rb":
-                    wleft = (uint)Math.Round(Math.Min(ViewModel.MaxWidth - left,  ViewModel.Width + trX));
-                     ViewModel.Width = Math.Max(minsize, wleft);
+                    wleft = Math.Min(ViewModel.MaxWidth - left,  ViewModel.Width + trX);
+                     ViewModel.Width = Math.Max(ViewModel.MinSize, wleft);
 
-                    ytop = (uint)Math.Min(ViewModel.MaxHeight - top,  ViewModel.Height + trY);
-                     ViewModel.Height = Math.Max(minsize, ytop);
+                    ytop = Math.Min(ViewModel.MaxHeight - top,  ViewModel.Height + trY);
+                     ViewModel.Height = Math.Max(ViewModel.MinSize, ytop);
+                    Debug.WriteLine($"ytop:{ytop} hei {ViewModel.Height}");
                     break;
                 case "lb":
-                    wleft = (uint)Math.Round(Math.Max(0, left + trX));
+                    wleft = Math.Max(0, left + trX);
                     if (wleft != 0)
-                         ViewModel.Width = (uint)Math.Round(Math.Max(minsize,  ViewModel.Width - trX));
-                    if ( ViewModel.Width != minsize)
+                         ViewModel.Width = Math.Max(ViewModel.MinSize,  ViewModel.Width - trX);
+                    if ( ViewModel.Width != ViewModel.MinSize)
 
                          ViewModel.X = wleft;
 
-                    ytop = (uint)Math.Round(Math.Min(ViewModel.MaxHeight - top,  ViewModel.Height + trY));
-                     ViewModel.Height = Math.Max(minsize, ytop);
+                    ytop = Math.Min(ViewModel.MaxHeight - top,  ViewModel.Height + trY);
+                     ViewModel.Height = Math.Max(ViewModel.MinSize, ytop);
                     break;
                 default:
                     break;
