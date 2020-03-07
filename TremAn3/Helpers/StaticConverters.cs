@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace TremAn3.Helpers
 {
@@ -34,6 +36,8 @@ namespace TremAn3.Helpers
 
 
         public static bool NullToBool(object obj) => obj != null;
+
+        public static Brush ColorToBrush(Color color) => new SolidColorBrush(color);
 
         //public static Visibility MoreThanZeroToCollapsed(int count) => count > 0 ? Visibility.Collapsed : Visibility.Visible;
     }

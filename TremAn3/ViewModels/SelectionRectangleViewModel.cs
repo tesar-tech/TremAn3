@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TremAn3.Core;
+using Windows.UI;
 
 namespace TremAn3.ViewModels
 {
@@ -20,7 +21,19 @@ namespace TremAn3.ViewModels
             MaxHeight = maxHeight;
             IsInCreationProcess = true;
             SizeProportion = sizeProportion;
+            Random rnd = new Random();
+            Color = Color.FromArgb((byte)255,(byte) rnd.Next(0, 255), (byte)rnd.Next(0, 255), (byte)rnd.Next(0, 255));
         }
+
+        private Color _Color;
+
+        public Color Color
+        {
+            get => _Color;
+            set => Set(ref _Color, value);
+        }
+
+
 
         private double _X;
 
