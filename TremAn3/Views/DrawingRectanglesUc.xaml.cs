@@ -33,15 +33,22 @@ namespace TremAn3.Views
             this.InitializeComponent();
             canvas.PointerMoved += canvas_PointerMoved;
             //canvas.PointerEntered += (s, e) => enterWithContact = e.Pointer.IsInContact;
-            canvas.PointerReleased += (s, e) => { ViewModel.CurrentRoiInCreationProcess.IsInCreationProcess = false; ViewModel.CurrentRoiInCreationProcess = null; };
+            canvas.PointerReleased += canvas_PointerReleased;
             
             
 
         }
 
+        private void canvas_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (ViewModel.CurrentRoiInCreationProcess == null)
+                return;
+            ViewModel.CurrentRoiInCreationProcess.IsInCreationProcess = false;
+                ViewModel.CurrentRoiInCreationProcess = null; 
+        }
         //bool loaded;
         //bool enterWithContact;
-       
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //loaded = true;
@@ -108,7 +115,8 @@ namespace TremAn3.Views
         /// <param name="e"></param>
         private void canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (ViewModel.CurrentRoiInCreationProcess==null /*|| !e.Pointer.IsInContact*/ ) //obnovit
+            if (ViewModel.CurrentRoiInCreationProcess==null || !e.Pointer.IsInContact ) 
+                //contact is neccessary, because release event is not always fired (release outside)
                 return;
 
             var pos = e.GetCurrentPoint(canvas).Position;

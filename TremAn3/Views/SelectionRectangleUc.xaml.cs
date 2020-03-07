@@ -21,23 +21,25 @@ namespace TremAn3.Views
     public sealed partial class SelectionRectangleUc : UserControl
     {
 
-        public SelectionRectangleViewModel ViewModel
-        {
-            get { return (SelectionRectangleViewModel)GetValue(ViewModelProperty); }
-            set
-            {
-                SetValue(ViewModelProperty, value);
-            }
-        }
 
-        // Using a DependencyProperty as the backing store for SelectionRectangleViewModel.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register("ViewModel", typeof(SelectionRectangleViewModel), typeof(SelectionRectangleUc), new PropertyMetadata(0));
+        public SelectionRectangleViewModel ViewModel { get; set; }
+        //public SelectionRectangleViewModel ViewModel
+        //{
+        //    get { return (SelectionRectangleViewModel)GetValue(ViewModelProperty); }
+        //    set
+        //    {
+        //        SetValue(ViewModelProperty, value);
+        //    }
+        //}
+
+        //// Using a DependencyProperty as the backing store for SelectionRectangleViewModel.  This enables animation, styling, binding, etc...
+        //public static readonly DependencyProperty ViewModelProperty =
+        //    DependencyProperty.Register("ViewModel", typeof(SelectionRectangleViewModel), typeof(SelectionRectangleUc), new PropertyMetadata(0));
 
         public SelectionRectangleUc()
         {
             this.InitializeComponent();
-            GridRoi.PointerPressed += (s, ee) => manipulationWithRect = true;
+            GridRoi.PointerPressed += (s, ee) => { manipulationWithRect = true;ee.Handled = true; };
             GridRoi.ManipulationStarted += (s, ee) => GridRoi.Opacity = 0.5;
             GridRoi.ManipulationCompleted += (s, ee) => { GridRoi.Opacity = 1; manipulationWithRect = false; };
             GridRoi.ManipulationDelta += Roi_ManipulationDelta;

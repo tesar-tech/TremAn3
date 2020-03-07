@@ -20,15 +20,15 @@
                       Width="{x:Bind SelectionRectangleViewModel.MaxWidth, Mode=OneWay}"
                      >-->
             <ItemsControl  Background="Blue" 
-                      Height="376"
-                      Width="500"
+                      Height="{x:Bind ViewModel.MaxHeight, Mode=OneWay}"
+                      Width="{x:Bind ViewModel.MaxWidth, Mode=OneWay}"
                            x:Name="canvas" PointerPressed="canvas_PointerPressed"
                            ItemsSource="{x:Bind ViewModel.SelectionRectanglesViewModels, Mode=OneWay}"
                      >
                 <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="vm:SelectionRectangleViewModel">
 
-                    <local:SelectionRectangleUc ViewModel="{x:Bind}"  >
+                    <local:SelectionRectangleUc  ViewModel="{x:Bind}"  >
                         <local:SelectionRectangleUc.RenderTransform>
                             <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
                         </local:SelectionRectangleUc.RenderTransform>
