@@ -68,7 +68,7 @@ namespace TremAn3.Services
 
         public double ProgressPercentage { get =>  (double)(frameIndex) / framesCount * 100;  }
         
-        public async Task<byte[]> GrabARGBFrameInCurrentIndexAsync()
+        public async Task<(byte[] data, bool isData)> GrabARGBFrameInCurrentIndexAsync()
         {
             VideoFrame frame;
             if (frameIndex == 0)
@@ -76,7 +76,7 @@ namespace TremAn3.Services
             else
                 frame = await grabber.ExtractNextVideoFrameAsync();
             if (frame == null || frame.Timestamp > end)//it is last frame or frame we dont want to
-                return null;
+                return (null,false);
             var data =  frame.PixelData.ToArray();
             //var grayBytes = new byte[data.Length / 4];
             //int grayBytrsIterator = 0;
@@ -86,7 +86,7 @@ namespace TremAn3.Services
             //    grayBytrsIterator++;
             //}
             frameIndex++;
-            return data;
+            return (data,true);
         }
     }
 }

@@ -22,7 +22,26 @@ namespace TremAn3.ViewModels
             IsInCreationProcess = true;
             SizeProportion = sizeProportion;
             Color = color;
+            ComputationViewModel = new SelectionRectangleComputationViewModel(Color);
+
         }
+
+
+        internal void InitializeCoM(int decodedPixelWidth,int decodedPixelHeight,double frameRate, double percentageOfResolution)
+        {
+           var rect = GetModel(percentageOfResolution);
+            ComputationViewModel.InitializeCoM(decodedPixelWidth, decodedPixelHeight, frameRate, rect);
+        }
+
+        private SelectionRectangleComputationViewModel _ComputationViewModel;
+
+        public SelectionRectangleComputationViewModel ComputationViewModel
+        {
+            get => _ComputationViewModel;
+            set => Set(ref _ComputationViewModel, value);
+        }
+
+
 
         private Color _Color;
 

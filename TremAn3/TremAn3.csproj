@@ -187,6 +187,7 @@
     <Compile Include="ViewModels\MediaPlayerViewModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="ViewModels\SchemeActivationSampleViewModel.cs" />
+    <Compile Include="ViewModels\SelectionRectangleComputationViewModel.cs" />
     <Compile Include="ViewModels\SelectionRectangleViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ShellContentDialogViewModel.cs" />

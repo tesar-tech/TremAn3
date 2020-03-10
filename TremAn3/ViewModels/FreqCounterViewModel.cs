@@ -122,59 +122,112 @@ namespace TremAn3.ViewModels
         {
             XCoM,YCoM,PSDAvg
         }
-        internal void UpdatePlotsWithNewVals(PlotType type, List<(double xx, double yy)> newVals, bool justClear = false)
+
+        public void DisplayPlots()
         {
-            switch (type)
+            var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
+            
+            var psdPlotModel = new PlotModel();
+            var xcomPlotModel = new PlotModel();
+            foreach (var comp in comps)
             {
-                case PlotType.XCoM:
-                    if (justClear || newVals?.Count() <= 0)
-                        XCoMPlotModel = getPlotModelWithNoDataText();
-                    else
-                    {
-                        XCoMPlotModel = NewPlotModelWithSeries(newVals);
-                        XCoMPlotModel.InvalidatePlot(true);
-                        //newPlotModel.Axes[0].Title = "Freq (Hz)";
-                        //newPlotModel.Axes[1].Title = "PSD";
-                    }
-                    break;
-                case PlotType.YCoM:
-                    if (justClear || newVals?.Count() <= 0)
-                        YCoMPlotModel = getPlotModelWithNoDataText();
-                    else
-                    {
-                        YCoMPlotModel = NewPlotModelWithSeries(newVals);
-                        YCoMPlotModel.InvalidatePlot(true);
-                        //newPlotModel.Axes[0].Title = "Freq (Hz)";
-                        //newPlotModel.Axes[1].Title = "PSD";
-                    }
-                    break;
-                case PlotType.PSDAvg:
-                    if (justClear || newVals?.Count() <= 0)
-                        PSDPlotModel = getPlotModelWithNoDataText();
-                    else
-                    {
-                        PSDPlotModel = NewPlotModelWithSeries(newVals);
-                        PSDPlotModel.InvalidatePlot(true);
-                        //newPlotModel.Axes[0].Title = "Freq (Hz)";
-                        //newPlotModel.Axes[1].Title = "PSD";
-                    }
-                    break;
-                default:
-                    break;
+                comp.PrepareForDisplay();
+                psdPlotModel.Series.Add(comp.PsdSeries);
+                xcomPlotModel.Series.Add(comp.XComSeries);
             }
 
-        }
+            PSDPlotModel = psdPlotModel;
+            XCoMPlotModel = xcomPlotModel;
 
-        PlotModel NewPlotModelWithSeries(List<(double xx, double yy)> newVals)
-        {
-            var newPlotModel = new PlotModel();
-            LineSeries s = new LineSeries
-            {
-                ItemsSource = newVals.Select(c => new DataPoint(c.xx, c.yy))
-            };
-            newPlotModel.Series.Add(s);
-            return newPlotModel;
+
         }
+        //internal void PlotComAlgs(List<CenterOfMotionAlgorithm> comAlgs)
+        //{
+
+        //    foreach (var comAlg in comAlgs)
+        //    {
+        //        comAlg.GetMainFreqAndFillPsdDataFromComLists();
+
+        //    }
+        //    var PSDs = comAlgs.Select(x => x.PsdAvgData);
+        //    UpdatePlotsWithNewVals(PlotType.PSDAvg, comAlgs);
+
+
+        //    //psd
+
+        //    //x
+        //    var xComs = comAlgs[0].ListComXNoAvg.Select((x, i) => ((double)i, x)).ToList();
+        //    FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.XCoM, xComs);
+
+        //    //y
+        //    var yComs = comAlgs[0].ListComYNoAvg.Select((x, i) => ((double)i, x)).ToList();
+        //    FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.YCoM, yComs);
+
+        //}
+
+        //internal void UpdatePlotsWithNewVals(PlotType type, List<List<(double xx, double yy)>> newVals, bool justClear = false)
+        //{
+        //    switch (type)
+        //    {
+        //        case PlotType.XCoM:
+        //            if (justClear || newVals?.Count() <= 0)
+        //                XCoMPlotModel = getPlotModelWithNoDataText();
+        //            else
+        //            {
+        //                XCoMPlotModel = NewPlotModelWithSeries(newVals);
+        //                XCoMPlotModel.InvalidatePlot(true);
+        //                //newPlotModel.Axes[0].Title = "Freq (Hz)";
+        //                //newPlotModel.Axes[1].Title = "PSD";
+        //            }
+        //            break;
+        //        case PlotType.YCoM:
+        //            if (justClear || newVals?.Count() <= 0)
+        //            else
+        //            {
+        //                YCoMPlotModel = NewPlotModelWithSeries(newVals);
+        //                YCoMPlotModel.InvalidatePlot(true);
+        //                //newPlotModel.Axes[0].Title = "Freq (Hz)";
+        //                //newPlotModel.Axes[1].Title = "PSD";
+        //            }
+        //            break;
+        //        case PlotType.PSDAvg:
+        //            if (justClear || newVals?.Count() <= 0)
+        //            else
+        //            {
+        //                PSDPlotModel = NewPlotModelWithSeries(newVals);
+        //                PSDPlotModel.InvalidatePlot(true);
+        //                //newPlotModel.Axes[0].Title = "Freq (Hz)";
+        //                //newPlotModel.Axes[1].Title = "PSD";
+        //            }
+        //            break;
+        //        default:
+        //            break;
+        //    }
+
+        //}
+
+        //PlotModel NewPlotModelWithSeries(List<List<(double xx, double yy)>> series)
+        //{
+        //    var newPlotModel = new PlotModel();
+        //    //foreach (var vals in series)
+        //    //{
+        //    //    LineSeries s = new LineSeries
+        //    //    {
+        //    //        ItemsSource = vals.Select(c => new DataPoint(c.xx, c.yy)),
+        //    //        Color = 
+        //    //    };
+        //    //}
+  
+        //    //Random dn = new Random();
+        //    //LineSeries s2 = new LineSeries
+        //    //{
+        //    //    ItemsSource = series.Select(c => new DataPoint(c.xx, c.yy + dn.NextDouble())),
+        //    //    Color = OxyColor.FromArgb(255, 255, 0, 255)
+        //    //};
+        //    //newPlotModel.Series.Add(s);
+        //    //newPlotModel.Series.Add(s2);
+        //    return newPlotModel;
+        //}
 
         //private bool _IsDataAvailableForPlot;//for displaying no data over plot
 
@@ -204,9 +257,10 @@ namespace TremAn3.ViewModels
         internal void ResetResultDisplay()
         {
             VideoMainFreq = -1;//means nothing
-            UpdatePlotsWithNewVals(PlotType.XCoM, null, true);
-            UpdatePlotsWithNewVals(PlotType.YCoM, null, true);
-            UpdatePlotsWithNewVals(PlotType.PSDAvg, null, true);
+            XCoMPlotModel = getPlotModelWithNoDataText();
+            YCoMPlotModel = getPlotModelWithNoDataText();
+            PSDPlotModel = getPlotModelWithNoDataText();
+
         }
 
         double _minrange;
