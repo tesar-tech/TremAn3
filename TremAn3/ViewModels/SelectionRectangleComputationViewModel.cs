@@ -31,7 +31,7 @@ namespace TremAn3.ViewModels
         public void PrepareForDisplay()
         {
             MainFreq = Algorithm.GetMainFreqAndFillPsdDataFromComLists();
-            var col = 
+            
             PsdSeries = new LineSeries
             {
                 ItemsSource = Algorithm.Results.PsdAvgData.Select(c => new DataPoint(c.x_freq, c.y_power)),
@@ -41,6 +41,12 @@ namespace TremAn3.ViewModels
             XComSeries = new LineSeries
             {
                 ItemsSource = Algorithm.Results.ListComXNoAvg.Select((val,i) => new DataPoint(i, val)),
+                Color = color
+            };
+
+            YComSeries = new LineSeries
+            {
+                ItemsSource = Algorithm.Results.ListComXNoAvg.Select((val, i) => new DataPoint(i, val)),
                 Color = color
             };
 
@@ -64,6 +70,15 @@ namespace TremAn3.ViewModels
             get => _XComSeries;
             set => Set(ref _XComSeries, value);
         }
+
+        private LineSeries _YComSeries;
+
+        public LineSeries YComSeries
+        {
+            get => _YComSeries;
+            set => Set(ref _YComSeries, value);
+        }
+
 
 
         private double _MainFreq;

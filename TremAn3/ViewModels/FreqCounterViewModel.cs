@@ -129,15 +129,18 @@ namespace TremAn3.ViewModels
             
             var psdPlotModel = new PlotModel();
             var xcomPlotModel = new PlotModel();
+            var ycomPlotModel = new PlotModel();
             foreach (var comp in comps)
             {
                 comp.PrepareForDisplay();
                 psdPlotModel.Series.Add(comp.PsdSeries);
                 xcomPlotModel.Series.Add(comp.XComSeries);
+                ycomPlotModel.Series.Add(comp.YComSeries);
             }
 
             PSDPlotModel = psdPlotModel;
             XCoMPlotModel = xcomPlotModel;
+            YCoMPlotModel = ycomPlotModel;
 
 
         }

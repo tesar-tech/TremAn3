@@ -12,8 +12,8 @@ namespace TremAn3.Core.Tests.xUnit
         CenterOfMotionAlgorithm cOM2 = new CenterOfMotionAlgorithm(256, 256, 30, new SelectionRectangle((0, 0, 256, 256)));
         public ComTests()
         {
-            cOM1.Frame1 = new byte[65536];cOM1.Frame2 = new byte[65536];
-            cOM2.Frame1 = new byte[65536]; cOM2.Frame2 = new byte[65536];
+            cOM1.Frame1 = new List<byte>();cOM1.Frame2 = new List<byte>();
+            cOM2.Frame1 = new List<byte>(); cOM2.Frame2 = new List<byte>();
             for (int i = 0; i < 65536; i++)
             {
                 cOM1.Frame1[i] = 0;
@@ -53,14 +53,14 @@ namespace TremAn3.Core.Tests.xUnit
 
             cOM1.GetComFromCurrentARGBFrames();// this is probably gonna fail, I am in hurry
                                                //(after change from gray to rgb)
-            Assert.Equal(127.5, cOM1.listComX[0]);//Description in README.md
+            Assert.Equal(127.5, cOM1.Results.listComX[0]);//Description in README.md
         }
         [Fact]
         public void GetComFromCurrentFrames_DifferentFrames_SameResult()
         {
             cOM2.GetComFromCurrentARGBFrames();// this is probably gonna fail, I am in hurry
                //(after change from gray to rgb)
-            Assert.Equal(127.5, cOM2.listComX[0]);//Description in README.md
+            Assert.Equal(127.5, cOM2.Results.listComX[0]);//Description in README.md
         }
         //[Fact]
         //public void GetMainFreqFromComLists_EnteredValues_SameResult()

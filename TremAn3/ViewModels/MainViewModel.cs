@@ -124,8 +124,8 @@ namespace TremAn3.ViewModels
                 getComTime += sw.ElapsedMilliseconds;
                 // frame grabber is bad on small videos - no idea why
             }
-
             FreqCounterViewModel.DisplayPlots();
+
             //FreqCounterViewModel.VideoMainFreq = comAlgs[0].GetMainFreqAndFillPsdDataFromComLists();
 
             ////psd

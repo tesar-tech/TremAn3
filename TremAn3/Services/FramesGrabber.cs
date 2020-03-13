@@ -72,9 +72,10 @@ namespace TremAn3.Services
         {
             VideoFrame frame;
             if (frameIndex == 0)
-                frame = await grabber.ExtractVideoFrameAsync(start);
+                frame = await grabber.ExtractVideoFrameAsync(start,true);
             else
                 frame = await grabber.ExtractNextVideoFrameAsync();
+            
             if (frame == null || frame.Timestamp > end)//it is last frame or frame we dont want to
                 return (null,false);
             var data =  frame.PixelData.ToArray();
