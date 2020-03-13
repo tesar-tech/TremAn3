@@ -61,6 +61,7 @@ namespace TremAn3.Services
         readonly TimeSpan start;
         readonly TimeSpan end;
         int frameIndex = 0;
+        public TimeSpan TimeOfFrameOnCurrentIndex { get; private set; }
 
         public TimeSpan RangeDuration { get=> end-start;  }
         public int DecodedPixelWidth { get;private set; }
@@ -87,6 +88,8 @@ namespace TremAn3.Services
             //    grayBytrsIterator++;
             //}
             frameIndex++;
+            TimeOfFrameOnCurrentIndex = frame.Timestamp;
+
             return (data,true);
         }
     }

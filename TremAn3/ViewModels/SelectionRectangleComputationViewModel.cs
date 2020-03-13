@@ -21,6 +21,8 @@ namespace TremAn3.ViewModels
             this.color = OxyColor.FromArgb(255, color.R, color.G, color.B);
             
         }
+
+        public bool HasResult { get => Algorithm?.Results !=null;  }
         internal CenterOfMotionAlgorithm InitializeCoM(int decodedPixelWidth, int decodedPixelHeight, double frameRate, SelectionRectangle rectangle)
         {
             Algorithm = new CenterOfMotionAlgorithm(decodedPixelWidth, decodedPixelHeight, frameRate, rectangle);

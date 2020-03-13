@@ -120,6 +120,7 @@ namespace TremAn3.ViewModels
                     comAlg.Frame2 = frame2;
 
                     comAlg.GetComFromCurrentARGBFrames();
+                    comAlg.Results.FrameTimes.Add(grabber.TimeOfFrameOnCurrentIndex);
                 }
 
                 FreqCounterViewModel.ProgressPercentage = grabber.ProgressPercentage;
@@ -147,37 +148,46 @@ namespace TremAn3.ViewModels
 
 
 
+        public async void ExportComXAsync() => await ExportToCsvAsync("comX");
+        public async void ExportComYAsync() => await ExportToCsvAsync("comY");
+        public async void ExportPsdAsync() => await ExportToCsvAsync("psd");
 
-        public async void ExportCoMsAsync()
+        public async Task ExportToCsvAsync( string type)
         {
-            //if (comAlg == null)
-            //{
-            //    ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Nothing to export");
+            var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels;
+            if (rois.Count == 0 || !rois[0].ComputationViewModel.HasResult)
+            {
+                ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Nothing to export");
+                return;
+            }
 
-            //    return;
-            //}
-            //var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
+            var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
+
+            List<double> one_x = null;
+            if(type=="comX" || type =="comY")
+            one_x = rois[0].ComputationViewModel.Algorithm.Results.FrameTimes.Select(x=>x.TotalSeconds).ToList();
+            else if(type=="psd")
+                one_x = rois[0].ComputationViewModel.Algorithm.Results.PsdAvgData.Select(x=>x.x_freq).ToList();
+
+
+            List<List<double>> multiple_ys = null;
+
+            if (type == "comX")
+                multiple_ys = rois.Select(x=> x.ComputationViewModel.Algorithm.Results.ListComXNoAvg).ToList();
+            else if (type == "comY")
+                multiple_ys = rois.Select(x=> x.ComputationViewModel.Algorithm.Results.ListComYNoAvg).ToList();
+            else if (type == "psd")
+                multiple_ys = rois.Select(x=>x.ComputationViewModel.Algorithm.Results.PsdAvgData.Select(y => y.y_power).ToList()).ToList();
+
+            string xHeader = type == "psd" ? "freq [Hz]" : "time[s]";
+            string yHeader = type == "psd" ? "PSD" : type=="comX"? "CoMX" : "CoMY";
+
+            var str = CsvBuilder.GetCvsFromOneX_MultipleY(xs:one_x, multiple_ys: multiple_ys, separators,headers:rois.Select(x=> $"{yHeader}__{x.ToString()}").Prepend(xHeader));
+
             //var str = CsvBuilder.GetCsvFromTwoLists(comAlg.ListComXNoAvg, comAlg.ListComYNoAvg, separators, "frame", "CoMX", "CoMY");
-            //var name = $"{MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_CoMs";
-            //var status = await CsvExport.ExportStringAsCsvAsync(str, name);
-            //NotifBasedOnStatus(status, name);
-        }
-
-        public async void ExportPsdAsync()
-        {
-            //if (comAlg == null)
-            //{
-            //    ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Nothing to export");
-
-            //    return;
-            //}
-            //var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
-            //var str = CsvBuilder.GetCsvFromData(comAlg.PsdAvgData, separators, "frequency", "PSD");
-            //var name = $"{MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_PSD";
-            //var status = await CsvExport.ExportStringAsCsvAsync(str, name);
-            //NotifBasedOnStatus(status, name);
-
-
+            var name = $"{MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_{type}";
+            var (status, newName) = await CsvExport.ExportStringAsCsvAsync(str, name);
+            NotifBasedOnStatus(status, newName);
         }
 
 

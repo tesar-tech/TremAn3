@@ -7,6 +7,8 @@ namespace TremAn3.Core
 {
     public class Results
     {
+        public List<TimeSpan> FrameTimes { get; set; } = new List<TimeSpan>();
+
         public List<double> listComX = new List<double>();
         public List<double> listComY = new List<double>();
         public List<(double x_freq, double y_power)> PsdAvgData { get; set; }

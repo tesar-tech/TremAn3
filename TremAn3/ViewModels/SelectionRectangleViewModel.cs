@@ -233,6 +233,11 @@ namespace TremAn3.ViewModels
             return new SelectionRectangle((X, Y, Width, Height), percentageOfResolution);
         }
 
+        public override string ToString()
+        {
+            return $"roi_X{Math.Round(X)}_Y{Math.Round(Y)}_W{Math.Round(Width)}_H{Math.Round(Height)}";
+        }
+
         public event Action<SelectionRectangleViewModel> DeleteMeAction;
 
         public void DeleteMe()=> DeleteMeAction.Invoke(this);//it is subscribed in drawing rectangles
