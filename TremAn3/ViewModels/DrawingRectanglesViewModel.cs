@@ -14,13 +14,13 @@ namespace TremAn3.ViewModels
         public DrawingRectanglesViewModel()
         {
             //DEBUG data
-           // SelectionRectangleViewModel s1 = new SelectionRectangleViewModel(50, 60, 100, 200,500,376);
-           //SelectionRectanglesViewModels.Add(s1);
+            // SelectionRectangleViewModel s1 = new SelectionRectangleViewModel(50, 60, 100, 200,500,376);
+            //SelectionRectanglesViewModels.Add(s1);
 
-           // SelectionRectangleViewModel s2 = new SelectionRectangleViewModel(120, 80, 80, 60,500,376);
-           //SelectionRectanglesViewModels.Add(s2);
+            //SelectionRectangleViewModel s2 = new SelectionRectangleViewModel(120, 80, 80, 60, 500, 376);
+            //SelectionRectanglesViewModels.Add(s2);
 
-           
+
         }
 
 
@@ -76,7 +76,14 @@ namespace TremAn3.ViewModels
                 roi.SizeProportion = currentSizeProportion;
         }
 
-
-
+        /// <summary>
+        /// Adds roi with pos 0,0 and max size. When no roi is added by user. 
+        /// </summary>
+        internal void AddMaxRoi()
+        {
+            var maxRoi =  CreateNewROI(0,0);
+            maxRoi.Height = maxRoi.MaxHeight;
+            maxRoi.Width = maxRoi.MaxWidth;
+        }
     }
 }

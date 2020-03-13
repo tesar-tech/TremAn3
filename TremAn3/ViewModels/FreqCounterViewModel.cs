@@ -34,6 +34,7 @@ namespace TremAn3.ViewModels
             Maximum = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
             DrawingRectanglesViewModel.MaxHeight = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Height;
             DrawingRectanglesViewModel.MaxWidth = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Width;
+            //DrawingRectanglesViewModel.AddDefaultRoi();
 
         }
 

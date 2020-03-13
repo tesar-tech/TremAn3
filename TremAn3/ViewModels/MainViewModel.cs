@@ -78,9 +78,11 @@ namespace TremAn3.ViewModels
                     FreqCounterViewModel.PercentageOfResolution, TimeSpan.FromSeconds(FreqCounterViewModel.Minrange), TimeSpan.FromSeconds(FreqCounterViewModel.Maxrange));
             var frameRate = MediaPlayerViewModel.VideoPropsViewModel.FrameRate;
 
-            var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels.ToList();
+            var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels;
+            if (rois.Count == 0)
+                ViewModelLocator.Current.DrawingRectanglesViewModel.AddMaxRoi();
 
-            rois.ForEach(
+            rois.ToList().ForEach(
                 x => x.InitializeCoM(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate, FreqCounterViewModel.PercentageOfResolution));
             var comAlgs = rois.Select(x => x.ComputationViewModel.Algorithm);
 
