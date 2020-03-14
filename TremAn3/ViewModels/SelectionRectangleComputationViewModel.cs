@@ -46,13 +46,13 @@ namespace TremAn3.ViewModels
 
             XComSeries = new LineSeries
             {
-                ItemsSource = Algorithm.Results.ListComXNoAvg.Select((val,i) => new DataPoint(i, val)),
+                ItemsSource = Algorithm.Results.ListComXNoAvg.Zip(Algorithm.Results.FrameTimes, (valy,valx) => new DataPoint(valx.TotalSeconds, valy)),
                 Color = color
             };
 
             YComSeries = new LineSeries
             {
-                ItemsSource = Algorithm.Results.ListComXNoAvg.Select((val, i) => new DataPoint(i, val)),
+                ItemsSource = Algorithm.Results.ListComYNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)),
                 Color = color
             };
 
