@@ -123,21 +123,23 @@ namespace TremAn3.ViewModels
         }
 
 
+       public Action plotsNeedRefresh;
 
-        //private bool _IsVisible;
+        private bool _IsShowInPlot = true;
 
-        //public bool IsVisible
-        //{
-        //    get => _IsVisible;
-        //    set  {
+        public bool IsShowInPlot
+        {
+            get => _IsShowInPlot;
+            set {
+                bool wasChange = Set(ref _IsShowInPlot, value);
+                if (wasChange)
+                {
+                    ComputationViewModel.ChangeVisibilityOfLines(_IsShowInPlot);
+                    plotsNeedRefresh.Invoke();                   
+                }
+            }
+        }
 
-        //        if (Set(ref _IsVisible, value))
-        //            if (!value)//hiding selection will delete the recatngle (and computation will be frome whole frame)
-        //                X = Y = Height = Width = 0;
-
-        //    }
-
-        //}
 
         private double _BorderThickness = 2;
 

@@ -45,7 +45,7 @@
             </Button.Flyout>
 
         </Button>
-        <Button  Click="{x:Bind  ViewModel.DeleteMe}" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Padding="5" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+        <Button  Click="{x:Bind  ViewModel.DeleteMe }" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Padding="5" HorizontalAlignment="Center" VerticalAlignment="Bottom">
             <Viewbox >
                 <SymbolIcon    Symbol="Cancel" Foreground="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}"/>
             </Viewbox>

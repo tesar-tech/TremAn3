@@ -22,10 +22,14 @@ namespace TremAn3.ViewModels
             
         }
 
+    
+
+
         public bool HasResult { get => Algorithm?.Results !=null;  }
         internal CenterOfMotionAlgorithm InitializeCoM(int decodedPixelWidth, int decodedPixelHeight, double frameRate, SelectionRectangle rectangle)
         {
             Algorithm = new CenterOfMotionAlgorithm(decodedPixelWidth, decodedPixelHeight, frameRate, rectangle);
+            RaisePropertyChanged(nameof(HasResult));
             return Algorithm;
         }
         public CenterOfMotionAlgorithm   Algorithm{ get; set; }
@@ -92,6 +96,10 @@ namespace TremAn3.ViewModels
             set => Set(ref _MainFreq, value);
         }
 
-
+        internal void ChangeVisibilityOfLines(bool isShowInPlot)
+        {
+            var thickness = isShowInPlot ? 1 : 0.08;//when unvisible, just change thickness to small value
+            PsdSeries.StrokeThickness = XComSeries.StrokeThickness = YComSeries.StrokeThickness = thickness;
+        }
     }
 }

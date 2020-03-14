@@ -34,6 +34,7 @@ namespace TremAn3.ViewModels
             Maximum = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
             DrawingRectanglesViewModel.MaxHeight = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Height;
             DrawingRectanglesViewModel.MaxWidth = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Width;
+            DrawingRectanglesViewModel.plotsNeedRefresh += RefreshPlots;
             //DrawingRectanglesViewModel.AddDefaultRoi();
 
         }
@@ -63,7 +64,7 @@ namespace TremAn3.ViewModels
         //    set => Set(ref _SelectionRectangleViewModel, value);
         //}
 
-        private DrawingRectanglesViewModel DrawingRectanglesViewModel
+        public DrawingRectanglesViewModel DrawingRectanglesViewModel
         {
             get { return ViewModelLocator.Current.DrawingRectanglesViewModel; }
         }
@@ -112,6 +113,12 @@ namespace TremAn3.ViewModels
             set => Set(ref _YCoMPlotModel, value);
         }
 
+        private void RefreshPlots()
+        {
+            XCoMPlotModel.InvalidatePlot(true);
+            YCoMPlotModel.InvalidatePlot(true);
+            PSDPlotModel.InvalidatePlot(true);
+        }
 
         private PlotModel getPlotModelWithNoDataText()
         {

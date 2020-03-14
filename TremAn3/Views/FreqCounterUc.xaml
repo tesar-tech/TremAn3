@@ -11,12 +11,19 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
     xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    xmlns:vm="using:TremAn3.ViewModels"
     
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
     <UserControl.Resources>
+        <Style x:Key="ListViewWrapPanelStyle"  TargetType="ListViewItem" >
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="MinWidth" Value="0"/>
+        </Style>
         <toolkitConverters:StringFormatConverter x:Key="StringFormatConverter"></toolkitConverters:StringFormatConverter>
     </UserControl.Resources>
     <Grid>
@@ -26,20 +33,25 @@
                 <StackPanel   Orientation="Vertical"   Padding="5" >
 
                 <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" />
-                <!--<StackPanel Orientation="Horizontal" Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(ViewModel.SelectionRectangleViewModel.IsVisible), Mode=OneWay}">
-                    <StackPanel Background="Gray" Orientation="Horizontal">
-                        <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="X"/>
-                        <mux:NumberBox Minimum="0" Value="{x:Bind ViewModel.SelectionRectangleViewModel.X, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
-                        <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="Y"/>
-                        <mux:NumberBox Minimum="0" Value="{x:Bind ViewModel.SelectionRectangleViewModel.Y, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
-                        <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="W"/>
-                        <mux:NumberBox Minimum="{x:Bind ViewModel.SelectionRectangleViewModel.MinSize, Mode=OneWay}" Value="{x:Bind ViewModel.SelectionRectangleViewModel.Width, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
-                        <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="H"/>
-                        <mux:NumberBox Minimum="{x:Bind ViewModel.SelectionRectangleViewModel.MinSize, Mode=OneWay}" Value="{x:Bind ViewModel.SelectionRectangleViewModel.Height, Mode=TwoWay}" SpinButtonPlacementMode="Compact" LargeChange="10" />
-                    </StackPanel>
-                    
-                    <Button Content="Remove selection" Click="{x:Bind ViewModel.RemoveSelection}" Padding="2" Margin="5,0"/>
-                </StackPanel>-->
+
+                <ListView IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SelectionRectangleViewModel">
+                            <!--<Button Content="{x:Bind ChannelMark,Mode=OneWay,  Converter={StaticResource IntToChannelMarkConverter}}" HorizontalAlignment="Stretch"  Click="{x:Bind RestoreMe.Invoke}"/>-->
+                            <Border Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(ComputationViewModel.HasResult),Mode=OneWay}" Background="{x:Bind helpers:StaticConverters.ColorToBrush(Color)}" Padding="7,0,0,0">
+                            <CheckBox MinWidth="0" IsChecked="{x:Bind IsShowInPlot, Mode=TwoWay}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <controls:WrapPanel Padding="0,0,0,0" VerticalSpacing="5" HorizontalSpacing="5" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ListView.ItemContainerStyle>
+                        <Style BasedOn="{StaticResource ListViewWrapPanelStyle}" TargetType="ListViewItem" />
+                    </ListView.ItemContainerStyle>
+                </ListView>
                 <Grid  Grid.Row="2" Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(ViewModel.IsComputationInProgress),Mode=OneWay}" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>

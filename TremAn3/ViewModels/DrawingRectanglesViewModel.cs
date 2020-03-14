@@ -43,9 +43,11 @@ namespace TremAn3.ViewModels
             SelectionRectangleViewModel s = new SelectionRectangleViewModel(x,y,MaxWidth,MaxHeight,currentSizeProportion,color);
             SelectionRectanglesViewModels.Add(s);
             s.DeleteMeAction += selectionToDelete => SelectionRectanglesViewModels.Remove(selectionToDelete);
+            s.plotsNeedRefresh += () => plotsNeedRefresh.Invoke();
             return s;
         }
 
+        public Action plotsNeedRefresh;
         public SelectionRectangleViewModel CurrentRoiInCreationProcess { get; set; }
 
         private uint _MaxHeight;
