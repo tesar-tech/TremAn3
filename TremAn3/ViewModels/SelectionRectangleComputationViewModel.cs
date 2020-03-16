@@ -2,6 +2,7 @@
 using OxyPlot;
 using OxyPlot.Series;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -37,28 +38,20 @@ namespace TremAn3.ViewModels
         public void PrepareForDisplay()
         {
             MainFreq = Algorithm.GetMainFreqAndFillPsdDataFromComLists();
-            
-            PsdSeries = new LineSeries
-            {
-                ItemsSource = Algorithm.Results.PsdAvgData.Select(c => new DataPoint(c.x_freq, c.y_power)),
-                Color = color
-            };
-
-            XComSeries = new LineSeries
-            {
-                ItemsSource = Algorithm.Results.ListComXNoAvg.Zip(Algorithm.Results.FrameTimes, (valy,valx) => new DataPoint(valx.TotalSeconds, valy)),
-                Color = color
-            };
-
-            YComSeries = new LineSeries
-            {
-                ItemsSource = Algorithm.Results.ListComYNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)),
-                Color = color
-            };
-
-
+            PsdSeries = GetNewLineSeries(Algorithm.Results.PsdAvgData.Select(c => new DataPoint(c.x_freq, c.y_power)));
+            XComSeries = GetNewLineSeries( Algorithm.Results.ListComXNoAvg.Zip(Algorithm.Results.FrameTimes, (valy,valx) => new DataPoint(valx.TotalSeconds, valy)));
+            YComSeries = GetNewLineSeries(Algorithm.Results.ListComYNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
         }
-        private OxyColor color;
+
+        private LineSeries GetNewLineSeries(IEnumerable itemSource) => new LineSeries
+        {
+            ItemsSource = itemSource,
+            Color = color,
+            StrokeThickness = defaultStrokeThickness
+        };
+
+        readonly double defaultStrokeThickness = 0.75;
+        private readonly OxyColor color;
 
         private LineSeries _PsdSeries;
 
@@ -98,7 +91,7 @@ namespace TremAn3.ViewModels
 
         internal void ChangeVisibilityOfLines(bool isShowInPlot)
         {
-            var thickness = isShowInPlot ? 1 : 0.08;//when unvisible, just change thickness to small value
+            var thickness = isShowInPlot ? defaultStrokeThickness : 0.08;//when unvisible, just change thickness to small value
             PsdSeries.StrokeThickness = XComSeries.StrokeThickness = YComSeries.StrokeThickness = thickness;
         }
     }

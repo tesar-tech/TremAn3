@@ -34,7 +34,7 @@
 
                 <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" />
 
-                <ListView IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
+                <ListView IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="vm:SelectionRectangleViewModel">
                             <!--<Button Content="{x:Bind ChannelMark,Mode=OneWay,  Converter={StaticResource IntToChannelMarkConverter}}" HorizontalAlignment="Stretch"  Click="{x:Bind RestoreMe.Invoke}"/>-->
