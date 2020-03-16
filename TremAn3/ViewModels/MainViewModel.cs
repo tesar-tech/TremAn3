@@ -154,7 +154,7 @@ namespace TremAn3.ViewModels
 
         public async Task ExportToCsvAsync( string type)
         {
-            var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels;
+            var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels.Where(x => x.IsShowInPlot).ToList();
             if (rois.Count == 0 || !rois[0].ComputationViewModel.HasResult)
             {
                 ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Nothing to export");
