@@ -15,7 +15,7 @@ namespace TremAn3.Core
             width= (uint)Math.Round(value.width);
             height =(uint)Math.Round(value.height);
         }
-
+    
         private double sizeReductionFactor;
         private uint x;
         private uint y;

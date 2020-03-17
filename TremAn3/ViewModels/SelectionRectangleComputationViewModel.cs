@@ -17,21 +17,38 @@ namespace TremAn3.ViewModels
     {
 
 
-        public SelectionRectangleComputationViewModel(Color color)
+        public SelectionRectangleComputationViewModel(Color color, SelectionRectangleViewModel parent)
         {
-            this.color = OxyColor.FromArgb(255, color.R, color.G, color.B);
-            
+            (this.color, this.parent) = (OxyColor.FromArgb(255, color.R, color.G, color.B), parent);
         }
 
-    
+        private SelectionRectangleViewModel parent { get; set; }
 
+        private bool _IsRoiSameAsResult;
+
+        public bool IsRoiSameAsResult
+        {
+            get => _IsRoiSameAsResult;
+            set {
+                if (Set(ref _IsRoiSameAsResult, value) && !value)//no need for notify property changed
+                {
+                    Algorithm = null;
+                    RaisePropertyChanged(nameof(HasResult));
+                    PsdSeries.PlotModel.Series.Remove(PsdSeries);
+                    XComSeries.PlotModel.Series.Remove(XComSeries);
+                    YComSeries.PlotModel.Series.Remove(YComSeries);
+                    PsdSeries = XComSeries = YComSeries = null;
+                    parent.plotsNeedRefresh.Invoke(); 
+                }
+            }
+        }
 
         public bool HasResult { get => Algorithm?.Results !=null;  }
         internal CenterOfMotionAlgorithm InitializeCoM(int decodedPixelWidth, int decodedPixelHeight, double frameRate, SelectionRectangle rectangle)
         {
             Algorithm = new CenterOfMotionAlgorithm(decodedPixelWidth, decodedPixelHeight, frameRate, rectangle);
             RaisePropertyChanged(nameof(HasResult));
-            return Algorithm;
+            return  Algorithm;
         }
         public CenterOfMotionAlgorithm   Algorithm{ get; set; }
 
@@ -41,16 +58,18 @@ namespace TremAn3.ViewModels
             PsdSeries = GetNewLineSeries(Algorithm.Results.PsdAvgData.Select(c => new DataPoint(c.x_freq, c.y_power)));
             XComSeries = GetNewLineSeries( Algorithm.Results.ListComXNoAvg.Zip(Algorithm.Results.FrameTimes, (valy,valx) => new DataPoint(valx.TotalSeconds, valy)));
             YComSeries = GetNewLineSeries(Algorithm.Results.ListComYNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
+            IsRoiSameAsResult = true;
         }
 
         private LineSeries GetNewLineSeries(IEnumerable itemSource) => new LineSeries
         {
             ItemsSource = itemSource,
             Color = color,
-            StrokeThickness = defaultStrokeThickness
+            StrokeThickness = parent.IsShowInPlot ? defaultStrokeThickness:notShownStrokeThickness
         };
 
         readonly double defaultStrokeThickness = 0.75;
+        readonly double notShownStrokeThickness = 0.08;
         private readonly OxyColor color;
 
         private LineSeries _PsdSeries;
@@ -91,7 +110,7 @@ namespace TremAn3.ViewModels
 
         internal void ChangeVisibilityOfLines(bool isShowInPlot)
         {
-            var thickness = isShowInPlot ? defaultStrokeThickness : 0.08;//when unvisible, just change thickness to small value
+            var thickness = isShowInPlot ? defaultStrokeThickness : notShownStrokeThickness;//when unvisible, just change thickness to small value
             PsdSeries.StrokeThickness = XComSeries.StrokeThickness = YComSeries.StrokeThickness = thickness;
         }
     }

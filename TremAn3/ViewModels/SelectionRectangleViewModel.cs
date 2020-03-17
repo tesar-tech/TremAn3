@@ -22,7 +22,7 @@ namespace TremAn3.ViewModels
             IsInCreationProcess = true;
             SizeProportion = sizeProportion;
             Color = color;
-            ComputationViewModel = new SelectionRectangleComputationViewModel(Color);
+            ComputationViewModel = new SelectionRectangleComputationViewModel(Color,this);
 
         }
 
@@ -61,7 +61,9 @@ namespace TremAn3.ViewModels
             set
             {
                 //if (value > 1e6) return;
-                Set(ref _X, value);
+                if(Set(ref _X, value))
+                RoiChanged();
+
             }
         }
         private double _Y;
@@ -72,8 +74,15 @@ namespace TremAn3.ViewModels
             set
             {
                 //if (value > 1e6) return;   
-                Set(ref _Y, value);
+               if( Set(ref _Y, value))
+                RoiChanged();
             }
+        }
+
+        private void RoiChanged()
+        {
+            if(!(ComputationViewModel is null))
+            ComputationViewModel.IsRoiSameAsResult = false;
         }
 
         private double _Width;
@@ -96,7 +105,9 @@ namespace TremAn3.ViewModels
                     RaisePropertyChanged();//otherwise it willnot update the ui (prop is not changed here, but on ui is)
                 }
 
-                Set(ref _Width, value);
+                if(Set(ref _Width, value))
+                    RoiChanged();
+
             }
         }
 
@@ -118,12 +129,14 @@ namespace TremAn3.ViewModels
                     value = MinSize;
                     RaisePropertyChanged();//otherwise it willnot update the ui (prop is not changed here, but on ui is)
                 }
-                Set(ref _height, value);
+                if(Set(ref _height, value))
+                    RoiChanged();
             }
         }
 
 
-       public Action plotsNeedRefresh;
+
+        public Action plotsNeedRefresh { get; set; }
 
         private bool _IsShowInPlot = true;
 
@@ -242,6 +255,11 @@ namespace TremAn3.ViewModels
 
         public event Action<SelectionRectangleViewModel> DeleteMeAction;
 
-        public void DeleteMe()=> DeleteMeAction.Invoke(this);//it is subscribed in drawing rectangles
+        public void DeleteMe()
+        {
+            if (ComputationViewModel != null)
+                ComputationViewModel.IsRoiSameAsResult = false;
+            DeleteMeAction.Invoke(this);//it is subscribed in drawing rectangles
+        }
     }
 }

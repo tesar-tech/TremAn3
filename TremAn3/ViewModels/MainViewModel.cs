@@ -95,6 +95,7 @@ namespace TremAn3.ViewModels
             Stopwatch sw = new Stopwatch();
             List<byte> frame1 = null;
             List<byte> frame2 = null;
+            sw.Start();
             while (true)
             {
 
@@ -127,6 +128,7 @@ namespace TremAn3.ViewModels
                 getComTime += sw.ElapsedMilliseconds;
                 // frame grabber is bad on small videos - no idea why
             }
+            Debug.WriteLine(sw.ElapsedMilliseconds);
             FreqCounterViewModel.DisplayPlots();
 
             //FreqCounterViewModel.VideoMainFreq = comAlgs[0].GetMainFreqAndFillPsdDataFromComLists();
@@ -154,8 +156,8 @@ namespace TremAn3.ViewModels
 
         public async Task ExportToCsvAsync( string type)
         {
-            var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels.Where(x => x.IsShowInPlot).ToList();
-            if (rois.Count == 0 || !rois[0].ComputationViewModel.HasResult)
+            var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels.Where(x => x.IsShowInPlot && x.ComputationViewModel.HasResult).ToList();
+            if (rois.Count == 0)
             {
                 ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Nothing to export");
                 return;

@@ -24,7 +24,7 @@ namespace TremAn3.ViewModels
             //_PlotModelFreqInTime = getPlotModelWithNoDataText();
         }
 
-        public MainViewModel ParentVm { get;private set; }
+        public MainViewModel ParentVm { get; private set; }
 
         public void ResetFreqCounter()
         {
@@ -128,13 +128,13 @@ namespace TremAn3.ViewModels
 
         public enum PlotType
         {
-            XCoM,YCoM,PSDAvg
+            XCoM, YCoM, PSDAvg
         }
 
         public void DisplayPlots()
         {
             var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
-            
+
             var psdPlotModel = new PlotModel();
             var xcomPlotModel = new PlotModel();
             var ycomPlotModel = new PlotModel();
@@ -149,8 +149,6 @@ namespace TremAn3.ViewModels
             PSDPlotModel = psdPlotModel;
             XCoMPlotModel = xcomPlotModel;
             YCoMPlotModel = ycomPlotModel;
-
-
         }
         //internal void PlotComAlgs(List<CenterOfMotionAlgorithm> comAlgs)
         //{
@@ -228,7 +226,7 @@ namespace TremAn3.ViewModels
         //    //        Color = 
         //    //    };
         //    //}
-  
+
         //    //Random dn = new Random();
         //    //LineSeries s2 = new LineSeries
         //    //{
@@ -283,13 +281,10 @@ namespace TremAn3.ViewModels
             {
 
                 if (_minrange == value) return;
-                if (Maxrange - value < 1)
-                {
-                    RaisePropertyChanged();
-                    return;
-                }
-                _minrange = value;
+                if (Maxrange - value >= 1)
+                    _minrange = value;
                 RaisePropertyChanged();
+                ObsoleteResults();
 
             }
         }
@@ -302,17 +297,21 @@ namespace TremAn3.ViewModels
             set
             {
 
-                if (_maxrange == value) return;
-                if (value - Minrange < 1)
-                {
-                    RaisePropertyChanged();
-                    return;
-                }
-                _maxrange = value;
+                if (_maxrange == value)  return;
+                if (value - Minrange >= 1)
+                    _maxrange = value;
                 RaisePropertyChanged();
-
+                ObsoleteResults();
             }
         }
+
+        private void ObsoleteResults()
+        {
+            DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList().ForEach(x => x.IsRoiSameAsResult = false);
+            //plots are invalidated multiple times, but.. yeah.who cares..
+        }
+
+
 
         private bool _IsComputationInProgress;
 
