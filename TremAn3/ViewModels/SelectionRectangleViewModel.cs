@@ -33,15 +33,7 @@ namespace TremAn3.ViewModels
             ComputationViewModel.InitializeCoM(decodedPixelWidth, decodedPixelHeight, frameRate, rect);
         }
 
-        private SelectionRectangleComputationViewModel _ComputationViewModel;
-
-        public SelectionRectangleComputationViewModel ComputationViewModel
-        {
-            get => _ComputationViewModel;
-            set => Set(ref _ComputationViewModel, value);
-        }
-
-
+        public SelectionRectangleComputationViewModel ComputationViewModel { get; set; }
 
         private Color _Color;
 
@@ -225,10 +217,10 @@ namespace TremAn3.ViewModels
         private void SetUiSizes()
         {
             //keep selection rect to appear same no matter the size of a video
-            var ratio = MaxHeight / 300;
+            double ratio = MaxHeight / 300d;
             //this method also keeps default values 
             CornerSize = (int)Math.Round(30d * ratio);
-            BorderThickness = 2 * ratio;
+            BorderThickness = 1.2 * ratio;
             MinSize = ratio * 50;
         }
 
