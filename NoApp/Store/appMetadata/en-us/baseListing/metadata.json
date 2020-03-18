@@ -5,6 +5,7 @@
     "features": [
       "Measures frequency of tremor from video",
       "Enables ROI selection",
+      "Multiple ROIs for measuring different parts of video (e.g left and right hand)",
       "Opens and plays videos",
       "Displayes plot with power spectral density",
       "Displays plot with CoM values",

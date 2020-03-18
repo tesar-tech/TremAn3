@@ -16,15 +16,18 @@ namespace TremAn3.Views
         }
 
         string text = @"
-- ROI implementation - works better on small details and insignificant movement.
-  - ROI is customizable (size and position changes)
-  - Also works with resolution reduction(speed boost).
-  - Works with window size changes.
-- Store badge in README  
-- In app notifications
-- CSV export
-- Support for x64(fixes ffmpeginterop package)
-- FFmpegInteropX in nuget package";
+- Multiple ROIs in one measurement.
+- Multiple lines in plots (one for every ROI)
+- ROI is in-place editable, has button for closing.
+- Export values to CSV. Just visible ones.
+- Better column names in exported files (with info about ROI).
+- Fixes wrong filename on exported csvs.
+- Exports CoMX and CoMY in different files.
+- Freq Counter is opened by default (after video is loaded).
+- X-Axis in CoM plots are in seconds (not frame number).
+  - It also respects the time range.
+- Lines on plots are thinner.
+";
 
     }
 }

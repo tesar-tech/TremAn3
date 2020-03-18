@@ -12,6 +12,8 @@ TremaAn app measures frequency of tremor (e.g. Parkinsonian tremor) from video.
 - Counts frequency from video using [CoM algorithm](https://github.com/tesar-tech/treman_algorithms) (Center of Motion)
 - Enables ROI selection
   - ROI size can be adjusted. (use arrow keys for small change, PgDown/Up for large)
+- Multiple ROIs for measuring different parts of video (e.g left and right hand)
+  - Multiple plots with option to hide them
 - Displays plot with power spectral density
 - Displays plot with CoM values
 - Export values to .csv format
@@ -32,6 +34,21 @@ Alternatily it can be downloaded as msix package. Instructions [here](https://tr
 [![Build Status](https://dev.azure.com/tesarj13/TremAn/_apis/build/status/develop-cd?branchName=develop)](https://dev.azure.com/tesarj13/TremAn/_build/latest?definitionId=7&branchName=develop)
 
 ## Changelog
+
+
+### 202003
+
+- Multiple ROIs in one measurement.
+- Multiple lines in plots (one for every ROI)
+- ROI is in-place editable, has button for closing.
+- Export values to CSV. Just visible ones.
+- Better column names in exported files (with info about ROI).
+- Fixes wrong filename on exported csvs.
+- Exports CoMX and CoMY in different files.
+- Freq Counter is opened by default (after video is loaded).
+- X-Axis in CoM plots are in seconds (not frame number).
+  - It also respects the time range.
+- Lines on plots are thinner.
 
 ### 202001
 
