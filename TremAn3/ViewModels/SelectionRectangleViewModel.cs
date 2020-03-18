@@ -12,37 +12,40 @@ namespace TremAn3.ViewModels
     public class SelectionRectangleViewModel : ViewModelBase
     {
 
-        public SelectionRectangleViewModel(double x, double y, uint maxWidth, uint maxHeight,double sizeProportion, Color color)
+        public SelectionRectangleViewModel(double x, double y, uint maxWidth, uint maxHeight, double sizeProportion, Color color)
         {
-            X = (uint)Math.Round(x);
-            Y = (uint)Math.Round(y);
+            X = x;
+            Y = y;
 
             MaxWidth = maxWidth;
             MaxHeight = maxHeight;
             IsInCreationProcess = true;
             SizeProportion = sizeProportion;
             Color = color;
-            ComputationViewModel = new SelectionRectangleComputationViewModel(Color,this);
+            ComputationViewModel = new SelectionRectangleComputationViewModel(Color, this);
 
         }
 
 
-        internal void InitializeCoM(int decodedPixelWidth,int decodedPixelHeight,double frameRate, double percentageOfResolution)
+        //if user clicked count freq, this is callde.  Roi size is extracted form vm (getModel)
+        //and algorithm is initialized with some values about video
+        internal void InitializeCoM(int decodedPixelWidth, int decodedPixelHeight, double frameRate, double percentageOfResolution)
         {
-           var rect = GetModel(percentageOfResolution);
+            var rect = GetModel(percentageOfResolution);
             ComputationViewModel.InitializeCoM(decodedPixelWidth, decodedPixelHeight, frameRate, rect);
         }
 
+        // part that is responsible for algorithm and plot
         public SelectionRectangleComputationViewModel ComputationViewModel { get; set; }
 
         private Color _Color;
 
+        //color of roi and plot
         public Color Color
         {
             get => _Color;
             set => Set(ref _Color, value);
         }
-
 
 
         private double _X;
@@ -52,9 +55,8 @@ namespace TremAn3.ViewModels
             get => _X;
             set
             {
-                //if (value > 1e6) return;
-                if(Set(ref _X, value))
-                RoiChanged();
+                if (Set(ref _X, value))
+                    RoiChanged();
 
             }
         }
@@ -65,16 +67,15 @@ namespace TremAn3.ViewModels
             get => _Y;
             set
             {
-                //if (value > 1e6) return;   
-               if( Set(ref _Y, value))
-                RoiChanged();
+                if (Set(ref _Y, value))
+                    RoiChanged();
             }
         }
 
         private void RoiChanged()
         {
-            if(!(ComputationViewModel is null))
-            ComputationViewModel.IsRoiSameAsResult = false;
+            if (!(ComputationViewModel is null))
+                ComputationViewModel.IsRoiSameAsResult = false;
         }
 
         private double _Width;
@@ -97,7 +98,7 @@ namespace TremAn3.ViewModels
                     RaisePropertyChanged();//otherwise it willnot update the ui (prop is not changed here, but on ui is)
                 }
 
-                if(Set(ref _Width, value))
+                if (Set(ref _Width, value))
                     RoiChanged();
 
             }
@@ -121,32 +122,34 @@ namespace TremAn3.ViewModels
                     value = MinSize;
                     RaisePropertyChanged();//otherwise it willnot update the ui (prop is not changed here, but on ui is)
                 }
-                if(Set(ref _height, value))
+                if (Set(ref _height, value))
                     RoiChanged();
             }
         }
 
 
-
-        public Action plotsNeedRefresh { get; set; }
+        //refresh plots, data here has changed (or plot should(not) be shown)
+        public Action PlotsNeedRefresh { get; set; }
 
         private bool _IsShowInPlot = true;
 
+        //bind to checkbox, user can decide if result is shown in plot
         public bool IsShowInPlot
         {
             get => _IsShowInPlot;
-            set {
+            set
+            {
                 bool wasChange = Set(ref _IsShowInPlot, value);
                 if (wasChange)
                 {
                     ComputationViewModel.ChangeVisibilityOfLines(_IsShowInPlot);
-                    plotsNeedRefresh.Invoke();                   
+                    PlotsNeedRefresh.Invoke();
                 }
             }
         }
 
 
-        private double _BorderThickness = 2;
+        private double _BorderThickness = 1.2;
 
         public double BorderThickness
         {
@@ -162,9 +165,6 @@ namespace TremAn3.ViewModels
             set => Set(ref _CornerSize, value);
         }
 
-
-
-
         private uint _MaxHeight;
 
         public uint MaxHeight
@@ -179,44 +179,48 @@ namespace TremAn3.ViewModels
         }
 
 
+        public uint MaxWidth { get; set; }
 
-        public uint MaxWidth;
-
-        //public uint MaxWidth
-        //{
-        //    get => _MaxWidth;
-        //    set => Set(ref _MaxWidth, value);
-        //}
 
         private double _MinSize;
 
         public double MinSize
         {
             get => _MinSize;
-            set => Set(ref _MinSize, value);
+            set => Set(ref _MinSize, value);//this has to be NotifyPropChange
         }
+
+
 
         private bool isInCreationProcess;
 
-        public bool IsInCreationProcess { get => isInCreationProcess;
-            set {
+        public bool IsInCreationProcess
+        {
+            get => isInCreationProcess;
+            set
+            {
                 if (isInCreationProcess && !value)//from creation to completion
                 { //will fixes size after roi is created
-                 
+
                     isInCreationProcess = false;
                     Width = Width;
                     Height = Height;
 
-                }else
-               isInCreationProcess = value;
+                }
+                else
+                    isInCreationProcess = value;
             }
         }
 
+        // video size is not same as pixels it takes to display
+        // so moving roi by 1 pixel is not movin on video by 1 pixel
+        // this property describes such relation (viewboxsize vs video size)
         public double SizeProportion { get; internal set; }
+
+        //keep selection rect to appear same no matter the size of a video
 
         private void SetUiSizes()
         {
-            //keep selection rect to appear same no matter the size of a video
             double ratio = MaxHeight / 300d;
             //this method also keeps default values 
             CornerSize = (int)Math.Round(30d * ratio);
@@ -235,11 +239,13 @@ namespace TremAn3.ViewModels
             Height = height;
         }
 
+        //it goes to algorithm
         internal SelectionRectangle GetModel(double percentageOfResolution)
         {
             return new SelectionRectangle((X, Y, Width, Height), percentageOfResolution);
         }
 
+        //used when exporting to csv
         public override string ToString()
         {
             return $"roi_X{Math.Round(X)}_Y{Math.Round(Y)}_W{Math.Round(Width)}_H{Math.Round(Height)}";
@@ -247,6 +253,7 @@ namespace TremAn3.ViewModels
 
         public event Action<SelectionRectangleViewModel> DeleteMeAction;
 
+        // when close button is clicked on roi
         public void DeleteMe()
         {
             if (ComputationViewModel != null)

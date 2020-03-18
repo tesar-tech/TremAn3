@@ -10,15 +10,9 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    Loaded="UserControl_Loaded"
     >
 
     <Viewbox  SizeChanged="Viewbox_SizeChanged"  >
-
-        <!--<ItemsControl x:Name="canvas" Background="Transparent" PointerPressed="canvas_PointerPressed"
-                      Height="{x:Bind SelectionRectangleViewModel.MaxHeight,Mode=OneWay}"
-                      Width="{x:Bind SelectionRectangleViewModel.MaxWidth, Mode=OneWay}"
-                     >-->
             <ItemsControl  Background="Blue" 
                       Height="{x:Bind ViewModel.MaxHeight, Mode=OneWay}"
                       Width="{x:Bind ViewModel.MaxWidth, Mode=OneWay}"
@@ -41,18 +35,6 @@
                     <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Transparent" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            <!--<ItemsControl.ItemContainerStyle >
-                <Style TargetType="ContentPresenter" >
-                    <Setter Property="Canvas.Left" Value="{x:Bind }"/>
-                    <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                </Style>
-            </ItemsControl.ItemContainerStyle>-->
         </ItemsControl>
-
-        <!--<Canvas x:Name="canvas" Background="Transparent"  PointerPressed="canvas_PointerPressed"  Height="376"
-                      Width="500"  >
-           
-         
-        </Canvas>-->
     </Viewbox>
 </UserControl>

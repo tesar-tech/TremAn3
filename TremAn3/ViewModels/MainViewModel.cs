@@ -37,7 +37,8 @@ namespace TremAn3.ViewModels
         public async void LoadedAsync()
         {
 #if DEBUG
-            var videoFile = await KnownFolders.PicturesLibrary.GetFileAsync("hand.mp4");
+            StorageFile videoFile =(StorageFile) (await KnownFolders.PicturesLibrary.TryGetItemAsync("hand.mp4"));
+            if (videoFile is null) return;
             await MediaPlayerViewModel.ChangeSourceAsync(videoFile);
             FreqCounterViewModel.ResetFreqCounter();
             IsFreqCounterOpen = true;
@@ -59,9 +60,7 @@ namespace TremAn3.ViewModels
             }
         }
         public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
-        public DataService DataService { get; set; } = new DataService();
-        //CenterOfMotionAlgorithm comAlg;
-        //List<CenterOfMotionAlgorithm> comAlgs = new List<CenterOfMotionAlgorithm>();
+        private DataService DataService { get; set; } = new DataService();
         public async void CountFreqAsync()
         {
             if (MediaPlayerViewModel.Source == null)
@@ -71,8 +70,6 @@ namespace TremAn3.ViewModels
             }
             FreqCounterViewModel.IsComputationInProgress = true;
             FreqCounterViewModel.ResetResultDisplay();
-
-            //SelectionRectangle rect = null;//FreqCounterViewModel.SelectionRectangleViewModel.GetModel(FreqCounterViewModel.PercentageOfResolution);
 
             FramesGrabber grabber = await FramesGrabber.CtorAsync(MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.VideoPropsViewModel,
                     FreqCounterViewModel.PercentageOfResolution, TimeSpan.FromSeconds(FreqCounterViewModel.Minrange), TimeSpan.FromSeconds(FreqCounterViewModel.Maxrange));
@@ -86,10 +83,6 @@ namespace TremAn3.ViewModels
                 x => x.InitializeCoM(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate, FreqCounterViewModel.PercentageOfResolution));
             var comAlgs = rois.Select(x => x.ComputationViewModel.Algorithm);
 
-
-            //comAlg = new CenterOfMotionAlgorithm(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight,frameRate,rect);
-
-            //int counter = 0;
             double grabbingtime = 0;
             double getComTime = 0;
             Stopwatch sw = new Stopwatch();
@@ -108,15 +101,10 @@ namespace TremAn3.ViewModels
                 var frameAndBool = await grabber.GrabARGBFrameInCurrentIndexAsync();
                 if (frameAndBool.isData)
                     frame2 = new List<byte>(frameAndBool.data);
-                else
+                else //creating new list every time, probably not best for performance
                     break;
                 foreach (var comAlg in comAlgs)
                 {
-
-                    //sw.Restart();
-                    //Debug.WriteLine(counter++);
-                    //grabbingtime += sw.ElapsedMilliseconds;
-                    //sw.Restart();
                     comAlg.Frame1 = frame1;
                     comAlg.Frame2 = frame2;
 
@@ -126,23 +114,10 @@ namespace TremAn3.ViewModels
 
                 FreqCounterViewModel.ProgressPercentage = grabber.ProgressPercentage;
                 getComTime += sw.ElapsedMilliseconds;
-                // frame grabber is bad on small videos - no idea why
+                // frame grabber is bad on small videos - no idea why - now ain't sure about this comment
             }
             Debug.WriteLine(sw.ElapsedMilliseconds);
             FreqCounterViewModel.DisplayPlots();
-
-            //FreqCounterViewModel.VideoMainFreq = comAlgs[0].GetMainFreqAndFillPsdDataFromComLists();
-
-            ////psd
-            //FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.PSDAvg, comAlgs[0].PsdAvgData);
-
-            ////x
-            //var xComs = comAlgs[0].ListComXNoAvg.Select((x, i) => ((double)i, x)).ToList();
-            //FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.XCoM, xComs);
-
-            ////y
-            //var yComs = comAlgs[0].ListComYNoAvg.Select((x, i) => ((double)i, x)).ToList();
-            //FreqCounterViewModel.UpdatePlotsWithNewVals(FreqCounterViewModel.PlotType.YCoM, yComs);
 
             FreqCounterViewModel.IsComputationInProgress = false;
         }
@@ -208,10 +183,7 @@ namespace TremAn3.ViewModels
             }
         }
 
-
-
-
-        private bool _IsFreqCounterOpen = false;//this is necessary workaround for splitView not showinx oxyplot. Freq counter is closed after page is loaded. 
+        private bool _IsFreqCounterOpen = false;
 
         public bool IsFreqCounterOpen
         {
@@ -220,8 +192,5 @@ namespace TremAn3.ViewModels
         }
 
         public FreqCounterViewModel FreqCounterViewModel { get; set; }
-        //public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = ViewModelLocator.Current.MediaPlayerViewModel;
-
-
     }
 }

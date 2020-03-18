@@ -23,27 +23,14 @@ namespace TremAn3.Views
     public sealed partial class SelectionRectangleUc : UserControl
     {
 
-
         public SelectionRectangleViewModel ViewModel { get; set; }
-        //public SelectionRectangleViewModel ViewModel
-        //{
-        //    get { return (SelectionRectangleViewModel)GetValue(ViewModelProperty); }
-        //    set
-        //    {
-        //        SetValue(ViewModelProperty, value);
-        //    }
-        //}
-
-        //// Using a DependencyProperty as the backing store for SelectionRectangleViewModel.  This enables animation, styling, binding, etc...
-        //public static readonly DependencyProperty ViewModelProperty =
-        //    DependencyProperty.Register("ViewModel", typeof(SelectionRectangleViewModel), typeof(SelectionRectangleUc), new PropertyMetadata(0));
-
+  
         public SelectionRectangleUc()
         {
             this.InitializeComponent();
-            GridRoi.PointerPressed += (s, ee) => { manipulationWithRect = true;ee.Handled = true; };
+            GridRoi.PointerPressed += (s, ee) => { ee.Handled = true; };
             GridRoi.ManipulationStarted += (s, ee) => GridRoi.Opacity = 0.5;
-            GridRoi.ManipulationCompleted += (s, ee) => { GridRoi.Opacity = 1; manipulationWithRect = false; };
+            GridRoi.ManipulationCompleted += (s, ee) => { GridRoi.Opacity = 1;};
             GridRoi.ManipulationDelta += Roi_ManipulationDelta;
             SetFormatersForNumberBoxes();
 
@@ -65,7 +52,6 @@ namespace TremAn3.Views
         }
 
 
-        bool manipulationWithRect;
         /// <summary>
         /// gragging roi
         /// </summary>
@@ -106,7 +92,7 @@ namespace TremAn3.Views
             double ytop;
             double wleft;
 
-            switch ((string)el.Tag)
+            switch ((string)el.Tag)// it just works..
             {
                 case "lt"://left top
                     wleft = Math.Max(0, left + trX);//dont be smaller that top lef cornet (0,0)
@@ -156,7 +142,7 @@ namespace TremAn3.Views
             }
 
 
-            e.Handled = true;//donot bubble lower
+            e.Handled = true;//donot bubble lower with drag event
         }
     }
 }

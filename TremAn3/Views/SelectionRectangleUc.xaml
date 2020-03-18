@@ -20,7 +20,7 @@
             <Rectangle Tag="rb" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
             <Rectangle Tag="lb" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
 
-        <Button  Padding="12" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Top">
+        <Button  Padding="{x:Bind helpers:StaticConverters.DoubleToThicknessWDivisor( ViewModel.CornerSize,3.9), Mode=OneWay}" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Top">
             <Viewbox >
                 <SymbolIcon  Symbol="Edit" Foreground="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}"/>
             </Viewbox>
@@ -45,7 +45,7 @@
             </Button.Flyout>
 
         </Button>
-        <Button  Click="{x:Bind  ViewModel.DeleteMe }" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+        <Button  Click="{x:Bind  ViewModel.DeleteMe }" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Padding="{x:Bind helpers:StaticConverters.DoubleToThicknessWDivisor(ViewModel.CornerSize,5.26), Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Bottom">
             <Viewbox >
                 <SymbolIcon    Symbol="Cancel" Foreground="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}"/>
             </Viewbox>

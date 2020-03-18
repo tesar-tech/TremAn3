@@ -13,6 +13,8 @@ namespace TremAn3.Helpers
             Canceled, Completed,
             NotCompleted,
         }
+
+        //this is something I almost totaly ctrl c ctrl v
         public static async Task<(CsvExportStatus, string newName)> ExportStringAsCsvAsync(string csv,string suggestedName)
         {
             var savePicker = new Windows.Storage.Pickers.FileSavePicker();

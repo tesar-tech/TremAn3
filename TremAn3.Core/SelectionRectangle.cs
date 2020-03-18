@@ -22,7 +22,7 @@ namespace TremAn3.Core
         private uint width;
         private uint height;
 
-        public uint X { get =>   (uint)Math.Round( x * sizeReductionFactor);  set => x = value; }
+        public uint X { get =>   (uint)Math.Round( x * sizeReductionFactor);  set => x = value; }//its uint here bcsof pixels
         public uint Y { get =>  (uint)Math.Round(y * sizeReductionFactor); set => y = value; }
         public uint Width { get => (uint)Math.Round(width * sizeReductionFactor); set => width = value; }
         public uint Height { get => (uint)Math.Round(height * sizeReductionFactor); set => height = value; }

@@ -18,14 +18,14 @@ namespace TremAn3.ViewModels
 
 
         public SelectionRectangleComputationViewModel(Color color, SelectionRectangleViewModel parent)
-        {
-            (this.color, this.parent) = (OxyColor.FromArgb(255, color.R, color.G, color.B), parent);
-        }
+            => (this.color, this.parent) = (OxyColor.FromArgb(255, color.R, color.G, color.B), parent);
 
         private SelectionRectangleViewModel parent { get; set; }
 
         private bool _IsRoiSameAsResult;
 
+        //if roi is moved, result doesnt meet the roi, so result is deleted
+        //setting to false will delete plots 
         public bool IsRoiSameAsResult
         {
             get => _IsRoiSameAsResult;
@@ -38,7 +38,7 @@ namespace TremAn3.ViewModels
                     XComSeries.PlotModel.Series.Remove(XComSeries);
                     YComSeries.PlotModel.Series.Remove(YComSeries);
                     PsdSeries = XComSeries = YComSeries = null;
-                    parent.plotsNeedRefresh.Invoke(); 
+                    parent.PlotsNeedRefresh.Invoke(); 
                 }
             }
         }
@@ -52,6 +52,7 @@ namespace TremAn3.ViewModels
         }
         public CenterOfMotionAlgorithm   Algorithm{ get; set; }
 
+        //run neccessary computations and create lineseries
         public void PrepareForDisplay()
         {
             MainFreq = Algorithm.GetMainFreqAndFillPsdDataFromComLists();
@@ -97,17 +98,15 @@ namespace TremAn3.ViewModels
             set => Set(ref _YComSeries, value);
         }
 
-
-
         private double _MainFreq;
    
-
         public double MainFreq
         {
             get => _MainFreq;
             set => Set(ref _MainFreq, value);
         }
 
+        //if this result is not shown in plot, thickness of line will be lowerd
         internal void ChangeVisibilityOfLines(bool isShowInPlot)
         {
             var thickness = isShowInPlot ? defaultStrokeThickness : notShownStrokeThickness;//when unvisible, just change thickness to small value

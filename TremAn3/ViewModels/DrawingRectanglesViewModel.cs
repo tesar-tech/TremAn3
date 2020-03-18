@@ -11,23 +11,7 @@ namespace TremAn3.ViewModels
 {
     public class DrawingRectanglesViewModel : ViewModelBase
     {
-        public DrawingRectanglesViewModel()
-        {
-            //DEBUG data
-            // SelectionRectangleViewModel s1 = new SelectionRectangleViewModel(50, 60, 100, 200,500,376);
-            //SelectionRectanglesViewModels.Add(s1);
-
-            //SelectionRectangleViewModel s2 = new SelectionRectangleViewModel(120, 80, 80, 60, 500, 376);
-            //SelectionRectanglesViewModels.Add(s2);
-
-
-        }
-
-
-        internal void RemoveRois()
-        {
-            SelectionRectanglesViewModels.Clear();
-        }
+        internal void RemoveRois() => SelectionRectanglesViewModels.Clear();
 
         private ObservableCollection<SelectionRectangleViewModel> _SelectionRectanglesViewModels = new ObservableCollection<SelectionRectangleViewModel>();
 
@@ -43,7 +27,7 @@ namespace TremAn3.ViewModels
             SelectionRectangleViewModel s = new SelectionRectangleViewModel(x,y,MaxWidth,MaxHeight,currentSizeProportion,color);
             SelectionRectanglesViewModels.Add(s);
             s.DeleteMeAction += selectionToDelete => SelectionRectanglesViewModels.Remove(selectionToDelete);
-            s.plotsNeedRefresh += () => plotsNeedRefresh.Invoke();
+            s.PlotsNeedRefresh += () => plotsNeedRefresh.Invoke();
             return s;
         }
 
@@ -55,11 +39,8 @@ namespace TremAn3.ViewModels
         public uint MaxHeight
         {
             get => _MaxHeight;
-            set
-            {
+            set =>
                 Set(ref _MaxHeight, value);
-                //SetUiSizes();
-            }
         }
 
         private uint _MaxWidth;
@@ -79,7 +60,7 @@ namespace TremAn3.ViewModels
         }
 
         /// <summary>
-        /// Adds roi with pos 0,0 and max size. When no roi is added by user. 
+        /// Adds roi with pos 0,0 and max size. When no roi is added by user (and computation has been started). 
         /// </summary>
         internal void AddMaxRoi()
         {
