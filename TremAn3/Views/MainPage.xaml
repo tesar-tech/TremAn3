@@ -62,9 +62,9 @@
             </HyperlinkButton>
         </StackPanel>
 
-        <views:DrawingRectangleUc x:Name="DrawingRectangle" Visibility="Collapsed" Canvas.ZIndex="2"
-                                  IsEnabled="{x:Bind  ViewModel.IsFreqCounterOpen, Mode=OneWay}" SelectionRectangleViewModel="{x:Bind ViewModel.FreqCounterViewModel.SelectionRectangleViewModel,Mode=TwoWay}"
-                                   />
+        <views:DrawingRectanglesUc x:Name="DrawingRectangle"  Canvas.ZIndex="5"
+                                  IsEnabled="{x:Bind  ViewModel.IsFreqCounterOpen, Mode=OneWay}" />
+
         <MediaPlayerElement x:Name="Mpe" Visibility="Collapsed"
             AutoPlay="False" AreTransportControlsEnabled="True"
             Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
@@ -74,7 +74,6 @@
         </MediaPlayerElement>
 
         <controls:GridSplitter CursorBehavior="ChangeOnSplitterHover"   Grid.Column="1" />
-
 
         <views:FreqCounterUc IsEnabled="{x:Bind helpers:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay }"  Grid.Column="2" ViewModel="{x:Bind ViewModel.FreqCounterViewModel}"/>
     </Grid>

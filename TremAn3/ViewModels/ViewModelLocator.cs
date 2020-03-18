@@ -19,6 +19,7 @@ namespace TremAn3.ViewModels
             SimpleIoc.Default.Register(() => new NavigationServiceEx());
             SimpleIoc.Default.Register(() => new MediaPlayerViewModel());
             SimpleIoc.Default.Register(() => new NotificationViewModel());
+            SimpleIoc.Default.Register(() => new DrawingRectanglesViewModel());
             Register<MainViewModel, MainPage>();
             //Register<MediaPlayerViewModel, MediaPlayerPage>();
             Register<SettingsViewModel, SettingsPage>();
@@ -36,6 +37,7 @@ namespace TremAn3.ViewModels
 
         public NotificationViewModel NoificationViewModel => SimpleIoc.Default.GetInstance<NotificationViewModel>();
         public MainViewModel MainViewModel => SimpleIoc.Default.GetInstance<MainViewModel>();
+        public DrawingRectanglesViewModel DrawingRectanglesViewModel => SimpleIoc.Default.GetInstance<DrawingRectanglesViewModel>();
 
         public NavigationServiceEx NavigationService => SimpleIoc.Default.GetInstance<NavigationServiceEx>();
 

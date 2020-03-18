@@ -13,7 +13,9 @@ namespace TremAn3.Helpers
             Canceled, Completed,
             NotCompleted,
         }
-        public static async Task<CsvExportStatus> ExportStringAsCsvAsync(string csv,string suggestedName)
+
+        //this is something I almost totaly ctrl c ctrl v
+        public static async Task<(CsvExportStatus, string newName)> ExportStringAsCsvAsync(string csv,string suggestedName)
         {
             var savePicker = new Windows.Storage.Pickers.FileSavePicker();
             savePicker.SuggestedStartLocation =
@@ -38,18 +40,18 @@ namespace TremAn3.Helpers
                     await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(file);
                 if (status == Windows.Storage.Provider.FileUpdateStatus.Complete)
                 {
-                    return CsvExportStatus.Completed;
+                    return (CsvExportStatus.Completed, file.Name);
                     //this.textBlock.Text = "File " + file.Name + " was saved.";
                 }
                 else
                 {
                     //this.textBlock.Text = "File " + file.Name + " couldn't be saved.";
-                    return CsvExportStatus.NotCompleted;
+                    return (CsvExportStatus.NotCompleted, suggestedName);
                 }
             }
             else
             {
-                return CsvExportStatus.Canceled;
+                return (CsvExportStatus.Canceled, suggestedName);
             }
         }
     }

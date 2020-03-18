@@ -1,0 +1,55 @@
+﻿<UserControl
+    x:Class="TremAn3.Views.SelectionRectangleUc"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TremAn3.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helpers="using:TremAn3.Helpers"
+    xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+
+    >
+
+        <Grid x:Name="GridRoi" Width="{x:Bind  ViewModel.Width,Mode=TwoWay}" Height="{x:Bind  ViewModel.Height,Mode=TwoWay}"  ManipulationMode="TranslateY,TranslateX"  >
+        <Border  Background="#1e70ff00" BorderThickness="{x:Bind helpers:StaticConverters.IntToThickness( ViewModel.BorderThickness), Mode=OneWay}" BorderBrush="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}" />
+            <Rectangle Tag="lt" HorizontalAlignment="Left" VerticalAlignment="Top" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
+            <Rectangle Tag="rt" HorizontalAlignment="Right" VerticalAlignment="Top" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
+            <Rectangle Tag="rb" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
+            <Rectangle Tag="lb" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
+
+        <Button  Padding="{x:Bind helpers:StaticConverters.DoubleToThicknessWDivisor( ViewModel.CornerSize,3.9), Mode=OneWay}" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Viewbox >
+                <SymbolIcon  Symbol="Edit" Foreground="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}"/>
+            </Viewbox>
+            <Button.Flyout >
+                <Flyout>
+                        <StackPanel  Orientation="Horizontal"  x:DefaultBindMode="TwoWay" >
+                            <TextBlock Margin="0,0,2,0" VerticalAlignment="Center" Text="X"/>
+                            <mux:NumberBox Minimum="0" x:Name="nb1"  Value="{x:Bind ViewModel.X}"  SpinButtonPlacementMode="Compact" LargeChange="10" />
+                            <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="Y"/>
+                            <mux:NumberBox Minimum="0" x:Name="nb2" Value="{x:Bind ViewModel.Y}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                            <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="W"/>
+                            <mux:NumberBox x:Name="nb3"  Value="{x:Bind ViewModel.Width}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                            <TextBlock Margin="5,0,2,0" VerticalAlignment="Center" Text="H"/>
+                            <mux:NumberBox x:Name="nb4"  Value="{x:Bind ViewModel.Height}" SpinButtonPlacementMode="Compact" LargeChange="10" />
+                        </StackPanel>
+                    <Flyout.FlyoutPresenterStyle>
+                        <Style TargetType="FlyoutPresenter">
+                            <Setter Property="Padding" Value="0" />
+                        </Style>
+                    </Flyout.FlyoutPresenterStyle>
+                </Flyout>
+            </Button.Flyout>
+
+        </Button>
+        <Button  Click="{x:Bind  ViewModel.DeleteMe }" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Padding="{x:Bind helpers:StaticConverters.DoubleToThicknessWDivisor(ViewModel.CornerSize,5.26), Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Viewbox >
+                <SymbolIcon    Symbol="Cancel" Foreground="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}"/>
+            </Viewbox>
+        </Button>
+
+    </Grid>
+</UserControl>

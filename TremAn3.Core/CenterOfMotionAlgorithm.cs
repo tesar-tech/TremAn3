@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -29,32 +30,17 @@ namespace TremAn3.Core
         uint startInd;
         uint endInd;
         SelectionRectangle rect;
-        public byte[] Frame1 { get; set; }
-        public byte[] Frame2 { get; set; }
+        //public byte[] Frame1 { get; set; }
+        //public byte[] Frame2 { get; set; }
+        public List<byte> Frame1 { get; set; }
+        public List<byte> Frame2 { get; set; }
 
         readonly double frameRate;
 
         readonly List<int> vecOfx;
         readonly List<int> vecOfy;
-        public List<double> listComX = new List<double>();
-        public List<double> listComY = new List<double>();
-        public List<(double,double)> PsdAvgData{ get; set; }
-        public List<double> ListComXNoAvg { 
-            get {
-                var avgX = listComX.Average();
-                var noavg = listComX.Select(x => x - avgX).ToList();
-                return noavg;
-            } }
 
-        public List<double> ListComYNoAvg
-        {
-            get
-            {
-                var avgY= listComY.Average();
-                var noavg = listComY.Select(x => x - avgY).ToList();
-                return noavg;
-            }
-        }
+        public Results Results { get; set; } = new Results();
 
         double previousValueX;
         public double previousValueY;
@@ -100,7 +86,7 @@ namespace TremAn3.Core
             {
                 for (uint c = 0; c < rect.Width; c++)//iterates on single line
                 {
-                    uint i = (s + c) * 4;//index to RGBA Array
+                    int i = (int)(s + c) * 4;//index to RGBA Array
                     byte f1 = (byte)(0.2989 * Frame1[i] + 0.5870 * Frame1[i + 1] + 0.1140 * Frame1[i + 2]);//to gray
                     byte f2 = (byte)(0.2989 * Frame2[i] + 0.5870 * Frame2[i + 1] + 0.1140 * Frame2[i + 2]);
 
@@ -164,8 +150,8 @@ namespace TremAn3.Core
 
 
             }
-            listComX.Add(comX);
-            listComY.Add(comY);
+           Results.listComX.Add(comX);
+            Results.listComY.Add(comY);
         }
 
         public double GetMainFreqAndFillPsdDataFromComLists()
@@ -177,17 +163,17 @@ namespace TremAn3.Core
             //    lo += $",{v}";
             //}
             //remove mean from list
-            var avgX = listComX.Average();
-            var avgY = listComY.Average();
-            var listWithoutMeanX = listComX.Select(x => x - avgX).ToList();
-            var listWithoutMeanY = listComY.Select(x => x - avgY).ToList();
+            var avgX = Results.listComX.Average();
+            var avgY = Results.listComY.Average();
+            var listWithoutMeanX = Results.listComX.Select(x => x - avgX).ToList();
+            var listWithoutMeanY = Results.listComY.Select(x => x - avgY).ToList();
             //returned value is max from average of two spectrums
             FftResult fftX = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanX, false);// false bc avg is already removed
             FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanY, false);
 
             List<double> avgSpecList = new List<double>();
             //List<(double,double)> psdAvgData = new List<(double, double)>();
-            PsdAvgData = new List<(double, double)>(); 
+            Results.PsdAvgData = new List<(double, double )>(); 
             //List<(double,double)> psdXData = new List<(double, double)>();
             //List<(double,double)> psdYData = new List<(double, double)>();
             for (int i = 0; i < fftX.Values.Count; i++)
@@ -195,7 +181,7 @@ namespace TremAn3.Core
             {
                 double avg = (fftX.Values[i] + fftY.Values[i]) / 2;
                 avgSpecList.Add(avg);
-                PsdAvgData.Add((fftX.Frequencies[i],avg ));
+                Results.PsdAvgData.Add((fftX.Frequencies[i],avg ));
 
                 //psdXData.Add((fftX.Frequencies[i],))
             }

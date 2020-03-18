@@ -24,43 +24,23 @@ namespace TremAn3.ViewModels
             //_PlotModelFreqInTime = getPlotModelWithNoDataText();
         }
 
-        public MainViewModel ParentVm { get;private set; }
+        public MainViewModel ParentVm { get; private set; }
 
-        //private PlotModel _PlotModelFreqInTime = new PlotModel();
-
-        //public PlotModel PlotModelFreqInTime
-        //{
-        //    get => _PlotModelFreqInTime;
-        //    set => Set(ref _PlotModelFreqInTime, value);
-        //}
-        public void RemoveSelection()
+        public void ResetFreqCounter()
         {
-            //Rect = (0, 0, 0, 0);
-            //RemoveSelectionHandler?.Invoke();
-            SelectionRectangleViewModel.IsVisible = false;
+            ResetResultDisplay();
+            DrawingRectanglesViewModel.RemoveRois();
+            Maximum = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds;
+            DrawingRectanglesViewModel.MaxHeight = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Height;
+            DrawingRectanglesViewModel.MaxWidth = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Width;
+            DrawingRectanglesViewModel.plotsNeedRefresh += RefreshPlots;
         }
 
-        //public event Action RemoveSelectionHandler;
-
-
-        private SelectionRectangleViewModel _SelectionRectangleViewModel = new SelectionRectangleViewModel();
-
-        public SelectionRectangleViewModel SelectionRectangleViewModel
+        
+        public DrawingRectanglesViewModel DrawingRectanglesViewModel
         {
-            get => _SelectionRectangleViewModel;
-            set => Set(ref _SelectionRectangleViewModel, value);
+            get { return ViewModelLocator.Current.DrawingRectanglesViewModel; }
         }
-
-        //private (uint X, uint Y, uint width, uint height) _Rect;
-
-        //public (uint X, uint Y, uint width, uint height) Rect
-        //{
-        //    get => _Rect;
-        //    set
-        //    {
-        //        Set(ref _Rect, value);
-        //    }
-        //}
 
 
         private double _ProgressPercentage;
@@ -95,6 +75,12 @@ namespace TremAn3.ViewModels
             set => Set(ref _YCoMPlotModel, value);
         }
 
+        private void RefreshPlots()
+        {
+            XCoMPlotModel.InvalidatePlot(true);
+            YCoMPlotModel.InvalidatePlot(true);
+            PSDPlotModel.InvalidatePlot(true);
+        }
 
         private PlotModel getPlotModelWithNoDataText()
         {
@@ -104,71 +90,28 @@ namespace TremAn3.ViewModels
 
         public enum PlotType
         {
-            XCoM,YCoM,PSDAvg
+            XCoM, YCoM, PSDAvg
         }
-        internal void UpdatePlotsWithNewVals(PlotType type, List<(double xx, double yy)> newVals, bool justClear = false)
+
+        public void DisplayPlots()
         {
-            switch (type)
+            var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
+
+            var psdPlotModel = new PlotModel();
+            var xcomPlotModel = new PlotModel();
+            var ycomPlotModel = new PlotModel();
+            foreach (var comp in comps)
             {
-                case PlotType.XCoM:
-                    if (justClear || newVals?.Count() <= 0)
-                        XCoMPlotModel = getPlotModelWithNoDataText();
-                    else
-                    {
-                        XCoMPlotModel = NewPlotModelWithSeries(newVals);
-                        XCoMPlotModel.InvalidatePlot(true);
-                        //newPlotModel.Axes[0].Title = "Freq (Hz)";
-                        //newPlotModel.Axes[1].Title = "PSD";
-                    }
-                    break;
-                case PlotType.YCoM:
-                    if (justClear || newVals?.Count() <= 0)
-                        YCoMPlotModel = getPlotModelWithNoDataText();
-                    else
-                    {
-                        YCoMPlotModel = NewPlotModelWithSeries(newVals);
-                        YCoMPlotModel.InvalidatePlot(true);
-                        //newPlotModel.Axes[0].Title = "Freq (Hz)";
-                        //newPlotModel.Axes[1].Title = "PSD";
-                    }
-                    break;
-                case PlotType.PSDAvg:
-                    if (justClear || newVals?.Count() <= 0)
-                        PSDPlotModel = getPlotModelWithNoDataText();
-                    else
-                    {
-                        PSDPlotModel = NewPlotModelWithSeries(newVals);
-                        PSDPlotModel.InvalidatePlot(true);
-                        //newPlotModel.Axes[0].Title = "Freq (Hz)";
-                        //newPlotModel.Axes[1].Title = "PSD";
-                    }
-                    break;
-                default:
-                    break;
+                comp.PrepareForDisplay();
+                psdPlotModel.Series.Add(comp.PsdSeries);
+                xcomPlotModel.Series.Add(comp.XComSeries);
+                ycomPlotModel.Series.Add(comp.YComSeries);
             }
 
+            PSDPlotModel = psdPlotModel;
+            XCoMPlotModel = xcomPlotModel;
+            YCoMPlotModel = ycomPlotModel;
         }
-
-        PlotModel NewPlotModelWithSeries(List<(double xx, double yy)> newVals)
-        {
-            var newPlotModel = new PlotModel();
-            LineSeries s = new LineSeries
-            {
-                ItemsSource = newVals.Select(c => new DataPoint(c.xx, c.yy))
-            };
-            newPlotModel.Series.Add(s);
-            return newPlotModel;
-        }
-
-        //private bool _IsDataAvailableForPlot;//for displaying no data over plot
-
-        //public bool IsDataAvailableForPlot
-        //{
-        //    get => _IsDataAvailableForPlot;
-        //    set => Set(ref _IsDataAvailableForPlot, value);
-        //}
-
-
 
         double _maximum;
 
@@ -188,9 +131,10 @@ namespace TremAn3.ViewModels
         internal void ResetResultDisplay()
         {
             VideoMainFreq = -1;//means nothing
-            UpdatePlotsWithNewVals(PlotType.XCoM, null, true);
-            UpdatePlotsWithNewVals(PlotType.YCoM, null, true);
-            UpdatePlotsWithNewVals(PlotType.PSDAvg, null, true);
+            XCoMPlotModel = getPlotModelWithNoDataText();
+            YCoMPlotModel = getPlotModelWithNoDataText();
+            PSDPlotModel = getPlotModelWithNoDataText();
+
         }
 
         double _minrange;
@@ -202,13 +146,10 @@ namespace TremAn3.ViewModels
             {
 
                 if (_minrange == value) return;
-                if (Maxrange - value < 1)
-                {
-                    RaisePropertyChanged();
-                    return;
-                }
-                _minrange = value;
+                if (Maxrange - value >= 1)
+                    _minrange = value;
                 RaisePropertyChanged();
+                ObsoleteResults();
 
             }
         }
@@ -221,17 +162,21 @@ namespace TremAn3.ViewModels
             set
             {
 
-                if (_maxrange == value) return;
-                if (value - Minrange < 1)
-                {
-                    RaisePropertyChanged();
-                    return;
-                }
-                _maxrange = value;
+                if (_maxrange == value)  return;
+                if (value - Minrange >= 1)
+                    _maxrange = value;
                 RaisePropertyChanged();
-
+                ObsoleteResults();
             }
         }
+
+        private void ObsoleteResults()
+        {
+            DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList().ForEach(x => x.IsRoiSameAsResult = false);
+            //plots are invalidated multiple times, but.. yeah.who cares..
+        }
+
+
 
         private bool _IsComputationInProgress;
 
