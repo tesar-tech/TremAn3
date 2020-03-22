@@ -184,6 +184,7 @@
     <Compile Include="ViewModels\DrawingRectanglesViewModel.cs" />
     <Compile Include="ViewModels\FreqCounterViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MediaControllingViewModel.cs" />
     <Compile Include="ViewModels\MediaPlayerViewModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="ViewModels\SchemeActivationSampleViewModel.cs" />

@@ -39,6 +39,7 @@ namespace TremAn3.ViewModels
            if (file != null)
             {
                 Source = MediaSource.CreateFromStorageFile(file);
+                MediaControllingViewModel.ChangeMediaPlayerSource(Source);
                 CurrentStorageFile = file;
                 await VideoPropsViewModel.UpdateVideoPropsByStorageFile(file);
             }
@@ -51,7 +52,9 @@ namespace TremAn3.ViewModels
         }
 
 
+        private MediaControllingViewModel MediaControllingViewModel { get => ViewModelLocator.Current.MediaControllingViewModel;  }
         private MainViewModel ParentVm { get => ViewModelLocator.Current.MainViewModel;  }
+
         public MediaPlayerViewModel()
         {
         }
@@ -61,28 +64,6 @@ namespace TremAn3.ViewModels
             var mediaSource = Source as MediaSource;
             mediaSource?.Dispose();
             Source = null;
-        }
-
-        private double _PositionSeconds;
-
-        public double PositionSeconds
-        {
-            get => _PositionSeconds;
-            private set => Set(ref _PositionSeconds, value);
-        }
-
-        public event Action<double> ChangePositionAction;
-
-        public bool IsPositionChangeFromMethod { get; set; }
-        public void PositionChangeRequest(double requestedPosition, bool isFromMpe = false)
-        {
-            //IsPositionChangeFromMethod = true;
-            if(!isFromMpe)
-            ChangePositionAction.Invoke(requestedPosition);
-            PositionSeconds = requestedPosition;
-            ParentVm.FreqCounterViewModel.SliderPlotValue = requestedPosition;
-            //IsPositionChangeFromMethod = false;
-            
         }
 
 

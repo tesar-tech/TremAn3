@@ -59,7 +59,7 @@ namespace TremAn3.ViewModels
 
             }
         }
-        public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
+        public MediaPlayerViewModel MediaPlayerViewModel  { get => ViewModelLocator.Current.MediaPlayerViewModel; }
         private DataService DataService { get; set; } = new DataService();
         public async void CountFreqAsync()
         {

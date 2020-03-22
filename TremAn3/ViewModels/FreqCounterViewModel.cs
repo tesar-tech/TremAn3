@@ -217,10 +217,12 @@ namespace TremAn3.ViewModels
             get => _SliderPlotValue;
             set {
 
-                if (Set(ref _SliderPlotValue, value))
-                    ParentVm.MediaPlayerViewModel.PositionChangeRequest(value);
+                if (Set(ref _SliderPlotValue, value) && !MediaControllingViewModel.IsPositionChangeFromMethod)
+                    MediaControllingViewModel.PositionChangeRequest(value);
             }
         }
+        private MediaControllingViewModel MediaControllingViewModel { get => ViewModelLocator.Current.MediaControllingViewModel; }
+
 
 
 
