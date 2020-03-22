@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
-    xmlns:helpers="using:TremAn3.Helpers"
+    xmlns:h="using:TremAn3.Helpers"
     xmlns:oxyplot="using:OxyPlot.Windows"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
@@ -32,13 +32,13 @@
 
                 <StackPanel   Orientation="Vertical"   Padding="5" >
 
-                <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" />
+                <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" />
 
-                <ListView IsEnabled="{x:Bind helpers:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
+                <ListView IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="vm:SelectionRectangleViewModel">
                             <!--<Button Content="{x:Bind ChannelMark,Mode=OneWay,  Converter={StaticResource IntToChannelMarkConverter}}" HorizontalAlignment="Stretch"  Click="{x:Bind RestoreMe.Invoke}"/>-->
-                            <Border Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(ComputationViewModel.HasResult),Mode=OneWay}" Background="{x:Bind helpers:StaticConverters.ColorToBrush(Color)}" Padding="7,0,0,0">
+                            <Border Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ComputationViewModel.HasResult),Mode=OneWay}" Background="{x:Bind h:StaticConverters.ColorToBrush(Color)}" Padding="7,0,0,0">
                             <CheckBox MinWidth="0" IsChecked="{x:Bind IsShowInPlot, Mode=TwoWay}"/>
                             </Border>
                         </DataTemplate>
@@ -52,7 +52,7 @@
                         <Style BasedOn="{StaticResource ListViewWrapPanelStyle}" TargetType="ListViewItem" />
                     </ListView.ItemContainerStyle>
                 </ListView>
-                <Grid  Grid.Row="2" Visibility="{x:Bind helpers:StaticConverters.BoolToVisibility(ViewModel.IsComputationInProgress),Mode=OneWay}" >
+                <Grid  Grid.Row="2" Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ViewModel.IsComputationInProgress),Mode=OneWay}" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition/>
@@ -62,9 +62,10 @@
                 </Grid>
                 <TextBlock Text="CoM X movement:"/>
                 <oxyplot:PlotView  Height="100"  Model="{x:Bind ViewModel.XCoMPlotModel, Mode=OneWay}"/>
+                <Slider StepFrequency="0.01"  Minimum="{x:Bind ViewModel.Minrange, Mode=OneWay}" Maximum="{x:Bind ViewModel.Maxrange, Mode=OneWay}" Value="{x:Bind ViewModel.SliderPlotValue, Mode=TwoWay}"  ></Slider>
                 <TextBlock Text="CoM Y movement:"/>
                 <oxyplot:PlotView  Height="100"  Model="{x:Bind ViewModel.YCoMPlotModel, Mode=OneWay}"/>
-                <TextBlock Grid.Row="1" Visibility="{x:Bind helpers:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
+                <TextBlock Grid.Row="1" Visibility="{x:Bind h:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
                 <Run>Main frequency:  </Run>
                 <Run Text="{x:Bind ViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
                 </TextBlock>
@@ -86,8 +87,8 @@
                         RangeMax="{x:Bind ViewModel.Maxrange, Mode=TwoWay}"
                         RangeMin="{x:Bind ViewModel.Minrange, Mode=TwoWay}">
                     </controls:RangeSelector>
-                    <TextBlock Grid.Row="2" HorizontalAlignment="Left" Text="{x:Bind helpers:StaticConverters.DoubleToTimeConverter(ViewModel.Minrange), Mode=OneWay}"/>
-                    <TextBlock Grid.Row="2" HorizontalAlignment="Right" Text="{x:Bind helpers:StaticConverters.DoubleToTimeConverter(ViewModel.Maxrange), Mode=OneWay}"/>
+                    <TextBlock Grid.Row="2" HorizontalAlignment="Left" Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Minrange), Mode=OneWay}"/>
+                    <TextBlock Grid.Row="2" HorizontalAlignment="Right" Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Maxrange), Mode=OneWay}"/>
                 </Grid>
 
                 <Grid Grid.Row="4">

@@ -16,6 +16,9 @@ namespace TremAn3.ViewModels
 
         //private const string DefaultSource = "ms-appx:///Assets/beru.wmv";
 
+
+
+
         private IMediaPlaybackSource _source;
 
         public IMediaPlaybackSource Source
@@ -33,7 +36,7 @@ namespace TremAn3.ViewModels
 
         public async Task ChangeSourceAsync(StorageFile file)
         {
-            if (file != null)
+           if (file != null)
             {
                 Source = MediaSource.CreateFromStorageFile(file);
                 CurrentStorageFile = file;
@@ -48,6 +51,7 @@ namespace TremAn3.ViewModels
         }
 
 
+        private MainViewModel ParentVm { get => ViewModelLocator.Current.MainViewModel;  }
         public MediaPlayerViewModel()
         {
         }
@@ -58,5 +62,30 @@ namespace TremAn3.ViewModels
             mediaSource?.Dispose();
             Source = null;
         }
+
+        private double _PositionSeconds;
+
+        public double PositionSeconds
+        {
+            get => _PositionSeconds;
+            private set => Set(ref _PositionSeconds, value);
+        }
+
+        public event Action<double> ChangePositionAction;
+
+        public bool IsPositionChangeFromMethod { get; set; }
+        public void PositionChangeRequest(double requestedPosition, bool isFromMpe = false)
+        {
+            //IsPositionChangeFromMethod = true;
+            if(!isFromMpe)
+            ChangePositionAction.Invoke(requestedPosition);
+            PositionSeconds = requestedPosition;
+            ParentVm.FreqCounterViewModel.SliderPlotValue = requestedPosition;
+            //IsPositionChangeFromMethod = false;
+            
+        }
+
+
+
     }
 }

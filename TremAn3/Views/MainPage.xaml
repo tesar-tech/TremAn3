@@ -67,9 +67,10 @@
 
         <MediaPlayerElement x:Name="Mpe" Visibility="Collapsed"
             AutoPlay="False" AreTransportControlsEnabled="True"
-            Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}" >
-            <MediaPlayerElement.TransportControls>
-                <MediaTransportControls IsCompact="False"/>
+            Source="{x:Bind ViewModel.MediaPlayerViewModel.Source, Mode=OneWay}"
+                            >
+            <MediaPlayerElement.TransportControls >
+                <views:CustomMediaTransportControls IsCompact="False" />
             </MediaPlayerElement.TransportControls>
         </MediaPlayerElement>
 

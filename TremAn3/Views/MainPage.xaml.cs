@@ -20,6 +20,27 @@ namespace TremAn3.Views
         {
             InitializeComponent();
             ViewModelLocator.Current.NoificationViewModel.NotificationHandler += ViewModel_NotificationHandler;
+            ViewModel.MediaPlayerViewModel.ChangePositionAction += MediaPlayerViewModel_ChangePositionAction;
+            Mpe.MediaPlayer.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged; 
+        }
+
+        private void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
+        {
+            _ = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+              () =>
+              {
+                  ViewModel.MediaPlayerViewModel.PositionChangeRequest(sender.Position.TotalSeconds,true);
+              });
+        }
+
+        private void MediaPlayerViewModel_ChangePositionAction(double pos)
+        {
+             _ = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    if(Mpe.MediaPlayer.PlaybackSession.Position.TotalSeconds != pos)
+                    Mpe.MediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(pos);
+                });
         }
 
         private void ViewModel_NotificationHandler(string message)
@@ -79,4 +100,5 @@ namespace TremAn3.Views
 
        
     }
+
 }

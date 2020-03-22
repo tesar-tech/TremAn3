@@ -210,6 +210,19 @@ namespace TremAn3.ViewModels
         }
 
 
+        private double _SliderPlotValue;
+
+        public double SliderPlotValue
+        {
+            get => _SliderPlotValue;
+            set {
+
+                if (Set(ref _SliderPlotValue, value))
+                    ParentVm.MediaPlayerViewModel.PositionChangeRequest(value);
+            }
+        }
+
+
 
 
     }
