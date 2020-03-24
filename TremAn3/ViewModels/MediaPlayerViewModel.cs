@@ -51,8 +51,20 @@ namespace TremAn3.ViewModels
             await ChangeSourceAsync(defaultStorageFile);
         }
 
+        public void PlayPause()
+        {
+            if (MediaControllingViewModel.IsPlaying)
+                MediaControllingViewModel.Pause();
+            else
+                MediaControllingViewModel.Play();
+        }
 
-        private MediaControllingViewModel MediaControllingViewModel { get => ViewModelLocator.Current.MediaControllingViewModel;  }
+        private void Pause()
+        {
+            throw new NotImplementedException();
+        }
+
+        public MediaControllingViewModel MediaControllingViewModel { get => ViewModelLocator.Current.MediaControllingViewModel;  }
         private MainViewModel ParentVm { get => ViewModelLocator.Current.MainViewModel;  }
 
         public MediaPlayerViewModel()

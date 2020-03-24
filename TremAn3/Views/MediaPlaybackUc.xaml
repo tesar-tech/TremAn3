@@ -1,0 +1,39 @@
+﻿<UserControl
+    x:Class="TremAn3.Views.MediaPlaybackUc"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TremAn3.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:h="using:TremAn3.Helpers"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:mycontrols="using:TremAn3.Controls"
+    
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <MediaPlayerElement x:Name="Mpe" 
+            AutoPlay="False" AreTransportControlsEnabled="False">
+        </MediaPlayerElement>
+        <StackPanel Orientation="Vertical" Grid.Row="1">
+            <Button  Click="{x:Bind ViewModel.PlayPause}" Style="{StaticResource VideoControlsButtonStyle}" >
+            <SymbolIcon Symbol="{x:Bind h:StaticConverters.IsPlayingToIcon(ViewModel.MediaControllingViewModel.IsPlaying),Mode=OneWay}"/>
+        </Button>
+            <!--<controls:RangeSelectorWithValue  Value="{x:Bind ViewModel.MediaControllingViewModel.PositionSeconds, Mode=TwoWay}"/>-->
+            <!--<controls:RangeSelector Width="200" Minimum="0" Maximum="100" RangeMax="10" RangeMin="2" />-->
+            <mycontrols:RangeSelectorWithValue   Visibility="Visible" Width="200" Minimum="0" Maximum="100" RangeMax="100" Value="100" RangeMin="2" />
+         
+
+
+        </StackPanel>
+    </Grid>
+</UserControl>

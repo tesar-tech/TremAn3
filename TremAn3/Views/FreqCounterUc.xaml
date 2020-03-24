@@ -62,7 +62,9 @@
                 </Grid>
                 <TextBlock Text="CoM X movement:"/>
                 <oxyplot:PlotView  Height="100"  Model="{x:Bind ViewModel.XCoMPlotModel, Mode=OneWay}"/>
-                <Slider StepFrequency="0.01"  Minimum="{x:Bind ViewModel.Minrange, Mode=OneWay}" Maximum="{x:Bind ViewModel.Maxrange, Mode=OneWay}" Value="{x:Bind ViewModel.SliderPlotValue, Mode=TwoWay}"  ></Slider>
+                <Slider StepFrequency="0.01"  Minimum="{x:Bind ViewModel.Minrange, Mode=OneWay}" Maximum="{x:Bind ViewModel.Maxrange, Mode=OneWay}" Value="{x:Bind ViewModel.SliderPlotValue, Mode=TwoWay}"  >
+                    
+                </Slider>
                 <TextBlock Text="CoM Y movement:"/>
                 <oxyplot:PlotView  Height="100"  Model="{x:Bind ViewModel.YCoMPlotModel, Mode=OneWay}"/>
                 <TextBlock Grid.Row="1" Visibility="{x:Bind h:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
