@@ -15,16 +15,16 @@ namespace TremAn3.ViewModels
 {
     public class FreqCounterViewModel : ViewModelBase
     {
-        public FreqCounterViewModel(MainViewModel mainViewModel)
+        public FreqCounterViewModel()
         {
             _PSDPlotModel = getPlotModelWithNoDataText();
             _XCoMPlotModel = getPlotModelWithNoDataText();
             _YCoMPlotModel = getPlotModelWithNoDataText();
-            ParentVm = mainViewModel;
-            //_PlotModelFreqInTime = getPlotModelWithNoDataText();
         }
 
-        public MainViewModel ParentVm { get; private set; }
+
+        public MainViewModel ParentVm { get => ViewModelLocator.Current.MainViewModel; }
+
 
         public void ResetFreqCounter()
         {
@@ -148,11 +148,15 @@ namespace TremAn3.ViewModels
                 if (_minrange == value) return;
                 if (Maxrange - value >= 1)
                     _minrange = value;
+                isRangeInSettingProcess = true;
                 RaisePropertyChanged();
+                isRangeInSettingProcess = false;
                 ObsoleteResults();
 
             }
         }
+        //need this to not "drag" slider value when range changes
+        bool isRangeInSettingProcess;
 
         double _maxrange;
 
@@ -165,7 +169,9 @@ namespace TremAn3.ViewModels
                 if (_maxrange == value)  return;
                 if (value - Minrange >= 1)
                     _maxrange = value;
+                isRangeInSettingProcess = true;
                 RaisePropertyChanged();
+                isRangeInSettingProcess = false;
                 ObsoleteResults();
             }
         }
@@ -217,7 +223,8 @@ namespace TremAn3.ViewModels
             get => _SliderPlotValue;
             set {
 
-                if (Set(ref _SliderPlotValue, value) && !MediaControllingViewModel.IsPositionChangeFromMethod)
+
+                if (Set(ref _SliderPlotValue, value) && !MediaControllingViewModel.IsPositionChangeFromMethod &&!isRangeInSettingProcess)
                     MediaControllingViewModel.PositionChangeRequest(value);
             }
         }

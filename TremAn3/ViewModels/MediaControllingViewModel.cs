@@ -53,7 +53,12 @@ namespace TremAn3.ViewModels
         public double PositionSeconds
         {
             get => _PositionSeconds;
-            private set => Set(ref _PositionSeconds, value);
+            set
+            {
+
+                if (Set(ref _PositionSeconds, value) && !IsPositionChangeFromMethod)
+                    PositionChangeRequest(value);
+            }
         }
 
         internal void Play()
@@ -71,7 +76,7 @@ namespace TremAn3.ViewModels
         private MainViewModel MainViewModel { get => ViewModelLocator.Current.MainViewModel; }
         private MediaPlayerViewModel MediaPlayerViewModel { get => ViewModelLocator.Current.MediaPlayerViewModel; }
 
-        public event Action<double> ChangePositionAction;
+        //public event Action<double> ChangePositionAction;
 
         public bool IsPositionChangeFromMethod { get; set; }
         public void PositionChangeRequest(double requestedPosition, bool changeMpe = true)
@@ -80,8 +85,8 @@ namespace TremAn3.ViewModels
             //IsPositionChangeFromMethod = true;
             if (changeMpe)
                 MediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(requestedPosition);
-            PositionSeconds = requestedPosition;
             IsPositionChangeFromMethod = true;
+            PositionSeconds = requestedPosition;
             MainViewModel.FreqCounterViewModel.SliderPlotValue = requestedPosition;
             IsPositionChangeFromMethod = false;
             //IsPositionChangeFromMethod = false;

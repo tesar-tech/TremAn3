@@ -29,7 +29,7 @@ namespace TremAn3.ViewModels
     {
         public MainViewModel()
         {
-            FreqCounterViewModel = new FreqCounterViewModel(this);
+            //FreqCounterViewModel = new FreqCounterViewModel(this);
         }
         //public event EventHandler NotificationHandler;
 
@@ -191,6 +191,7 @@ namespace TremAn3.ViewModels
             set => Set(ref _IsFreqCounterOpen, value);
         }
 
-        public FreqCounterViewModel FreqCounterViewModel { get; set; }
+        public FreqCounterViewModel FreqCounterViewModel { get => ViewModelLocator.Current.FreqCounterViewModel; }
+
     }
 }

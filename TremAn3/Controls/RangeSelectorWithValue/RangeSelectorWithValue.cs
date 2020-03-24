@@ -555,6 +555,7 @@ namespace TremAn3.Controls
             }
         }
 
+        public string ToolTipFormatString { get; set; } = "{0:0.##}";
         /// <summary>
         /// Gets or sets the current lower limit value of the range.
         /// </summary>
@@ -714,11 +715,11 @@ namespace TremAn3.Controls
             rangeSelector.SyncThumbs();
         }
 
-        private static void UpdateToolTipText(RangeSelectorWithValue rangeSelector, TextBlock toolTip, double newValue)
+        private void UpdateToolTipText(RangeSelectorWithValue rangeSelector, TextBlock toolTip, double newValue)
         {
             if (toolTip != null)
             {
-                toolTip.Text = string.Format("{0:0.##}", newValue);
+                toolTip.Text = string.Format($"{ToolTipFormatString}", newValue);
             }
         }
 
@@ -895,7 +896,7 @@ namespace TremAn3.Controls
 
         private void Thumb_DragStarted(Thumb thumb)
         {
-            var thumbs = new List<(Thumb th,double val,string visualState)>() { (_minThumb,RangeMin,"MinPressed"), (_maxThumb, RangeMax, "MaxPressed"), (_valueThumb, Value, "ValuePressed") };
+            var thumbs = new List<(Thumb th, double val, string visualState)>() { (_minThumb, RangeMin, "MinPressed"), (_maxThumb, RangeMax, "MaxPressed"), (_valueThumb, Value, "ValuePressed") };
             var thTuple = thumbs.Single(x => x.th == thumb);
             _absolutePosition = Canvas.GetLeft(thumb);
             thumbs.ForEach(x => Canvas.SetZIndex(x.th, 0));
@@ -910,10 +911,10 @@ namespace TremAn3.Controls
                 var ttWidth = _toolTip.ActualWidth / 2;
                 Canvas.SetLeft(_toolTip, thumbCenter - ttWidth);
 
-                
-                UpdateToolTipText(this, _toolTipText,thTuple.val );
+
+                UpdateToolTipText(this, _toolTipText, thTuple.val);
             }
-            
+
             VisualStateManager.GoToState(this, thTuple.visualState, true);
         }
 

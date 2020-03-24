@@ -83,12 +83,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Time range:" Style="{StaticResource SubtitleTextBlockStyle}" />
-                    <controls:RangeSelector StepFrequency="0.1" Grid.Row="1"  x:Name="RangeSelectorControl" 
-	                    Minimum="0" 
-	                    Maximum="{x:Bind ViewModel.Maximum, Mode=OneWay}"
-                        RangeMax="{x:Bind ViewModel.Maxrange, Mode=TwoWay}"
-                        RangeMin="{x:Bind ViewModel.Minrange, Mode=TwoWay}">
-                    </controls:RangeSelector>
+                    
                     <TextBlock Grid.Row="2" HorizontalAlignment="Left" Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Minrange), Mode=OneWay}"/>
                     <TextBlock Grid.Row="2" HorizontalAlignment="Right" Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Maxrange), Mode=OneWay}"/>
                 </Grid>

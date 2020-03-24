@@ -65,6 +65,7 @@ namespace TremAn3.ViewModels
         }
 
         public MediaControllingViewModel MediaControllingViewModel { get => ViewModelLocator.Current.MediaControllingViewModel;  }
+        public FreqCounterViewModel FreqCounterViewModel { get => ViewModelLocator.Current.FreqCounterViewModel; }
         private MainViewModel ParentVm { get => ViewModelLocator.Current.MainViewModel;  }
 
         public MediaPlayerViewModel()

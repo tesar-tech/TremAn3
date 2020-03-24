@@ -21,17 +21,24 @@
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <MediaPlayerElement x:Name="Mpe" 
-            AutoPlay="False" AreTransportControlsEnabled="False">
-        </MediaPlayerElement>
+        <MediaPlayerElement x:Name="Mpe" AutoPlay="False" AreTransportControlsEnabled="False"/>
+
         <StackPanel Orientation="Vertical" Grid.Row="1">
             <Button  Click="{x:Bind ViewModel.PlayPause}" Style="{StaticResource VideoControlsButtonStyle}" >
             <SymbolIcon Symbol="{x:Bind h:StaticConverters.IsPlayingToIcon(ViewModel.MediaControllingViewModel.IsPlaying),Mode=OneWay}"/>
         </Button>
             <!--<controls:RangeSelectorWithValue  Value="{x:Bind ViewModel.MediaControllingViewModel.PositionSeconds, Mode=TwoWay}"/>-->
             <!--<controls:RangeSelector Width="200" Minimum="0" Maximum="100" RangeMax="10" RangeMin="2" />-->
-            <mycontrols:RangeSelectorWithValue   Visibility="Visible" Width="200" Minimum="0" Maximum="100" RangeMax="100" Value="100" RangeMin="2" />
-         
+            <mycontrols:RangeSelectorWithValue StepFrequency="0.05" x:DefaultBindMode="TwoWay"
+                        Margin="10,0"
+                        ToolTipFormatString="{}{0:0.00}"
+                        Minimum="0" 
+	                    Maximum="{x:Bind ViewModel.FreqCounterViewModel.Maximum, Mode=OneWay}"
+                        RangeMax="{x:Bind ViewModel.FreqCounterViewModel.Maxrange}"
+                        RangeMin="{x:Bind ViewModel.FreqCounterViewModel.Minrange}"
+                        Value="{x:Bind ViewModel.MediaControllingViewModel.PositionSeconds}"                       >
+            </mycontrols:RangeSelectorWithValue>
+
 
 
         </StackPanel>
