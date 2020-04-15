@@ -44,7 +44,7 @@ namespace TremAn3.ViewModels
         public bool IsPlaying
         {
             get => _IsPlaying;
-           private set => Set(ref _IsPlaying, value);
+            private set => Set(ref _IsPlaying, value);
         }
 
 
@@ -55,12 +55,15 @@ namespace TremAn3.ViewModels
             get => _PositionSeconds;
             set
             {
-
-                if (Set(ref _PositionSeconds, value) && !IsPositionChangeFromMethod)
-                    PositionChangeRequest(value);
+                if (Set(ref _PositionSeconds, value))
+                {
+                    PositionChanged.Invoke(value);
+                    if (!IsPositionChangeFromMethod)
+                        PositionChangeRequest(value);
+                }
             }
         }
-
+        public event Action<double> PositionChanged;
         internal void Play()
         {
             MediaPlayer.Play();

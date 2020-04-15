@@ -36,7 +36,7 @@
                     <VisualState.Setters>
                         <Setter Target="MainOpenButtonPanel.Visibility" Value="Collapsed"/>
                         <Setter Target="MediaPlayback.Visibility" Value="Visible"/>
-                        <Setter Target="DrawingRectangle.Visibility" Value="Visible"/>
+                        <Setter Target="MediaPlayback.DrawingRectangle.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <StateTrigger  IsActive="{x:Bind  helpers:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay}" />
@@ -62,8 +62,7 @@
             </HyperlinkButton>
         </StackPanel>
 
-        <views:DrawingRectanglesUc x:Name="DrawingRectangle"  Canvas.ZIndex="5"
-                                  IsEnabled="{x:Bind  ViewModel.IsFreqCounterOpen, Mode=OneWay}" />
+       
 
         <views:MediaPlaybackUc x:Name="MediaPlayback" Visibility="Collapsed"/>
 

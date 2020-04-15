@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TremAn3.Core;
 using Windows.UI;
+using Windows.UI.Xaml;
 
 namespace TremAn3.ViewModels
 {
@@ -34,9 +35,50 @@ namespace TremAn3.ViewModels
             DrawingRectanglesViewModel.MaxHeight = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Height;
             DrawingRectanglesViewModel.MaxWidth = ParentVm.MediaPlayerViewModel.VideoPropsViewModel.Width;
             DrawingRectanglesViewModel.plotsNeedRefresh += RefreshPlots;
+            MediaControllingViewModel.PositionChanged += MediaControllingViewModel_PositionChanged;
         }
 
-        
+        private DispatcherTimer _annotationTimer;
+
+        private void StartTimer()
+        {
+            if (_annotationTimer is null)
+            {
+                _annotationTimer = new DispatcherTimer();
+                _annotationTimer.Interval = TimeSpan.FromSeconds(0.01);
+                _annotationTimer.Tick += _timer_Tick;
+
+            }
+            _annotationTimer?.Start();
+        }
+
+        private void _timer_Tick(object sender, object e)
+        {
+            //xcomAnnotation.X = ycomAnnotation.X = annotationVal;
+            ////XCoMPlotModel.Annotations.Clear();
+            ////XCoMPlotModel.Annotations.Add(xcomAnnotation);
+            //XCoMPlotModel.InvalidatePlot(false);
+            //YCoMPlotModel.InvalidatePlot(false);
+
+
+            StopTimer();
+        }
+
+        /// <summary>
+        /// there should be only one call of this method
+        /// </summary>
+        internal void StopTimer()
+        {
+            _annotationTimer?.Stop();
+        }
+        double annotationVal;
+        private void MediaControllingViewModel_PositionChanged(double value)
+        {
+            annotationVal = value;
+            StartTimer();
+        }
+
+
         public DrawingRectanglesViewModel DrawingRectanglesViewModel
         {
             get { return ViewModelLocator.Current.DrawingRectanglesViewModel; }
@@ -102,15 +144,33 @@ namespace TremAn3.ViewModels
             var ycomPlotModel = new PlotModel();
             foreach (var comp in comps)
             {
-                comp.PrepareForDisplay();
+                comp.PrepareForDisplay(); recreateAnnotations();
                 psdPlotModel.Series.Add(comp.PsdSeries);
-                xcomPlotModel.Series.Add(comp.XComSeries);
-                ycomPlotModel.Series.Add(comp.YComSeries);
+                xcomPlotModel.Series.Add(comp.XComSeries); xcomPlotModel.Annotations.Add(xcomAnnotation);
+                ycomPlotModel.Series.Add(comp.YComSeries); ycomPlotModel.Annotations.Add(ycomAnnotation);
             }
 
             PSDPlotModel = psdPlotModel;
             XCoMPlotModel = xcomPlotModel;
             YCoMPlotModel = ycomPlotModel;
+        }
+
+        LineAnnotation xcomAnnotation;
+        LineAnnotation ycomAnnotation;
+        void recreateAnnotations()
+        {
+            xcomAnnotation = new LineAnnotation()
+            {
+                Type = LineAnnotationType.Vertical,
+                ClipByXAxis = false,
+                X= 0,
+            };
+            ycomAnnotation = new LineAnnotation()
+            {
+                Type = LineAnnotationType.Vertical,
+                ClipByXAxis = false,
+                X = 0,
+            };
         }
 
         double _maximum;
@@ -130,7 +190,7 @@ namespace TremAn3.ViewModels
 
         internal void ResetResultDisplay()
         {
-            VideoMainFreq = -1;//means nothing
+            //VideoMainFreq = -1;//means nothing
             XCoMPlotModel = getPlotModelWithNoDataText();
             YCoMPlotModel = getPlotModelWithNoDataText();
             PSDPlotModel = getPlotModelWithNoDataText();
@@ -204,16 +264,16 @@ namespace TremAn3.ViewModels
 
         //lower than zero means: no value
         //(same as null, but null does not update raise prop)
-        public double VideoMainFreq
-        {
-            get => _VideoMainFreq;
-            set
-            {
-                if (_VideoMainFreq == value) return;
-                _VideoMainFreq = value;
-                RaisePropertyChanged();
-            }
-        }
+        //public double VideoMainFreq
+        //{
+        //    get => _VideoMainFreq;
+        //    set
+        //    {
+        //        if (_VideoMainFreq == value) return;
+        //        _VideoMainFreq = value;
+        //        RaisePropertyChanged();
+        //    }
+        //}
 
 
         private double _SliderPlotValue;

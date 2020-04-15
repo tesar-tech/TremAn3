@@ -62,15 +62,15 @@
                 </Grid>
                 <TextBlock Text="CoM X movement:"/>
                 <oxyplot:PlotView  Height="100"  Model="{x:Bind ViewModel.XCoMPlotModel, Mode=OneWay}"/>
-                <Slider StepFrequency="0.01"  Minimum="{x:Bind ViewModel.Minrange, Mode=OneWay}" Maximum="{x:Bind ViewModel.Maxrange, Mode=OneWay}" Value="{x:Bind ViewModel.SliderPlotValue, Mode=TwoWay}"  >
+                <Slider Margin="15,0,3,0" IsEnabled="True" StepFrequency="0.05"  Minimum="{x:Bind ViewModel.Minrange, Mode=OneWay}" Maximum="{x:Bind ViewModel.Maxrange, Mode=OneWay}" Value="{x:Bind ViewModel.SliderPlotValue, Mode=TwoWay}"  >
                     
                 </Slider>
                 <TextBlock Text="CoM Y movement:"/>
                 <oxyplot:PlotView  Height="100"  Model="{x:Bind ViewModel.YCoMPlotModel, Mode=OneWay}"/>
-                <TextBlock Grid.Row="1" Visibility="{x:Bind h:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
+                <!--<TextBlock Grid.Row="1" Visibility="{x:Bind h:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
                 <Run>Main frequency:  </Run>
                 <Run Text="{x:Bind ViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
-                </TextBlock>
+                </TextBlock>-->
                 <TextBlock Text="PSD:"/>
                 <oxyplot:PlotView  Height="200"  Model="{x:Bind ViewModel.PSDPlotModel, Mode=OneWay}"/>
                 <!--oxyplot bug numero dont know: it cannot be in grid or cannot be without height?? so it is separated from nodata-->
@@ -82,7 +82,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Time range:" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <!--<TextBlock Text="Time range:" Style="{StaticResource SubtitleTextBlockStyle}" />-->
                     
                     <TextBlock Grid.Row="2" HorizontalAlignment="Left" Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Minrange), Mode=OneWay}"/>
                     <TextBlock Grid.Row="2" HorizontalAlignment="Right" Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Maxrange), Mode=OneWay}"/>
