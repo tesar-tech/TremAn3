@@ -25,21 +25,38 @@
             <Setter Property="MinWidth" Value="0"/>
         </Style>
         <toolkitConverters:StringFormatConverter x:Key="StringFormatConverter"></toolkitConverters:StringFormatConverter>
+        
     </UserControl.Resources>
     <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="RefreshProgressVisualStates">
+                <VisualState x:Name="NotWorkingVisualState" />
+                <VisualState x:Name="WorkingVisualState">
+                    <Storyboard x:Name="FreqCOunterButtonBlinking">
+                        <ColorAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="FreqCounterButton" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)">
+                            <EasingColorKeyFrame KeyTime="00:00:00" Value="#01000000"/> <!--Color can't be fully transparent. It will not run the storyboard secon time.. Dont know why, some wierd bug..??--> 
+                            <EasingColorKeyFrame KeyTime="00:00:01" Value="#FFFFEE00"/>
+                            <EasingColorKeyFrame KeyTime="00:00:01.7" Value="#00000000"/>
+                        </ColorAnimationUsingKeyFrames>
+                    </Storyboard>
+                    <VisualState.StateTriggers>
+                        <StateTrigger  IsActive="{x:Bind  h:StaticConverters.InverseBool (ViewModel.IsAllResultsNotObsolete), Mode=OneWay}" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
 
         <ScrollViewer >
 
-                <StackPanel   Orientation="Vertical"   Padding="5" >
+            <StackPanel   Orientation="Vertical"   Padding="5" >
 
-                <Button Content="Count freq" Margin="5" IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" />
-
+                <Button  x:Name="FreqCounterButton" BorderThickness="2" Content="Count freq" Margin="5" IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000"  />
                 <ListView IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="vm:SelectionRectangleViewModel">
                             <!--<Button Content="{x:Bind ChannelMark,Mode=OneWay,  Converter={StaticResource IntToChannelMarkConverter}}" HorizontalAlignment="Stretch"  Click="{x:Bind RestoreMe.Invoke}"/>-->
                             <Border Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ComputationViewModel.HasResult),Mode=OneWay}" Background="{x:Bind h:StaticConverters.ColorToBrush(Color)}" Padding="7,0,0,0">
-                            <CheckBox MinWidth="0" IsChecked="{x:Bind IsShowInPlot, Mode=TwoWay}"/>
+                                <CheckBox MinWidth="0" IsChecked="{x:Bind IsShowInPlot, Mode=TwoWay}"/>
                             </Border>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -63,7 +80,7 @@
                 <TextBlock Text="CoM X movement:"/>
                 <oxyplot:PlotView  Height="100"  Model="{x:Bind ViewModel.XCoMPlotModel, Mode=OneWay}"/>
                 <Slider Margin="15,0,3,0" IsEnabled="True" StepFrequency="0.05"  Minimum="{x:Bind ViewModel.Minrange, Mode=OneWay}" Maximum="{x:Bind ViewModel.Maxrange, Mode=OneWay}" Value="{x:Bind ViewModel.SliderPlotValue, Mode=TwoWay}"  >
-                    
+
                 </Slider>
                 <TextBlock Text="CoM Y movement:"/>
                 <oxyplot:PlotView  Height="100"  Model="{x:Bind ViewModel.YCoMPlotModel, Mode=OneWay}"/>
@@ -83,7 +100,7 @@
                     </Grid.RowDefinitions>
 
                     <!--<TextBlock Text="Time range:" Style="{StaticResource SubtitleTextBlockStyle}" />-->
-                    
+
                     <TextBlock Grid.Row="2" HorizontalAlignment="Left" Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Minrange), Mode=OneWay}"/>
                     <TextBlock Grid.Row="2" HorizontalAlignment="Right" Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Maxrange), Mode=OneWay}"/>
                 </Grid>

@@ -48,6 +48,8 @@ namespace TremAn3.ViewModels
             _annotationTimer?.Start();
         }
 
+     
+
         private void _timer_Tick(object sender, object e)
         {
             //invalidate plots here, so it doesn't slow the slider
@@ -141,6 +143,7 @@ namespace TremAn3.ViewModels
             PSDPlotModel = psdPlotModel;
             XCoMPlotModel = xcomPlotModel;
             YCoMPlotModel = ycomPlotModel;
+            IsAllResultsNotObsolete = true;
         }
 
         LineAnnotation xcomAnnotation;
@@ -150,14 +153,14 @@ namespace TremAn3.ViewModels
             xcomAnnotation = new LineAnnotation()
             {
                 Type = LineAnnotationType.Vertical,
-                ClipByXAxis = false,
-                X= 0,
+                ClipByXAxis = false, Color = OxyColors.Black,
+                X= 0
             };
             ycomAnnotation = new LineAnnotation()
             {
                 Type = LineAnnotationType.Vertical,
                 ClipByXAxis = false,
-                X = 0,
+                X = 0,Color = OxyColors.Black,
             };
         }
 
@@ -199,7 +202,7 @@ namespace TremAn3.ViewModels
                 isRangeInSettingProcess = true;
                 RaisePropertyChanged();
                 isRangeInSettingProcess = false;
-                ObsoleteResults();
+                MakesResultsObsolete();
 
             }
         }
@@ -220,16 +223,33 @@ namespace TremAn3.ViewModels
                 isRangeInSettingProcess = true;
                 RaisePropertyChanged();
                 isRangeInSettingProcess = false;
-                ObsoleteResults();
+                MakesResultsObsolete();
             }
         }
 
-        private void ObsoleteResults()
+        internal void IsRoiSameAsResultSomeChange(bool value)
+        {
+            if (!value)
+                IsAllResultsNotObsolete = false;
+            else
+              if (0 == DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList().Select(x => x.IsRoiSameAsResult == false).Count())
+                IsAllResultsNotObsolete = true;//all results are same as roi
+
+        }
+
+        private void MakesResultsObsolete()
         {
             DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList().ForEach(x => x.IsRoiSameAsResult = false);
             //plots are invalidated multiple times, but.. yeah.who cares..
         }
 
+        private bool _IsAllResultsNotObsolete;
+
+        public bool IsAllResultsNotObsolete
+        {
+            get => _IsAllResultsNotObsolete;
+            set => Set(ref _IsAllResultsNotObsolete, value);
+        }
 
 
         private bool _IsComputationInProgress;

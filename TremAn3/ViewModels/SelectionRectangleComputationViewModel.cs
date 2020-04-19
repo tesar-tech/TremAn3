@@ -13,7 +13,7 @@ using TremAn3.Core;
 
 namespace TremAn3.ViewModels
 {
-    public class SelectionRectangleComputationViewModel:ViewModelBase
+    public class SelectionRectangleComputationViewModel : ViewModelBase
     {
 
 
@@ -21,6 +21,8 @@ namespace TremAn3.ViewModels
             => (this.color, this.parent) = (OxyColor.FromArgb(255, color.R, color.G, color.B), parent);
 
         private SelectionRectangleViewModel parent { get; set; }
+        public FreqCounterViewModel FreqCounterViewModel { get => ViewModelLocator.Current.FreqCounterViewModel; }
+
 
         private bool _IsRoiSameAsResult;
 
@@ -29,35 +31,40 @@ namespace TremAn3.ViewModels
         public bool IsRoiSameAsResult
         {
             get => _IsRoiSameAsResult;
-            set {
-                if (Set(ref _IsRoiSameAsResult, value) && !value)//no need for notify property changed
+            set
+            {
+                if (Set(ref _IsRoiSameAsResult, value))//no need for notify property changed
                 {
-                    Algorithm = null;
-                    RaisePropertyChanged(nameof(HasResult));
-                    PsdSeries.PlotModel.Series.Remove(PsdSeries);
-                    XComSeries.PlotModel.Series.Remove(XComSeries);
-                    YComSeries.PlotModel.Series.Remove(YComSeries);
-                    PsdSeries = XComSeries = YComSeries = null;
-                    parent.PlotsNeedRefresh.Invoke(); 
+                    if (!value)
+                    {
+                        Algorithm = null;
+                        RaisePropertyChanged(nameof(HasResult));
+                        PsdSeries.PlotModel.Series.Remove(PsdSeries);
+                        XComSeries.PlotModel.Series.Remove(XComSeries);
+                        YComSeries.PlotModel.Series.Remove(YComSeries);
+                        PsdSeries = XComSeries = YComSeries = null;
+                        parent.PlotsNeedRefresh.Invoke();
+                    }
+                    FreqCounterViewModel.IsRoiSameAsResultSomeChange(value);
                 }
             }
         }
 
-        public bool HasResult { get => Algorithm?.Results !=null;  }
+        public bool HasResult { get => Algorithm?.Results != null; }
         internal CenterOfMotionAlgorithm InitializeCoM(int decodedPixelWidth, int decodedPixelHeight, double frameRate, SelectionRectangle rectangle)
         {
             Algorithm = new CenterOfMotionAlgorithm(decodedPixelWidth, decodedPixelHeight, frameRate, rectangle);
             RaisePropertyChanged(nameof(HasResult));
-            return  Algorithm;
+            return Algorithm;
         }
-        public CenterOfMotionAlgorithm   Algorithm{ get; set; }
+        public CenterOfMotionAlgorithm Algorithm { get; set; }
 
         //run neccessary computations and create lineseries
         public void PrepareForDisplay()
         {
             MainFreq = Algorithm.GetMainFreqAndFillPsdDataFromComLists();
             PsdSeries = GetNewLineSeries(Algorithm.Results.PsdAvgData.Select(c => new DataPoint(c.x_freq, c.y_power)));
-            XComSeries = GetNewLineSeries( Algorithm.Results.ListComXNoAvg.Zip(Algorithm.Results.FrameTimes, (valy,valx) => new DataPoint(valx.TotalSeconds, valy)));
+            XComSeries = GetNewLineSeries(Algorithm.Results.ListComXNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
             YComSeries = GetNewLineSeries(Algorithm.Results.ListComYNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
             IsRoiSameAsResult = true;
         }
@@ -66,7 +73,7 @@ namespace TremAn3.ViewModels
         {
             ItemsSource = itemSource,
             Color = color,
-            StrokeThickness = parent.IsShowInPlot ? defaultStrokeThickness:notShownStrokeThickness
+            StrokeThickness = parent.IsShowInPlot ? defaultStrokeThickness : notShownStrokeThickness
         };
 
         readonly double defaultStrokeThickness = 0.75;
@@ -99,7 +106,7 @@ namespace TremAn3.ViewModels
         }
 
         private double _MainFreq;
-   
+
         public double MainFreq
         {
             get => _MainFreq;
