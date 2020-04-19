@@ -48,7 +48,7 @@ namespace TremAn3.ViewModels
             _annotationTimer?.Start();
         }
 
-     
+
 
         private void _timer_Tick(object sender, object e)
         {
@@ -60,6 +60,7 @@ namespace TremAn3.ViewModels
 
         private void MediaControllingViewModel_PositionChanged(double value)
         {
+            if (xcomAnnotation == null || ycomAnnotation == null) return;
             xcomAnnotation.X = value;
             ycomAnnotation.X = value;
             StartTimer();//invalidated on tick
@@ -153,14 +154,16 @@ namespace TremAn3.ViewModels
             xcomAnnotation = new LineAnnotation()
             {
                 Type = LineAnnotationType.Vertical,
-                ClipByXAxis = false, Color = OxyColors.Black,
-                X= 0
+                ClipByXAxis = false,
+                Color = OxyColors.Black,
+                X = 0
             };
             ycomAnnotation = new LineAnnotation()
             {
                 Type = LineAnnotationType.Vertical,
                 ClipByXAxis = false,
-                X = 0,Color = OxyColors.Black,
+                X = 0,
+                Color = OxyColors.Black,
             };
         }
 
@@ -217,7 +220,7 @@ namespace TremAn3.ViewModels
             set
             {
 
-                if (_maxrange == value)  return;
+                if (_maxrange == value) return;
                 if (value - Minrange >= 1)
                     _maxrange = value;
                 isRangeInSettingProcess = true;
@@ -227,12 +230,18 @@ namespace TremAn3.ViewModels
             }
         }
 
-        internal void IsRoiSameAsResultSomeChange(bool value)
+        internal void IsRoiSameAsResultSomeChange(bool iscallingResultNotObsolete)
         {
-            if (!value)
+            if (!iscallingResultNotObsolete)
+            {
                 IsAllResultsNotObsolete = false;
+                if ((0 == DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList().Where(x => x.IsRoiSameAsResult == true).Count()))
+                {//no results that match data
+                    ResetResultDisplay();
+                }
+            }
             else
-              if (0 == DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList().Select(x => x.IsRoiSameAsResult == false).Count())
+              if (0 == DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList().Where(x => x.IsRoiSameAsResult == false).Count())
                 IsAllResultsNotObsolete = true;//all results are same as roi
 
         }
@@ -289,10 +298,11 @@ namespace TremAn3.ViewModels
         public double SliderPlotValue
         {
             get => _SliderPlotValue;
-            set {
+            set
+            {
 
 
-                if (Set(ref _SliderPlotValue, value) && !MediaControllingViewModel.IsPositionChangeFromMethod &&!isRangeInSettingProcess)
+                if (Set(ref _SliderPlotValue, value) && !MediaControllingViewModel.IsPositionChangeFromMethod && !isRangeInSettingProcess)
                     MediaControllingViewModel.PositionChangeRequest(value);
             }
         }

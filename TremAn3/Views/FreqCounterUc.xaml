@@ -29,14 +29,14 @@
     </UserControl.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="RefreshProgressVisualStates">
-                <VisualState x:Name="NotWorkingVisualState" />
-                <VisualState x:Name="WorkingVisualState">
+            <VisualStateGroup x:Name="ButtonObsoleteResultVisialStates">
+                <VisualState x:Name="NotObsoleteResult" />
+                <VisualState x:Name="AtLeastOneResultIsObsolete">
                     <Storyboard x:Name="FreqCOunterButtonBlinking">
                         <ColorAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="FreqCounterButton" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)">
-                            <EasingColorKeyFrame KeyTime="00:00:00" Value="#01000000"/> <!--Color can't be fully transparent. It will not run the storyboard secon time.. Dont know why, some wierd bug..??--> 
-                            <EasingColorKeyFrame KeyTime="00:00:01" Value="#FFFFEE00"/>
-                            <EasingColorKeyFrame KeyTime="00:00:01.7" Value="#00000000"/>
+                            <EasingColorKeyFrame KeyTime="00:00:00" Value="#01999999"/> <!--Color can't be fully transparent. It will not run the storyboard secon time.. Dont know why, some wierd bug..??--> 
+                            <EasingColorKeyFrame KeyTime="00:00:01" Value="#FF887700"/> <!--something between for dark and light theme-->
+                            <EasingColorKeyFrame KeyTime="00:00:01.7" Value="#00999999"/>
                         </ColorAnimationUsingKeyFrames>
                     </Storyboard>
                     <VisualState.StateTriggers>
@@ -50,7 +50,7 @@
 
             <StackPanel   Orientation="Vertical"   Padding="5" >
 
-                <Button  x:Name="FreqCounterButton" BorderThickness="2" Content="Count freq" Margin="5" IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000"  />
+                <Button  x:Name="FreqCounterButton" BorderThickness="4" Content="Count freq" Margin="5" IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000"  />
                 <ListView IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="vm:SelectionRectangleViewModel">
