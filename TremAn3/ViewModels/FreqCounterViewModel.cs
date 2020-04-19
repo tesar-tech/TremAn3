@@ -22,10 +22,7 @@ namespace TremAn3.ViewModels
             _XCoMPlotModel = getPlotModelWithNoDataText();
             _YCoMPlotModel = getPlotModelWithNoDataText();
         }
-
-
         public MainViewModel ParentVm { get => ViewModelLocator.Current.MainViewModel; }
-
 
         public void ResetFreqCounter()
         {
@@ -37,7 +34,7 @@ namespace TremAn3.ViewModels
             DrawingRectanglesViewModel.plotsNeedRefresh += RefreshPlots;
             MediaControllingViewModel.PositionChanged += MediaControllingViewModel_PositionChanged;
         }
-
+        //timer for invalidation plot
         private DispatcherTimer _annotationTimer;
 
         private void StartTimer()
@@ -47,35 +44,23 @@ namespace TremAn3.ViewModels
                 _annotationTimer = new DispatcherTimer();
                 _annotationTimer.Interval = TimeSpan.FromSeconds(0.01);
                 _annotationTimer.Tick += _timer_Tick;
-
             }
             _annotationTimer?.Start();
         }
 
         private void _timer_Tick(object sender, object e)
         {
-            //xcomAnnotation.X = ycomAnnotation.X = annotationVal;
-            ////XCoMPlotModel.Annotations.Clear();
-            ////XCoMPlotModel.Annotations.Add(xcomAnnotation);
-            //XCoMPlotModel.InvalidatePlot(false);
-            //YCoMPlotModel.InvalidatePlot(false);
-
-
-            StopTimer();
+            //invalidate plots here, so it doesn't slow the slider
+            XCoMPlotModel.InvalidatePlot(false);
+            YCoMPlotModel.InvalidatePlot(false);
+            _annotationTimer.Stop();
         }
 
-        /// <summary>
-        /// there should be only one call of this method
-        /// </summary>
-        internal void StopTimer()
-        {
-            _annotationTimer?.Stop();
-        }
-        double annotationVal;
         private void MediaControllingViewModel_PositionChanged(double value)
         {
-            annotationVal = value;
-            StartTimer();
+            xcomAnnotation.X = value;
+            ycomAnnotation.X = value;
+            StartTimer();//invalidated on tick
         }
 
 
@@ -144,11 +129,14 @@ namespace TremAn3.ViewModels
             var ycomPlotModel = new PlotModel();
             foreach (var comp in comps)
             {
-                comp.PrepareForDisplay(); recreateAnnotations();
+                comp.PrepareForDisplay();
                 psdPlotModel.Series.Add(comp.PsdSeries);
-                xcomPlotModel.Series.Add(comp.XComSeries); xcomPlotModel.Annotations.Add(xcomAnnotation);
-                ycomPlotModel.Series.Add(comp.YComSeries); ycomPlotModel.Annotations.Add(ycomAnnotation);
+                xcomPlotModel.Series.Add(comp.XComSeries);
+                ycomPlotModel.Series.Add(comp.YComSeries);
             }
+            recreateAnnotations();
+            xcomPlotModel.Annotations.Add(xcomAnnotation);
+            ycomPlotModel.Annotations.Add(ycomAnnotation);
 
             PSDPlotModel = psdPlotModel;
             XCoMPlotModel = xcomPlotModel;
