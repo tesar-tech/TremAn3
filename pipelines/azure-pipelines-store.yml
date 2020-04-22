@@ -10,7 +10,7 @@ variables:
   buildPlatform: 'x86'
   buildConfiguration: 'Release'
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
-  majorMinorBuildVer: "1.1"
+  majorMinorBuildVer: "1.2"
   buildNum: $[counter(variables['majorMinorBuildVer'], 0)] # this number increment with every build. Starts with 0, when majorMinor changes
   versionOfApp: '$(majorMinorBuildVer).$(buildNum).0' #revision number has to be 0, otherwise it will drop the package in store.
 
