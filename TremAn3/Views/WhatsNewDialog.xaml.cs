@@ -16,17 +16,19 @@ namespace TremAn3.Views
         }
 
         string text = @"
-- Multiple ROIs in one measurement.
-- Multiple lines in plots (one for every ROI)
-- ROI is in-place editable, has button for closing.
-- Export values to CSV. Just visible ones.
-- Better column names in exported files (with info about ROI).
-- Fixes wrong filename on exported csvs.
-- Exports CoMX and CoMY in different files.
-- Freq Counter is opened by default (after video is loaded).
-- X-Axis in CoM plots are in seconds (not frame number).
-  - It also respects the time range.
-- Lines on plots are thinner.
+- Time range selector is within playback slider.
+  - More intuitive placement.
+- Secondary slider is added to proximity with CoM plots.
+  - Helps to understand relation between CoM plots and video.
+  - Only shows the selected time range (same as plots).
+- Vertical line in CoM plots to view correlation between video and CoM movement.
+  - Line follows video time position.
+  - Current video position is visibile in plots.
+- Mild flash on `Count freq` button as a warning of obsolete results.
+  - When plots are displayed, and ROI is moved it isn't in correlation anymore. So plot disappears and button starts flashing.
+- Buttons for making plots bigger.
+- Removes unnecessary buttons from playback area.
+- `No data` label for plots without data.
 ";
 
     }

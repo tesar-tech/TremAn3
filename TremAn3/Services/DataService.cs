@@ -27,6 +27,5 @@ namespace TremAn3.Services
             return file;
         }
 
-        public MediaPlayerViewModel MediaPlayerViewModel { get; set; } = new MediaPlayerViewModel();
     }
 }

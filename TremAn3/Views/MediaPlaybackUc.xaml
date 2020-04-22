@@ -1,0 +1,56 @@
+﻿<UserControl
+    x:Class="TremAn3.Views.MediaPlaybackUc"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TremAn3.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:h="using:TremAn3.Helpers"
+    xmlns:views="using:TremAn3.Views"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:mycontrols="using:TremAn3.Controls"
+    
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <views:DrawingRectanglesUc x:Name="DrawingRectangle"  Canvas.ZIndex="5"
+                                  IsEnabled="{x:Bind  ViewModel.ParentVm.IsFreqCounterOpen, Mode=OneWay}" />
+        <MediaPlayerElement x:Name="Mpe" AutoPlay="False" AreTransportControlsEnabled="False"/>
+
+        <StackPanel Orientation="Vertical" Grid.Row="1">
+            <Button  Click="{x:Bind ViewModel.PlayPause}" Style="{StaticResource VideoControlsButtonStyle}" >
+            <SymbolIcon Symbol="{x:Bind h:StaticConverters.IsPlayingToIcon(ViewModel.MediaControllingViewModel.IsPlaying),Mode=OneWay}"/>
+        </Button>
+            <!--<controls:RangeSelectorWithValue  Value="{x:Bind ViewModel.MediaControllingViewModel.PositionSeconds, Mode=TwoWay}"/>-->
+            <!--<controls:RangeSelector Width="200" Minimum="0" Maximum="100" RangeMax="10" RangeMin="2" />-->
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Margin="3,0"  Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.MediaControllingViewModel.PositionSeconds), Mode=OneWay}"/>
+
+                <mycontrols:RangeSelectorWithValue Grid.Column="1" StepFrequency="0.05" x:DefaultBindMode="TwoWay"
+                        Margin="10,0"
+                        ToolTipFormatString="{}{0:0.00}"
+                        Minimum="0" 
+	                    Maximum="{x:Bind ViewModel.FreqCounterViewModel.Maximum, Mode=OneWay}"
+                        RangeMax="{x:Bind ViewModel.FreqCounterViewModel.Maxrange}"
+                        RangeMin="{x:Bind ViewModel.FreqCounterViewModel.Minrange}"
+                        Value="{x:Bind ViewModel.MediaControllingViewModel.PositionSeconds}"                       >
+            </mycontrols:RangeSelectorWithValue>
+            </Grid>
+
+
+        </StackPanel>
+    </Grid>
+</UserControl>

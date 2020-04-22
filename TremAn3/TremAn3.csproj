@@ -151,6 +151,8 @@
     <Compile Include="Activation\SchemeActivationHandler.cs" />
     <Compile Include="BackgroundTasks\BackgroundTask.cs" />
     <Compile Include="BackgroundTasks\BackgroundTask1.cs" />
+    <Compile Include="Controls\RangeSelectorWithValue\RangeChangedEventArgs.cs" />
+    <Compile Include="Controls\RangeSelectorWithValue\RangeSelectorWithValue.cs" />
     <Compile Include="Helpers\CsvExport.cs" />
     <Compile Include="Helpers\EnumToBooleanConverter.cs" />
     <Compile Include="Helpers\LocalSettings.cs" />
@@ -184,6 +186,7 @@
     <Compile Include="ViewModels\DrawingRectanglesViewModel.cs" />
     <Compile Include="ViewModels\FreqCounterViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MediaControllingViewModel.cs" />
     <Compile Include="ViewModels\MediaPlayerViewModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="ViewModels\SchemeActivationSampleViewModel.cs" />
@@ -206,6 +209,9 @@
     </Compile>
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MediaPlaybackUc.xaml.cs">
+      <DependentUpon>MediaPlaybackUc.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SchemeActivationSamplePage.xaml.cs">
       <DependentUpon>SchemeActivationSamplePage.xaml</DependentUpon>
@@ -239,6 +245,14 @@
     <Content Include="$(SolutionDir)..\ffmpegbuild\Windows10\$(PlatformTarget)\bin\*.dll" />
   </ItemGroup> -->
   <ItemGroup>
+    <Page Include="Controls\RangeSelectorWithValue\RangeSelectorWithValue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\Page.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -278,6 +292,10 @@
     <Page Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MediaPlaybackUc.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SchemeActivationSamplePage.xaml">
       <Generator>MSBuild:Compile</Generator>
