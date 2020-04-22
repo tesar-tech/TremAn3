@@ -38,6 +38,7 @@ namespace TremAn3.Helpers
 
 
         public static bool NullToBool(object obj) => obj != null;
+        public static bool NullBoolToBool(bool? b) => b!=null && (bool)b;
 
         public static Brush ColorToBrush(Color color) => new SolidColorBrush(Windows.UI.Color.FromArgb(255, color.R, color.G, color.B));
 

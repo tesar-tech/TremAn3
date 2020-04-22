@@ -18,7 +18,10 @@ namespace TremAn3.ViewModels
 
 
         public SelectionRectangleComputationViewModel(Color color, SelectionRectangleViewModel parent)
-            => (this.color, this.parent) = (OxyColor.FromArgb(255, color.R, color.G, color.B), parent);
+        {
+            (this.color, this.parent) = (OxyColor.FromArgb(255, color.R, color.G, color.B), parent);
+            FreqCounterViewModel.IsRoiSameAsResultSomeChange(false);//obsolete result, when new roi is added
+        }
 
         private SelectionRectangleViewModel parent { get; set; }
         public FreqCounterViewModel FreqCounterViewModel { get => ViewModelLocator.Current.FreqCounterViewModel; }
