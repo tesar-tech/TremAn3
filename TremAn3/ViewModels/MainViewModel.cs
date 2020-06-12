@@ -92,14 +92,12 @@ namespace TremAn3.ViewModels
                 x => x.InitializeCoM(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate, FreqCounterViewModel.PercentageOfResolution));
             var comAlgs = rois.Select(x => x.ComputationViewModel.Algorithm);
 
-            double grabbingtime = 0;
-            double getComTime = 0;
             Stopwatch sw = new Stopwatch();
       
             sw.Start();
 
             source =  new CancellationTokenSource();
-            await  Alg(grabber, comAlgs,source);
+            await  Computation(grabber, comAlgs,source);//this modifies comAlgs that are part of FreqCounterVm
             if(!source.IsCancellationRequested)
             {
                 Debug.WriteLine(sw.ElapsedMilliseconds);
@@ -113,8 +111,8 @@ namespace TremAn3.ViewModels
 
         }
 
-        private async Task Alg(FramesGrabber grabber, IEnumerable<CenterOfMotionAlgorithm> comAlgs, CancellationTokenSource source)
-        {
+        private async Task Computation(FramesGrabber grabber, IEnumerable<CenterOfMotionAlgorithm> comAlgs, CancellationTokenSource source)
+        {//frame grabber shoul be an interface and this mehtod should be in Core project.
             List<byte> frame1 = null;
             List<byte> frame2 = null;
             while (true)
@@ -127,9 +125,9 @@ namespace TremAn3.ViewModels
                 else
                     frame1 = frame2;//because of diff
 
-                var frameAndBool = await grabber.GrabARGBFrameInCurrentIndexAsync();
-                if (frameAndBool.isData)
-                    frame2 = new List<byte>(frameAndBool.data);
+                var (data, isData) = await grabber.GrabARGBFrameInCurrentIndexAsync();
+                if (isData)
+                    frame2 = new List<byte>(data);
                 else //creating new list every time, probably not best for performance
                     break;
                 foreach (var comAlg in comAlgs)

@@ -32,8 +32,8 @@
             <VisualStateGroup x:Name="ButtonObsoleteResultVisialStates">
                 <VisualState x:Name="NotObsoleteResult" />
                 <VisualState x:Name="AtLeastOneResultIsObsolete">
-                    <Storyboard x:Name="FreqCOunterButtonBlinking">
-                        <ColorAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="FreqCounterButton" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)">
+                    <Storyboard x:Name="FreqCOunterButtonBlinking" RepeatBehavior="Forever" >
+                        <ColorAnimationUsingKeyFrames   Storyboard.TargetName="FreqCounterButton" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)">
                             <EasingColorKeyFrame KeyTime="00:00:00" Value="#01999999"/> <!--Color can't be fully transparent. It will not run the storyboard secon time.. Dont know why, some wierd bug..??--> 
                             <EasingColorKeyFrame KeyTime="00:00:01" Value="#FF887700"/> <!--something between for dark and light theme-->
                             <EasingColorKeyFrame KeyTime="00:00:01.7" Value="#00999999"/>
@@ -77,15 +77,28 @@
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
+            <VisualStateGroup x:Name="ComputationInProgressVisialStates">
+                <VisualState x:Name="NotInProggressVg" />
+                <VisualState x:Name="InProgressVg">
+                    <VisualState.Setters>
+                        <Setter  Target="FreqCounterButton.Content" Value="Cancel"/>
+                        <Setter  Target="ListViewWithChbxsPlots.IsEnabled" Value="false"/>
+                        <Setter  Target="ProgressGrid.Visibility" Value="Visible"/>
+                        <Setter  Target="FreqCounterButton.BorderBrush" Value="#00000000"/> <!--this will stop blinking storyboard-->
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <StateTrigger  IsActive="{x:Bind ViewModel.IsComputationInProgress, Mode=OneWay}" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
         <ScrollViewer >
 
             <StackPanel   Orientation="Vertical"   Padding="5" >
 
-                <!--<Button  x:Name="FreqCounterButton" BorderThickness="4" Content="Count freq" Margin="5" IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000"  />-->
-                <Button  x:Name="FreqCounterButton" BorderThickness="4" Content="Count freq" Margin="5"   Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000"  />
-                <ListView IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
+                <Button  x:Name="FreqCounterButton"  BorderThickness="4" Content="Count freq" Margin="5"   Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000"  />
+                <ListView x:Name="ListViewWithChbxsPlots"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="vm:SelectionRectangleViewModel">
                             <!--<Button Content="{x:Bind ChannelMark,Mode=OneWay,  Converter={StaticResource IntToChannelMarkConverter}}" HorizontalAlignment="Stretch"  Click="{x:Bind RestoreMe.Invoke}"/>-->
@@ -103,7 +116,7 @@
                         <Style BasedOn="{StaticResource ListViewWrapPanelStyle}" TargetType="ListViewItem" />
                     </ListView.ItemContainerStyle>
                 </ListView>
-                <Grid  Grid.Row="2" Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ViewModel.IsComputationInProgress),Mode=OneWay}" >
+                <Grid  Grid.Row="2" Visibility="Collapsed" x:Name="ProgressGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition/>
