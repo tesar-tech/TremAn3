@@ -83,7 +83,8 @@
 
             <StackPanel   Orientation="Vertical"   Padding="5" >
 
-                <Button  x:Name="FreqCounterButton" BorderThickness="4" Content="Count freq" Margin="5" IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000"  />
+                <!--<Button  x:Name="FreqCounterButton" BorderThickness="4" Content="Count freq" Margin="5" IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000"  />-->
+                <Button  x:Name="FreqCounterButton" BorderThickness="4" Content="Count freq" Margin="5"   Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000"  />
                 <ListView IsEnabled="{x:Bind h:StaticConverters.InverseBool(ViewModel.IsComputationInProgress), Mode=OneWay}"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="vm:SelectionRectangleViewModel">

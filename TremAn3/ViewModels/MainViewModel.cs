@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using FFmpegInterop;
 using TremAn3.Helpers;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace TremAn3.ViewModels
 {
@@ -61,8 +62,16 @@ namespace TremAn3.ViewModels
         }
         public MediaPlayerViewModel MediaPlayerViewModel  { get => ViewModelLocator.Current.MediaPlayerViewModel; }
         private DataService DataService { get; set; } = new DataService();
+        CancellationTokenSource source;
+
+        bool isNotInterrupt = true;
         public async void CountFreqAsync()
         {
+            if (FreqCounterViewModel.IsComputationInProgress)
+            {
+                source.Cancel();
+                return;
+            }
             if (MediaPlayerViewModel.Source == null)
             {
                 ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Load video first!");
@@ -86,12 +95,32 @@ namespace TremAn3.ViewModels
             double grabbingtime = 0;
             double getComTime = 0;
             Stopwatch sw = new Stopwatch();
+      
+            sw.Start();
+
+            source =  new CancellationTokenSource();
+            await  Alg(grabber, comAlgs,source);
+            if(!source.IsCancellationRequested)
+            {
+                Debug.WriteLine(sw.ElapsedMilliseconds);
+                FreqCounterViewModel.DisplayPlots();
+            }
+            else
+            {
+                FreqCounterViewModel.ProgressPercentage = 0;
+            }
+            FreqCounterViewModel.IsComputationInProgress = false;
+
+        }
+
+        private async Task Alg(FramesGrabber grabber, IEnumerable<CenterOfMotionAlgorithm> comAlgs, CancellationTokenSource source)
+        {
             List<byte> frame1 = null;
             List<byte> frame2 = null;
-            sw.Start();
             while (true)
             {
-
+                if (source.IsCancellationRequested)
+                    return;
 
                 if (frame1 == null)//on the beginning 
                     frame1 = new List<byte>((await grabber.GrabARGBFrameInCurrentIndexAsync()).data);
@@ -113,15 +142,9 @@ namespace TremAn3.ViewModels
                 }
 
                 FreqCounterViewModel.ProgressPercentage = grabber.ProgressPercentage;
-                getComTime += sw.ElapsedMilliseconds;
                 // frame grabber is bad on small videos - no idea why - now ain't sure about this comment
             }
-            Debug.WriteLine(sw.ElapsedMilliseconds);
-            FreqCounterViewModel.DisplayPlots();
-
-            FreqCounterViewModel.IsComputationInProgress = false;
         }
-
 
 
 
