@@ -23,6 +23,9 @@ using FFmpegInterop;
 using TremAn3.Helpers;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
+using TremAn3.Models;
 
 namespace TremAn3.ViewModels
 {
@@ -38,11 +41,8 @@ namespace TremAn3.ViewModels
         public async void LoadedAsync()
         {
 #if DEBUG
-            StorageFile videoFile =(StorageFile) (await KnownFolders.PicturesLibrary.TryGetItemAsync("hand.mp4"));
-            if (videoFile is null) return;
-            await MediaPlayerViewModel.ChangeSourceAsync(videoFile);
-            FreqCounterViewModel.ResetFreqCounter();
-            IsFreqCounterOpen = true;
+            StorageFile videoFile = (StorageFile)(await KnownFolders.PicturesLibrary.TryGetItemAsync("hand.mp4"));
+            await OpenStorageFile(videoFile);
 #endif
 
         }
@@ -52,6 +52,11 @@ namespace TremAn3.ViewModels
         public async void OpenVideo_ButtonClickAsync()
         {
             var file = await DataService.OpenFileDialogueAsync();
+            await OpenStorageFile(file);
+        }
+
+        private async Task OpenStorageFile(StorageFile file)
+        {
             if (file != null)
             {
                 await MediaPlayerViewModel.ChangeSourceAsync(file);
@@ -60,7 +65,8 @@ namespace TremAn3.ViewModels
 
             }
         }
-        public MediaPlayerViewModel MediaPlayerViewModel  { get => ViewModelLocator.Current.MediaPlayerViewModel; }
+
+        public MediaPlayerViewModel MediaPlayerViewModel { get => ViewModelLocator.Current.MediaPlayerViewModel; }
         private DataService DataService { get; set; } = new DataService();
         CancellationTokenSource source;
 
@@ -93,12 +99,12 @@ namespace TremAn3.ViewModels
             var comAlgs = rois.Select(x => x.ComputationViewModel.Algorithm);
 
             Stopwatch sw = new Stopwatch();
-      
+
             sw.Start();
 
-            source =  new CancellationTokenSource();
-            await  Computation(grabber, comAlgs,source);//this modifies comAlgs that are part of FreqCounterVm
-            if(!source.IsCancellationRequested)
+            source = new CancellationTokenSource();
+            await Computation(grabber, comAlgs, source);//this modifies comAlgs that are part of FreqCounterVm
+            if (!source.IsCancellationRequested)
             {
                 Debug.WriteLine(sw.ElapsedMilliseconds);
                 FreqCounterViewModel.DisplayPlots();
@@ -150,7 +156,7 @@ namespace TremAn3.ViewModels
         public async void ExportComYAsync() => await ExportToCsvAsync("comY");
         public async void ExportPsdAsync() => await ExportToCsvAsync("psd");
 
-        public async Task ExportToCsvAsync( string type)
+        public async Task ExportToCsvAsync(string type)
         {
             var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels.Where(x => x.IsShowInPlot && x.ComputationViewModel.HasResult).ToList();
             if (rois.Count == 0)
@@ -162,25 +168,25 @@ namespace TremAn3.ViewModels
             var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
 
             List<double> one_x = null;
-            if(type=="comX" || type =="comY")
-            one_x = rois[0].ComputationViewModel.Algorithm.Results.FrameTimes.Select(x=>x.TotalSeconds).ToList();
-            else if(type=="psd")
-                one_x = rois[0].ComputationViewModel.Algorithm.Results.PsdAvgData.Select(x=>x.x_freq).ToList();
+            if (type == "comX" || type == "comY")
+                one_x = rois[0].ComputationViewModel.Algorithm.Results.FrameTimes.Select(x => x.TotalSeconds).ToList();
+            else if (type == "psd")
+                one_x = rois[0].ComputationViewModel.Algorithm.Results.PsdAvgData.Select(x => x.x_freq).ToList();
 
 
             List<List<double>> multiple_ys = null;
 
             if (type == "comX")
-                multiple_ys = rois.Select(x=> x.ComputationViewModel.Algorithm.Results.ListComXNoAvg).ToList();
+                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.ListComXNoAvg).ToList();
             else if (type == "comY")
-                multiple_ys = rois.Select(x=> x.ComputationViewModel.Algorithm.Results.ListComYNoAvg).ToList();
+                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.ListComYNoAvg).ToList();
             else if (type == "psd")
-                multiple_ys = rois.Select(x=>x.ComputationViewModel.Algorithm.Results.PsdAvgData.Select(y => y.y_power).ToList()).ToList();
+                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.PsdAvgData.Select(y => y.y_power).ToList()).ToList();
 
             string xHeader = type == "psd" ? "freq [Hz]" : "time[s]";
-            string yHeader = type == "psd" ? "PSD" : type=="comX"? "CoMX" : "CoMY";
+            string yHeader = type == "psd" ? "PSD" : type == "comX" ? "CoMX" : "CoMY";
 
-            var str = CsvBuilder.GetCvsFromOneX_MultipleY(xs:one_x, multiple_ys: multiple_ys, separators,headers:rois.Select(x=> $"{yHeader}__{x.ToString()}").Prepend(xHeader));
+            var str = CsvBuilder.GetCvsFromOneX_MultipleY(xs: one_x, multiple_ys: multiple_ys, separators, headers: rois.Select(x => $"{yHeader}__{x.ToString()}").Prepend(xHeader));
 
             //var str = CsvBuilder.GetCsvFromTwoLists(comAlg.ListComXNoAvg, comAlg.ListComYNoAvg, separators, "frame", "CoMX", "CoMY");
             var name = $"{MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_{type}";
@@ -220,6 +226,24 @@ namespace TremAn3.ViewModels
         public void RefreshTitle() => Title = MediaPlayerViewModel.VideoPropsViewModel.ToString();
 
         public FreqCounterViewModel FreqCounterViewModel { get => ViewModelLocator.Current.FreqCounterViewModel; }
+
+        private ICommand _getStorageItemsCommand;
+        public ICommand GetStorageItemsCommand => _getStorageItemsCommand ?? (_getStorageItemsCommand = new RelayCommand<IReadOnlyList<IStorageItem>>(OnGetStorageItemAsync));
+
+        public async void OnGetStorageItemAsync(IReadOnlyList<IStorageItem> items)
+        {
+            foreach (var item in items)
+            {
+                var sf = item as StorageFile;
+                if (sf != null && sf.IsFileSupported())
+                {
+                    await OpenStorageFile(sf);//opens first one
+                    return;
+                }
+            }
+            ViewModelLocator.Current.NoificationViewModel.SimpleNotification("File type isn't supported");
+
+        }
 
     }
 }

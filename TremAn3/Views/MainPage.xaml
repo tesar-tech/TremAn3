@@ -13,12 +13,21 @@
     Style="{StaticResource PageStyle}"
     Loaded="{x:Bind ViewModel.LoadedAsync}"
     mc:Ignorable="d"
+    xmlns:dd="using:TremAn3.Services.DragAndDrop"
        xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
     extensions:ApplicationViewExtensions.Title="{x:Bind ViewModel.Title, Mode=OneWay}"
+    
     >
 
 
-    <Grid>
+    <Grid    AllowDrop="True">
+        <dd:DragDropService.Configuration>
+            <dd:DropConfiguration
+            DropStorageItemsCommand="{x:Bind ViewModel.GetStorageItemsCommand}" />
+        </dd:DragDropService.Configuration>
+        <dd:DragDropService.VisualConfiguration>
+            <dd:VisualDropConfiguration Caption="Open File" IsContentVisible="True"  IsGlyphVisible="False"/>
+        </dd:DragDropService.VisualConfiguration>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="FreqCounterStates">
                 <VisualState x:Name="Closed">
