@@ -21,11 +21,14 @@ namespace TremAn3.ViewModels
             Size = Math.Round(Convert.ToDouble( CurrentVideoFileBasicProps.Size‬) / 1048576, 2);
             Duration = CurrentVideoFileProps.Duration;
             DisplayName = CurrentFile.DisplayName;
+            Name = CurrentFile.Name;
             FilePath = CurrentFile.Path;
             IDictionary<string, object> encodingProperties = await CurrentVideoFileProps.RetrievePropertiesAsync(new List<string> { "System.Video.FrameRate" });
             uint frameRateX1000 = (uint)encodingProperties["System.Video.FrameRate"];
             FrameRate = frameRateX1000 / 1000d;
         }
+
+        public override string ToString() => $"{Name} | {Width}x{Height} | {FrameRate} FPS | {Size} MB";
 
         private StorageFile CurrentFile;
         private VideoProperties CurrentVideoFileProps { get; set; }
@@ -46,6 +49,9 @@ namespace TremAn3.ViewModels
         }
 
         private double _Size;
+        /// <summary>
+        /// Size in MB, rounded to 2 decimals
+        /// </summary>
         public double Size
         {
             get => _Size;
@@ -57,6 +63,12 @@ namespace TremAn3.ViewModels
         {
             get => _DisplayName;
             set => Set(ref _DisplayName, value);
+        }
+        private string _Name;
+        public string Name
+        {
+            get => _Name;
+            set => Set(ref _Name, value);
         }
 
         private string _FilePath;

@@ -42,6 +42,7 @@ namespace TremAn3.ViewModels
                 MediaControllingViewModel.ChangeMediaPlayerSource(Source);
                 CurrentStorageFile = file;
                 await VideoPropsViewModel.UpdateVideoPropsByStorageFile(file);
+                ParentVm.RefreshTitle();
             }
         }
 

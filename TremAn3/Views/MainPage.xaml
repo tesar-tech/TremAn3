@@ -13,6 +13,8 @@
     Style="{StaticResource PageStyle}"
     Loaded="{x:Bind ViewModel.LoadedAsync}"
     mc:Ignorable="d"
+       xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+    extensions:ApplicationViewExtensions.Title="{x:Bind ViewModel.Title, Mode=OneWay}"
     >
 
 

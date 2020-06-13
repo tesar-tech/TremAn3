@@ -211,6 +211,13 @@ namespace TremAn3.ViewModels
             get => _IsFreqCounterOpen;
             set => Set(ref _IsFreqCounterOpen, value);
         }
+        private string _Title = "";
+        public string Title
+        {
+            get => _Title;
+            set => Set(ref _Title, value);
+        }
+        public void RefreshTitle() => Title = MediaPlayerViewModel.VideoPropsViewModel.ToString();
 
         public FreqCounterViewModel FreqCounterViewModel { get => ViewModelLocator.Current.FreqCounterViewModel; }
 
