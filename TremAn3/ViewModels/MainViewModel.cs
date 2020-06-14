@@ -31,8 +31,9 @@ namespace TremAn3.ViewModels
 {
     public partial class MainViewModel : ViewModelBase
     {
-        public MainViewModel()
+        public MainViewModel(DataService  dataService)
         {
+            _DataService = dataService;
             //FreqCounterViewModel = new FreqCounterViewModel(this);
         }
         //public event EventHandler NotificationHandler;
@@ -40,10 +41,15 @@ namespace TremAn3.ViewModels
 
         public async void LoadedAsync()
         {
-#if DEBUG
-            StorageFile videoFile = (StorageFile)(await KnownFolders.PicturesLibrary.TryGetItemAsync("hand.mp4"));
-            await OpenStorageFile(videoFile);
-#endif
+//#if DEBUG
+//            StorageFile videoFile = (StorageFile)(await KnownFolders.PicturesLibrary.TryGetItemAsync("hand.mp4"));
+//            await OpenStorageFile(videoFile);
+//#endif
+            if (ViewModelLocator.Current.SettingsViewModel.IsLoadRecentVideoOnAppStart)
+            {
+                var videoFile =await _DataService.GetLastOpenedFile();
+                await OpenStorageFile(videoFile);
+            }
 
         }
 
@@ -51,7 +57,7 @@ namespace TremAn3.ViewModels
 
         public async void OpenVideo_ButtonClickAsync()
         {
-            var file = await DataService.OpenFileDialogueAsync();
+            var file = await _DataService.OpenFileDialogueAsync();
             await OpenStorageFile(file);
         }
 
@@ -62,12 +68,12 @@ namespace TremAn3.ViewModels
                 await MediaPlayerViewModel.ChangeSourceAsync(file);
                 FreqCounterViewModel.ResetFreqCounter();
                 IsFreqCounterOpen = true;
-
+                _DataService.SaveOpenedFileToMru(file);
             }
         }
 
         public MediaPlayerViewModel MediaPlayerViewModel { get => ViewModelLocator.Current.MediaPlayerViewModel; }
-        private DataService DataService { get; set; } = new DataService();
+        private DataService _DataService;
         CancellationTokenSource source;
 
         bool isNotInterrupt = true;
@@ -244,6 +250,8 @@ namespace TremAn3.ViewModels
             ViewModelLocator.Current.NoificationViewModel.SimpleNotification("File type isn't supported");
 
         }
+
+  
 
     }
 }

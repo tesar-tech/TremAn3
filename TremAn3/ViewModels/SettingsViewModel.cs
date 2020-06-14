@@ -96,6 +96,18 @@ namespace TremAn3.ViewModels
             }
         }
 
+        private bool _IsLoadRecentVideoOnAppStart = LocalSettings.Read(true, nameof(IsLoadRecentVideoOnAppStart));
+
+        public bool IsLoadRecentVideoOnAppStart
+        {
+            get => _IsLoadRecentVideoOnAppStart;
+            set
+            {
+                if (!Set(ref _IsLoadRecentVideoOnAppStart, value)) return;
+                LocalSettings.Write(value);
+            }
+        }
+
         public SettingsViewModel()
         {
         }

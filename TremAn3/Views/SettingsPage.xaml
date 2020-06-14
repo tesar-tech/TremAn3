@@ -35,11 +35,20 @@
                 <TextBlock VerticalAlignment="Center" Text="CSV element separator:"/>
                 <TextBox Text="{x:Bind ViewModel.CsvElementSeparator,Mode=TwoWay}"   Width="70"/>
             </StackPanel>
+            <TextBlock Style="{ThemeResource TitleTextBlockStyle}" x:Uid="settings_loadvideoonstart" Text="Video on startup"></TextBlock>
+            <ToggleSwitch   IsOn="{x:Bind ViewModel.IsLoadRecentVideoOnAppStart, Mode=TwoWay}">
+                <ToggleSwitch.OffContent>
+                    <TextBlock TextWrapping="Wrap" Width="300" x:Uid="settings_loadvideoOnstartupoffcontent" Text="Don't load video on startup"/>
+                </ToggleSwitch.OffContent>
+                <ToggleSwitch.OnContent>
+                    <TextBlock TextWrapping="Wrap" Width="300" x:Uid="settings_loadvideoOnstartuponcontent" Text="Load recent opened video on app startup" />
+                </ToggleSwitch.OnContent>
+            </ToggleSwitch>
             <TextBlock
                 x:Uid="Settings_Personalization"
                 Style="{ThemeResource SubtitleTextBlockStyle}" />
             <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
-               
+
                 <TextBlock
                     x:Uid="Settings_Theme" />
 
