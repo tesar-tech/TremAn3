@@ -9,16 +9,18 @@ TremaAn app measures frequency of tremor (e.g. Parkinsonian tremor) from video.
 ## Features
 
 - Opens and plays videos
+  - Can be opened by drag&drop
 - Counts frequency from video using [CoM algorithm](https://github.com/tesar-tech/treman_algorithms) (Center of Motion)
 - Enables ROI selection
   - ROI size can be adjusted. (use arrow keys for small change, PgDown/Up for large)
-- Multiple ROIs for measuring different parts of video (e.g left and right hand)
-  - Multiple plots with option to hide them
+- Multiple ROIs for measuring different parts of the video (e.g left and right hand)
+  - Multiple plots with the option to hide them
 - Displays plot with power spectral density
 - Displays plot with CoM values
 - Export values to .csv format
 - Set time range for computation
 - Controlled by touch, keyboard, mouse or pen
+- Basic info about video in the title of window
 
 ## Availability
 
@@ -35,7 +37,18 @@ Alternatily it can be downloaded as msix package. Instructions [here](https://tr
 
 ## Changelog
 
-### 202004
+### 2020-06
+
+- Computation could be canceled.
+  - The button isn't disabled, the text is changed to `Cancel`.
+  - It works with the `Esc` key.
+- Now you can open video by drag&drop.
+  - When an unsupported file type is dropped, a notification with info will pop up.
+  - When dropping multiple files, the first supported will be opened.
+- Info about video file in title of the app window.
+  - Name, resolution, frame rate, size in MB.
+
+### 2020-04
 
 - Time range selector is within playback slider.
   - More intuitive placement.
@@ -51,7 +64,7 @@ Alternatily it can be downloaded as msix package. Instructions [here](https://tr
 - Removes unnecessary buttons from playback area.
 - `No data` label for plots without data.
 
-### 202003
+### 2020-03
 
 - Multiple ROIs in one measurement.
 - Multiple lines in plots (one for every ROI)
@@ -65,7 +78,7 @@ Alternatily it can be downloaded as msix package. Instructions [here](https://tr
   - It also respects the time range.
 - Lines on plots are thinner.
 
-### 202001
+### 2020-01
 
 - ROI size is adjustable by textboxes.
 - What's new dialog in the app

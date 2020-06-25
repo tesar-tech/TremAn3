@@ -16,19 +16,14 @@ namespace TremAn3.Views
         }
 
         string text = @"
-- Time range selector is within playback slider.
-  - More intuitive placement.
-- Secondary slider is added to proximity with CoM plots.
-  - Helps to understand relation between CoM plots and video.
-  - Only shows the selected time range (same as plots).
-- Vertical line in CoM plots to view correlation between video and CoM movement.
-  - Line follows video time position.
-  - Current video position is visibile in plots.
-- Mild flash on `Count freq` button as a warning of obsolete results.
-  - When plots are displayed, and ROI is moved it isn't in correlation anymore. So plot disappears and button starts flashing.
-- Buttons for making plots bigger.
-- Removes unnecessary buttons from playback area.
-- `No data` label for plots without data.
+- Computation could be canceled.
+  - The button isn't disabled, the text is changed to `Cancel`.
+  - It works with the `Esc` key.
+- Now you can open video by drag&drop.
+  - When an unsupported file type is dropped, a notification with info will pop up.
+  - When dropping multiple files, the first supported will be opened.
+- Info about video file in title of the app window.
+  - Name, resolution, frame rate, size in MB.
 ";
 
     }

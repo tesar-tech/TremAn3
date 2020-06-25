@@ -1,5 +1,5 @@
 {
-    "keywords": ["medical","tremor","video analysis"],
+    "keywords": ["medical","tremor","video analysis","treman","video","parkinson"],
     "websiteUrl": "https://github.com/tesar-tech/TremAn3",
     "description": "TremaAn app measures frequency of tremor (e.g. Parkinsonian tremor) from video.",
     "features": [
