@@ -34,8 +34,10 @@
                 <VisualState x:Name="AtLeastOneResultIsObsolete">
                     <Storyboard x:Name="FreqCOunterButtonBlinking" RepeatBehavior="Forever" >
                         <ColorAnimationUsingKeyFrames   Storyboard.TargetName="FreqCounterButton" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)">
-                            <EasingColorKeyFrame KeyTime="00:00:00" Value="#01999999"/> <!--Color can't be fully transparent. It will not run the storyboard secon time.. Dont know why, some wierd bug..??--> 
-                            <EasingColorKeyFrame KeyTime="00:00:01" Value="#FF887700"/> <!--something between for dark and light theme-->
+                            <EasingColorKeyFrame KeyTime="00:00:00" Value="#01999999"/>
+                            <!--Color can't be fully transparent. It will not run the storyboard secon time.. Dont know why, some wierd bug..??-->
+                            <EasingColorKeyFrame KeyTime="00:00:01" Value="#FF887700"/>
+                            <!--something between for dark and light theme-->
                             <EasingColorKeyFrame KeyTime="00:00:01.7" Value="#00999999"/>
                         </ColorAnimationUsingKeyFrames>
                     </Storyboard>
@@ -45,15 +47,15 @@
                 </VisualState>
             </VisualStateGroup>
             <VisualStateGroup x:Name="XcomBiggerVisialStates">
-            <VisualState x:Name="XcomNotBigger" />
+                <VisualState x:Name="XcomNotBigger" />
                 <VisualState x:Name="XcomBigger">
                     <VisualState.Setters>
                         <Setter  Target="XComPlotView.Height" Value="222"/>
                     </VisualState.Setters>
-                <VisualState.StateTriggers>
+                    <VisualState.StateTriggers>
                         <StateTrigger  IsActive="{x:Bind  h:StaticConverters.NullBoolToBool( XComToggleBigger.IsChecked), Mode=OneWay}" />
-                </VisualState.StateTriggers>
-            </VisualState>
+                    </VisualState.StateTriggers>
+                </VisualState>
             </VisualStateGroup>
             <VisualStateGroup x:Name="YcomBiggerVisialStates">
                 <VisualState x:Name="YcomNotBigger" />
@@ -84,7 +86,9 @@
                         <Setter  Target="FreqCounterButton.Content" Value="Cancel"/>
                         <Setter  Target="ListViewWithChbxsPlots.IsEnabled" Value="false"/>
                         <Setter  Target="ProgressGrid.Visibility" Value="Visible"/>
-                        <Setter  Target="FreqCounterButton.BorderBrush" Value="#00000000"/> <!--this will stop blinking storyboard-->
+                        <Setter  Target="CancelComputationKeyBoardAccelerator.IsEnabled" Value="True"/>
+                        <Setter  Target="FreqCounterButton.BorderBrush" Value="#00000000"/>
+                        <!--this will stop blinking storyboard-->
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <StateTrigger  IsActive="{x:Bind ViewModel.IsComputationInProgress, Mode=OneWay}" />
@@ -97,7 +101,11 @@
 
             <StackPanel   Orientation="Vertical"   Padding="5" >
 
-                <Button  x:Name="FreqCounterButton"  BorderThickness="4" Content="Count freq" Margin="5"   Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000"  />
+                <Button  x:Name="FreqCounterButton"  BorderThickness="4" Content="Count freq" Margin="5"   Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000" >
+                    <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator x:Name="CancelComputationKeyBoardAccelerator" Key="Escape" IsEnabled="False"/>
+                    </Button.KeyboardAccelerators>
+                </Button>
                 <ListView x:Name="ListViewWithChbxsPlots"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="vm:SelectionRectangleViewModel">
@@ -125,7 +133,7 @@
                     <ProgressBar Grid.Column="1" MinWidth="0"   Value="{x:Bind ViewModel.ProgressPercentage, Mode=OneWay}" />
                 </Grid>
                 <Grid>
-                <TextBlock Text="CoM X movement:" HorizontalAlignment="Left"/>
+                    <TextBlock Text="CoM X movement:" HorizontalAlignment="Left"/>
                     <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="XComToggleBigger" Content="Bigger" />
 
                 </Grid>
@@ -144,8 +152,8 @@
                 </TextBlock>-->
 
                 <Grid Margin="0,5,0,0">
-                <TextBlock Text="PSD:"/>
-                    <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="PsdToggleBigger" Content="Bigger" /> 
+                    <TextBlock Text="PSD:"/>
+                    <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="PsdToggleBigger" Content="Bigger" />
                 </Grid>
                 <oxyplot:PlotView x:Name="PsdPlotView"   Height="100"  Model="{x:Bind ViewModel.PSDPlotModel, Mode=OneWay}"/>
                 <!--oxyplot bug numero dont know: it cannot be in grid or cannot be without height?? so it is separated from nodata-->
