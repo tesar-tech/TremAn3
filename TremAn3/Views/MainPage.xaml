@@ -45,7 +45,7 @@
                 <VisualState x:Name="VisibleMainButtonInvisibleMpe" />
                 <VisualState x:Name="NotVisibleMainButtonVisibleMpe">
                     <VisualState.Setters>
-                        <Setter Target="MainOpenButtonPanel.Visibility" Value="Collapsed"/>
+                        <Setter Target="LandingGrid.Visibility" Value="Collapsed"/>
                         <Setter Target="MediaPlayback.Visibility" Value="Visible"/>
                         <Setter Target="MediaPlayback.DrawingRectangle.Visibility" Value="Visible"/>
                     </VisualState.Setters>
@@ -62,7 +62,8 @@
         </Grid.ColumnDefinitions>
 
         <controls:InAppNotification Canvas.ZIndex="2"  VerticalOffset="-50" HorizontalOffset="-200" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="Notif" ></controls:InAppNotification>
-        <StackPanel x:Name="MainOpenButtonPanel" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Grid x:Name="LandingGrid">
+        <StackPanel  VerticalAlignment="Center" HorizontalAlignment="Center">
         <Button Content="Open Video File (Ctrl + O)" FontSize="30" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"  />
             <HyperlinkButton HorizontalAlignment="Center" Content="Download test video (0.9 MB)" NavigateUri="https://github.com/tesar-tech/TremAn3/raw/master/NoApp/hand.mp4" />
             <HyperlinkButton HorizontalAlignment="Center"  NavigateUri="https://github.com/tesar-tech/TremAn3" >
@@ -72,8 +73,10 @@
                 </StackPanel>
             </HyperlinkButton>
         </StackPanel>
+            <TextBlock Margin="3"  Text="{x:Bind helpers:Helpers.VersionOfApp}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+        </Grid>
 
-       
+
 
         <views:MediaPlaybackUc x:Name="MediaPlayback" Visibility="Collapsed"/>
 
