@@ -1,5 +1,5 @@
 ﻿using System;
-
+using TremAn3.Helpers;
 using TremAn3.ViewModels;
 
 using Windows.UI.Xaml.Controls;
@@ -18,6 +18,12 @@ namespace TremAn3.Views
         {
             InitializeComponent();
             ViewModel.Initialize(shellFrame, splitView, rightFrame, KeyboardAccelerators);
+        }
+
+      
+        private async void Button_ClickAsync(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            await MenuNavigationHelper.OpenInNewWindow(typeof(HelpPage));
         }
     }
 }

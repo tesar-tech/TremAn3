@@ -35,15 +35,15 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition  />
             </Grid.ColumnDefinitions>
             <winui:MenuBar VerticalAlignment="Top">
                 <!--
                 TODO WTS: You can edit the text for the menu in String/en-US/Resources.resw
                 -->
                 <winui:MenuBarItem x:Uid="ShellMenuBarItem_File">
-                
+
                     <MenuFlyoutItem  Text="Open File" x:Uid="ShellMenuItem_File_OpenNewChannels" Click="{x:Bind ViewModel.OpenNewFile}" >
                         <MenuFlyoutItem.KeyboardAccelerators>
                             <KeyboardAccelerator Modifiers="Control"  Key="O" />
@@ -58,7 +58,14 @@
                     <MenuFlyoutItem x:Uid="ShellMenuItem_File_Settings" Command="{x:Bind ViewModel.MenuFileSettingsCommand}" />
                     <MenuFlyoutItem x:Uid="ShellMenuItem_File_Exit" Command="{x:Bind ViewModel.MenuFileExitCommand}" />
                 </winui:MenuBarItem>
+
+                <!--<winui:MenuBarItem Title="Help" >
                     
+                    <winui:MenuBarItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F1"/>
+                    </winui:MenuBarItem.KeyboardAccelerators>
+                </winui:MenuBarItem>-->
+
                 <!--<winui:MenuBarItem Title="Freq Counter" Tapped="{x:Bind ViewModel.FreqCounter}"   />-->
 
                 <!--<winui:MenuBarItem x:Uid="ShellMenuBarItem_Views">
@@ -66,8 +73,13 @@
                     <MenuFlyoutItem x:Uid="ShellMenuItem_Views_MediaPlayer" Command="{x:Bind ViewModel.MenuViewsMediaPlayerCommand}" />
                 </winui:MenuBarItem>-->
             </winui:MenuBar>
-            <ToggleButton Grid.Column="1" Content="Frequency Counter"   IsChecked="{x:Bind viewModels: ViewModelLocator.Current.MainViewModel.IsFreqCounterOpen ,Mode=TwoWay}"/>
-          
+            <ToggleButton Margin="1,0" Grid.Column="1"  Content="Frequency Counter"   IsChecked="{x:Bind viewModels: ViewModelLocator.Current.MainViewModel.IsFreqCounterOpen ,Mode=TwoWay}"/>
+            <Button Click="Button_ClickAsync" Grid.Column="2" Content="Help" Background="#0000">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="F1"/>
+                </Button.KeyboardAccelerators>
+            </Button>
+
             <Grid Grid.Row="1" Grid.ColumnSpan="3">
                 <Frame x:Name="shellFrame" />
             </Grid>

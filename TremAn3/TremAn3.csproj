@@ -209,6 +209,9 @@
     <Compile Include="Views\FreqCounterUc.xaml.cs">
       <DependentUpon>FreqCounterUc.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\HelpPage.xaml.cs">
+      <DependentUpon>HelpPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -288,6 +291,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\FreqCounterUc.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HelpPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
