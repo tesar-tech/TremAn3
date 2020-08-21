@@ -69,6 +69,8 @@ namespace TremAn3.ViewModels
             PsdSeries = GetNewLineSeries(Algorithm.Results.PsdAvgData.Select(c => new DataPoint(c.x_freq, c.y_power)));
             XComSeries = GetNewLineSeries(Algorithm.Results.ListComXNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
             YComSeries = GetNewLineSeries(Algorithm.Results.ListComYNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
+            Algorithm.GetFftDuringSignal();//todo check inside, it has to compute lists firs
+            FreqProgressSeries = GetNewLineSeries(Algorithm.Results.FftDuringSignal.Zip(Algorithm.Results.FftDuringSignalTime, (valy, valx) => new DataPoint(valx, valy)));
             IsRoiSameAsResult = true;
         }
 
@@ -107,6 +109,15 @@ namespace TremAn3.ViewModels
             get => _YComSeries;
             set => Set(ref _YComSeries, value);
         }
+
+        private LineSeries _FreqProgressSeries;
+
+        public LineSeries FreqProgressSeries
+        {
+            get => _FreqProgressSeries;
+            set => Set(ref _FreqProgressSeries, value);
+        }
+
 
         private double _MainFreq;
 

@@ -26,20 +26,26 @@ namespace TremAn3.Core
         }
 
         private uint widthOfFrame;
+
         //private uint heightOfFrame;
-        uint startInd;
-        uint endInd;
+        /// <summary>
+        /// start and end indexis of frames 
+        /// </summary>
+        readonly uint startInd;
+        readonly uint endInd;
         SelectionRectangle rect;
         //public byte[] Frame1 { get; set; }
         //public byte[] Frame2 { get; set; }
         public List<byte> Frame1 { get; set; }
         public List<byte> Frame2 { get; set; }
 
+        //frame rate (of video originaly)
         readonly double frameRate;
 
         readonly List<int> vecOfx;
         readonly List<int> vecOfy;
 
+        //class where to save all results 
         public Results Results { get; set; } = new Results();
 
         double previousValueX;
@@ -188,6 +194,18 @@ namespace TremAn3.Core
             int maxIndex = avgSpecList.IndexOf(avgSpecList.Max());
             return fftX.Frequencies[maxIndex];
         }
+
+        public void GetFftDuringSignal()
+        {
+            var fftDuringSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,256,5,false);
+            Results.FftDuringSignal = fftDuringSignal;
+            uint startTimeSeconds = (uint)(startInd / frameRate);
+            uint endTimeSeconds = (uint)(endInd / frameRate);
+            var numberOfTicks = fftDuringSignal.Count;
+            var range = Enumerable.Range(0, numberOfTicks).Select(x=>x/frameRate).ToList();
+            Results.FftDuringSignalTime = range;
+        }
+        
 
       
 

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TremAn3.Core;
+using Windows.Media.Protection.PlayReady;
 using Windows.UI;
 using Windows.UI.Xaml;
 
@@ -55,14 +56,16 @@ namespace TremAn3.ViewModels
             //invalidate plots here, so it doesn't slow the slider
             XCoMPlotModel.InvalidatePlot(false);
             YCoMPlotModel.InvalidatePlot(false);
+            FreqProgressPlotModel.InvalidatePlot(false);
             _annotationTimer.Stop();
         }
 
         private void MediaControllingViewModel_PositionChanged(double value)
         {
-            if (xcomAnnotation == null || ycomAnnotation == null) return;
+            if (xcomAnnotation == null || ycomAnnotation == null|| freqProgressAnnotation == null) return;
             xcomAnnotation.X = value;
             ycomAnnotation.X = value;
+            freqProgressAnnotation.X = value;
             StartTimer();//invalidated on tick
         }
 
@@ -105,11 +108,21 @@ namespace TremAn3.ViewModels
             set => Set(ref _YCoMPlotModel, value);
         }
 
+        private PlotModel _FreqProgressPlotModel;
+
+        public PlotModel FreqProgressPlotModel
+        {
+            get => _FreqProgressPlotModel;
+            set => Set(ref _FreqProgressPlotModel, value);
+        }
+
+
         private void RefreshPlots()
         {
             XCoMPlotModel.InvalidatePlot(true);
             YCoMPlotModel.InvalidatePlot(true);
             PSDPlotModel.InvalidatePlot(true);
+            FreqProgressPlotModel.InvalidatePlot(true);
         }
 
         private PlotModel getPlotModelWithNoDataText()
@@ -118,10 +131,10 @@ namespace TremAn3.ViewModels
             return model;
         }
 
-        public enum PlotType
-        {
-            XCoM, YCoM, PSDAvg
-        }
+        //public enum PlotType
+        //{
+        //    XCoM, YCoM, PSDAvg
+        //}
 
         public void DisplayPlots()
         {
@@ -130,25 +143,30 @@ namespace TremAn3.ViewModels
             var psdPlotModel = new PlotModel();
             var xcomPlotModel = new PlotModel();
             var ycomPlotModel = new PlotModel();
+            var freqProgressPlotModel = new PlotModel();
             foreach (var comp in comps)
             {
                 comp.PrepareForDisplay();
                 psdPlotModel.Series.Add(comp.PsdSeries);
                 xcomPlotModel.Series.Add(comp.XComSeries);
                 ycomPlotModel.Series.Add(comp.YComSeries);
+                freqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
             }
             recreateAnnotations();
             xcomPlotModel.Annotations.Add(xcomAnnotation);
             ycomPlotModel.Annotations.Add(ycomAnnotation);
+            freqProgressPlotModel.Annotations.Add(freqProgressAnnotation);
 
             PSDPlotModel = psdPlotModel;
             XCoMPlotModel = xcomPlotModel;
             YCoMPlotModel = ycomPlotModel;
+            FreqProgressPlotModel = freqProgressPlotModel;
             IsAllResultsNotObsolete = true;
         }
 
         LineAnnotation xcomAnnotation;
         LineAnnotation ycomAnnotation;
+        LineAnnotation freqProgressAnnotation;
         void recreateAnnotations()
         {
             xcomAnnotation = new LineAnnotation()
@@ -159,6 +177,13 @@ namespace TremAn3.ViewModels
                 X = 0
             };
             ycomAnnotation = new LineAnnotation()
+            {
+                Type = LineAnnotationType.Vertical,
+                ClipByXAxis = false,
+                X = 0,
+                Color = OxyColors.Black,
+            };
+            freqProgressAnnotation = new LineAnnotation()
             {
                 Type = LineAnnotationType.Vertical,
                 ClipByXAxis = false,
@@ -188,6 +213,7 @@ namespace TremAn3.ViewModels
             XCoMPlotModel = getPlotModelWithNoDataText();
             YCoMPlotModel = getPlotModelWithNoDataText();
             PSDPlotModel = getPlotModelWithNoDataText();
+            FreqProgressPlotModel = getPlotModelWithNoDataText();
 
         }
 

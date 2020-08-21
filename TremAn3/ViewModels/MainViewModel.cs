@@ -110,6 +110,7 @@ namespace TremAn3.ViewModels
 
             source = new CancellationTokenSource();
             await Computation(grabber, comAlgs, source);//this modifies comAlgs that are part of FreqCounterVm
+
             if (!source.IsCancellationRequested)
             {
                 Debug.WriteLine(sw.ElapsedMilliseconds);

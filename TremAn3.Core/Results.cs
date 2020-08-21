@@ -31,5 +31,8 @@ namespace TremAn3.Core
                 return noavg;
             }
         }
+
+        public List<double> FftDuringSignal { get; internal set; }
+        public List<double> FftDuringSignalTime { get; internal set; }
     }
 }
