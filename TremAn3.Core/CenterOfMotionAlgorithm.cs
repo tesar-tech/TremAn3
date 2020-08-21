@@ -29,7 +29,7 @@ namespace TremAn3.Core
 
         //private uint heightOfFrame;
         /// <summary>
-        /// start and end indexis of frames 
+        /// start and end indexis of pixels in one frame (ROI)
         /// </summary>
         readonly uint startInd;
         readonly uint endInd;
@@ -56,7 +56,7 @@ namespace TremAn3.Core
         public double tdiffnormmenArr = 0;
         public double tcomxcomy = 0;
         public double tcomxcomyArr = 0;
-        Stopwatch sw = new Stopwatch();
+        //Stopwatch sw = new Stopwatch();
         public void GetComFromCurrentARGBFrames()
         {
             double comX = previousValueX;//
@@ -67,7 +67,7 @@ namespace TremAn3.Core
             //var max = diff.Max();
             //var min = diff.Min();
             //tdiffminmaxList += sw.ElapsedMilliseconds;
-            sw.Restart();
+            //sw.Restart();
 
             var diffA = new double[rect.Height*rect.Width];
             double maxA = double.MinValue;
@@ -106,8 +106,8 @@ namespace TremAn3.Core
 
          
 
-            tdiffminmaxArr += sw.ElapsedMilliseconds;
-            sw.Restart();
+            //tdiffminmaxArr += sw.ElapsedMilliseconds;
+            //sw.Restart();
             if (maxA != 0 || minA != 0)//frame 1 is different than frame 2
             {
                 //sw.Restart();
@@ -118,7 +118,7 @@ namespace TremAn3.Core
                 ////now "pixels" are in range from  0 to 1
                 //var mean = diffNorm.Average();
                 //tdiffnormmenList += sw.ElapsedMilliseconds;
-                sw.Restart();
+                //sw.Restart();
 
                 var diffNormA = new double[diffA.Length];
                 var max_min = maxA - minA;
@@ -152,7 +152,7 @@ namespace TremAn3.Core
 
                 comX = avgSumX / diffNormA.Length / meanA;
                 comY = avgSumY / diffNormA.Length / meanA;
-                tcomxcomyArr += sw.ElapsedMilliseconds;
+                //tcomxcomyArr += sw.ElapsedMilliseconds;
 
 
             }
@@ -197,12 +197,12 @@ namespace TremAn3.Core
 
         public void GetFftDuringSignal()
         {
-            var fftDuringSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,256,5,false);
+            var fftDuringSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,256,1,false);
             Results.FftDuringSignal = fftDuringSignal;
-            uint startTimeSeconds = (uint)(startInd / frameRate);
-            uint endTimeSeconds = (uint)(endInd / frameRate);
+            var firstTime = Results.FrameTimes.First();
             var numberOfTicks = fftDuringSignal.Count;
-            var range = Enumerable.Range(0, numberOfTicks).Select(x=>x/frameRate).ToList();
+            var segmentInSec = (Results.FrameTimes.Last() - firstTime).TotalSeconds /(numberOfTicks-1);
+            var range = Enumerable.Range(0, numberOfTicks).Select(x=>x*segmentInSec + firstTime.TotalSeconds).ToList();
             Results.FftDuringSignalTime = range;
         }
         

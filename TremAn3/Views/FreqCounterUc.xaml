@@ -79,6 +79,17 @@
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
+            <VisualStateGroup x:Name="FreqProgressBiggerVisialStates">
+                <VisualState x:Name="FreqProgressNotBigger" />
+                <VisualState x:Name="FreqProgressBigger">
+                    <VisualState.Setters>
+                        <Setter  Target="FreqProgressPlotView.Height" Value="222"/>
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <StateTrigger  IsActive="{x:Bind  h:StaticConverters.NullBoolToBool( FreqProgressToggleBigger.IsChecked), Mode=OneWay}" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
             <VisualStateGroup x:Name="ComputationInProgressVisialStates">
                 <VisualState x:Name="NotInProggressVg" />
                 <VisualState x:Name="InProgressVg">
@@ -156,6 +167,12 @@
                     <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="PsdToggleBigger" Content="Bigger" />
                 </Grid>
                 <oxyplot:PlotView x:Name="PsdPlotView"   Height="100"  Model="{x:Bind ViewModel.PSDPlotModel, Mode=OneWay}"/>
+
+                <Grid Margin="0,5,0,0">
+                    <TextBlock Text="Main Frequency Progress:"/>
+                    <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="FreqProgressToggleBigger" Content="Bigger" />
+                </Grid>
+                <oxyplot:PlotView x:Name="FreqProgressPlotView"   Height="100"  Model="{x:Bind ViewModel.FreqProgressPlotModel, Mode=OneWay}"/>
                 <!--oxyplot bug numero dont know: it cannot be in grid or cannot be without height?? so it is separated from nodata-->
                 <!--<TextBlock Canvas.ZIndex="1" Grid.Row="3" Margin="0,-200,0,0" Text="No data" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Style="{StaticResource TitleTextBlockStyle}" Visibility="{x:Bind  helpers:StaticConverters.BoolToVisiblityInverse(ViewModel.FreqCounterViewModel.IsDataAvailableForPlot), Mode=OneWay}"/>-->
                 <Grid Grid.Row="4">
