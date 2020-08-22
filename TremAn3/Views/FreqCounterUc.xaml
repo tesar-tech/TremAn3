@@ -169,7 +169,18 @@
                 <oxyplot:PlotView x:Name="PsdPlotView"   Height="100"  Model="{x:Bind ViewModel.PSDPlotModel, Mode=OneWay}"/>
 
                 <Grid Margin="0,5,0,0">
-                    <TextBlock Text="Main Frequency Progress:"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Main Frequency Progress"/>
+                        <Button Padding="2">
+                            <SymbolIcon Symbol="Setting"/>
+                            <Button.Flyout>
+                                <Flyout>
+                                    <mux:NumberBox Header="Step for progress computation:"  Minimum="1"
+                                         Value="{x:Bind ViewModel.StepForFreqProgress, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" SpinButtonPlacementMode="Inline" SmallChange="1" LargeChange="10" />
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                    </StackPanel>
                     <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="FreqProgressToggleBigger" Content="Bigger" />
                 </Grid>
                 <oxyplot:PlotView x:Name="FreqProgressPlotView"   Height="100"  Model="{x:Bind ViewModel.FreqProgressPlotModel, Mode=OneWay}"/>

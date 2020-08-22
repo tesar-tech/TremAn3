@@ -122,13 +122,26 @@ namespace TremAn3.ViewModels
             XCoMPlotModel.InvalidatePlot(true);
             YCoMPlotModel.InvalidatePlot(true);
             PSDPlotModel.InvalidatePlot(true);
-            FreqProgressPlotModel.InvalidatePlot(true);
+            RefreshFreqProgressPlot();
         }
+            
+       private void RefreshFreqProgressPlot() => FreqProgressPlotModel.InvalidatePlot(true);
 
         private PlotModel getPlotModelWithNoDataText()
         {
             var model = new PlotModel { Title = "No Data" };
             return model;
+        }
+
+        private int _StepForFreqProgress = 2;
+
+        public int StepForFreqProgress
+        {
+            get => _StepForFreqProgress;
+            set {
+                if (Set(ref _StepForFreqProgress, value))
+                    ReDrawFreqProgress();
+                     }
         }
 
         //public enum PlotType
@@ -147,7 +160,7 @@ namespace TremAn3.ViewModels
             double maxYOfFreqProgress =0;
             foreach (var comp in comps)
             {
-                comp.PrepareForDisplay();
+                comp.PrepareForDisplay(StepForFreqProgress);
                 psdPlotModel.Series.Add(comp.PsdSeries);
                 xcomPlotModel.Series.Add(comp.XComSeries);
                 ycomPlotModel.Series.Add(comp.YComSeries);
@@ -168,7 +181,25 @@ namespace TremAn3.ViewModels
             IsAllResultsNotObsolete = true;
         }
 
-      
+        public void ReDrawFreqProgress()
+        {
+            if (FreqProgressPlotModel.Series?.Count == 0)
+                return;
+            FreqProgressPlotModel.Series.Clear();
+            var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
+
+            double maxYOfFreqProgress = 0;
+            foreach (var comp in comps)
+            {
+                comp.PrepareForDisplayFreqProgress(StepForFreqProgress);
+                FreqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
+                //get maximum to better view 
+                maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max() ? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
+            }
+            RefreshFreqProgressPlot();
+        }
+
+
 
         LineAnnotation xcomAnnotation;
         LineAnnotation ycomAnnotation;

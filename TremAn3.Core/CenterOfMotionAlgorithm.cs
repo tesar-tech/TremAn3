@@ -195,9 +195,10 @@ namespace TremAn3.Core
             return fftX.Frequencies[maxIndex];
         }
 
-        public void GetFftDuringSignal()
+
+        public void GetFftDuringSignal(int segmentSize, int step)
         {
-            var fftDuringSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,256,1,false);
+            var fftDuringSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,segmentSize,step,false);
             Results.FreqProgress = fftDuringSignal;
             var firstTime = Results.FrameTimes.First();
             var numberOfTicks = fftDuringSignal.Count;
