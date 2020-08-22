@@ -144,6 +144,19 @@ namespace TremAn3.ViewModels
                      }
         }
 
+        private int _SegmnetSizeFreqProgress=256;
+
+        public int SegmnetSizeFreqProgress
+        {
+            get => _SegmnetSizeFreqProgress;
+            set {
+                if(Set(ref _SegmnetSizeFreqProgress, value))
+                    ReDrawFreqProgress();
+        }
+        }
+
+
+
         //public enum PlotType
         //{
         //    XCoM, YCoM, PSDAvg
@@ -160,7 +173,7 @@ namespace TremAn3.ViewModels
             double maxYOfFreqProgress =0;
             foreach (var comp in comps)
             {
-                comp.PrepareForDisplay(StepForFreqProgress);
+                comp.PrepareForDisplay(StepForFreqProgress, SegmnetSizeFreqProgress);
                 psdPlotModel.Series.Add(comp.PsdSeries);
                 xcomPlotModel.Series.Add(comp.XComSeries);
                 ycomPlotModel.Series.Add(comp.YComSeries);
@@ -191,7 +204,7 @@ namespace TremAn3.ViewModels
             double maxYOfFreqProgress = 0;
             foreach (var comp in comps)
             {
-                comp.PrepareForDisplayFreqProgress(StepForFreqProgress);
+                comp.PrepareForDisplayFreqProgress(StepForFreqProgress,SegmnetSizeFreqProgress);
                 FreqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
                 //get maximum to better view 
                 maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max() ? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;

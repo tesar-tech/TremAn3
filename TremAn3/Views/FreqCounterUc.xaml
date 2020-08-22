@@ -175,8 +175,15 @@
                             <SymbolIcon Symbol="Setting"/>
                             <Button.Flyout>
                                 <Flyout>
+                                    <StackPanel Orientation="Vertical">
+                                    <ComboBox Header="fft length" SelectedValue="{x:Bind  ViewModel.SegmnetSizeFreqProgress,Mode=TwoWay}" Width="200">
+                                            <x:Int32>128</x:Int32>
+                                            <x:Int32>256</x:Int32>
+                                            <x:Int32>512</x:Int32>
+                                    </ComboBox>
                                     <mux:NumberBox Header="Step for progress computation:"  Minimum="1"
                                          Value="{x:Bind ViewModel.StepForFreqProgress, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" SpinButtonPlacementMode="Inline" SmallChange="1" LargeChange="10" />
+                                    </StackPanel>
                                 </Flyout>
                             </Button.Flyout>
                         </Button>

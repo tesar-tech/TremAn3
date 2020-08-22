@@ -63,19 +63,19 @@ namespace TremAn3.ViewModels
         public CenterOfMotionAlgorithm Algorithm { get; set; }
 
         //run neccessary computations and create lineseries
-        public void PrepareForDisplay(int stepForFreqProgress)
+        public void PrepareForDisplay(int stepForFreqProgress, int segmnetSizeFreqProgress)
         {
             MainFreq = Algorithm.GetMainFreqAndFillPsdDataFromComLists();
             PsdSeries = GetNewLineSeries(Algorithm.Results.PsdAvgData.Select(c => new DataPoint(c.x_freq, c.y_power)));
             XComSeries = GetNewLineSeries(Algorithm.Results.ListComXNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
             YComSeries = GetNewLineSeries(Algorithm.Results.ListComYNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
-            PrepareForDisplayFreqProgress(stepForFreqProgress);
+            PrepareForDisplayFreqProgress(stepForFreqProgress, segmnetSizeFreqProgress);
             IsRoiSameAsResult = true;
         }
 
-        public void PrepareForDisplayFreqProgress(int step)
+        public void PrepareForDisplayFreqProgress(int step, int segmnetSizeFreqProgress)
         {
-            Algorithm.GetFftDuringSignal(256,step);//todo check inside, it has to compute lists firs
+            Algorithm.GetFftDuringSignal(segmnetSizeFreqProgress, step);//todo check inside, it has to compute lists firs
             FreqProgressSeries = GetNewLineSeries(Algorithm.Results.FreqProgress.Zip(Algorithm.Results.FreqProgressTime, (valy, valx) => new DataPoint(valx, valy)));
 
         }
