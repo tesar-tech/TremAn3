@@ -198,12 +198,12 @@ namespace TremAn3.Core
         public void GetFftDuringSignal()
         {
             var fftDuringSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,256,1,false);
-            Results.FftDuringSignal = fftDuringSignal;
+            Results.FreqProgress = fftDuringSignal;
             var firstTime = Results.FrameTimes.First();
             var numberOfTicks = fftDuringSignal.Count;
             var segmentInSec = (Results.FrameTimes.Last() - firstTime).TotalSeconds /(numberOfTicks-1);
             var range = Enumerable.Range(0, numberOfTicks).Select(x=>x*segmentInSec + firstTime.TotalSeconds).ToList();
-            Results.FftDuringSignalTime = range;
+            Results.FreqProgressTime = range;
         }
         
 

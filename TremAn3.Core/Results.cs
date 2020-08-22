@@ -32,7 +32,7 @@ namespace TremAn3.Core
             }
         }
 
-        public List<double> FftDuringSignal { get; internal set; }
-        public List<double> FftDuringSignalTime { get; internal set; }
+        public List<double> FreqProgress { get; internal set; }
+        public List<double> FreqProgressTime { get; internal set; }
     }
 }

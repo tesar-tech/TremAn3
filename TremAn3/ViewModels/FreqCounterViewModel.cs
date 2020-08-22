@@ -144,6 +144,7 @@ namespace TremAn3.ViewModels
             var xcomPlotModel = new PlotModel();
             var ycomPlotModel = new PlotModel();
             var freqProgressPlotModel = new PlotModel();
+            double maxYOfFreqProgress =0;
             foreach (var comp in comps)
             {
                 comp.PrepareForDisplay();
@@ -151,6 +152,8 @@ namespace TremAn3.ViewModels
                 xcomPlotModel.Series.Add(comp.XComSeries);
                 ycomPlotModel.Series.Add(comp.YComSeries);
                 freqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
+                //get maximum to better view 
+                maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max()? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
             }
             recreateAnnotations();
             xcomPlotModel.Annotations.Add(xcomAnnotation);
@@ -160,9 +163,12 @@ namespace TremAn3.ViewModels
             PSDPlotModel = psdPlotModel;
             XCoMPlotModel = xcomPlotModel;
             YCoMPlotModel = ycomPlotModel;
+            freqProgressPlotModel.Axes.Add( new LinearAxis() {Maximum = maxYOfFreqProgress*1.1, Minimum = 0, MajorTickSize =2, MinorTickSize=0.5 , Position = AxisPosition.Left, Key = "Vertical" });
             FreqProgressPlotModel = freqProgressPlotModel;
             IsAllResultsNotObsolete = true;
         }
+
+      
 
         LineAnnotation xcomAnnotation;
         LineAnnotation ycomAnnotation;
@@ -189,6 +195,7 @@ namespace TremAn3.ViewModels
                 ClipByXAxis = false,
                 X = 0,
                 Color = OxyColors.Black,
+
             };
         }
 

@@ -70,7 +70,7 @@ namespace TremAn3.ViewModels
             XComSeries = GetNewLineSeries(Algorithm.Results.ListComXNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
             YComSeries = GetNewLineSeries(Algorithm.Results.ListComYNoAvg.Zip(Algorithm.Results.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
             Algorithm.GetFftDuringSignal();//todo check inside, it has to compute lists firs
-            FreqProgressSeries = GetNewLineSeries(Algorithm.Results.FftDuringSignal.Zip(Algorithm.Results.FftDuringSignalTime, (valy, valx) => new DataPoint(valx, valy)));
+            FreqProgressSeries = GetNewLineSeries(Algorithm.Results.FreqProgress.Zip(Algorithm.Results.FreqProgressTime, (valy, valx) => new DataPoint(valx, valy)));
             IsRoiSameAsResult = true;
         }
 
