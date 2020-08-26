@@ -97,12 +97,24 @@
                         <Setter  Target="FreqCounterButton.Content" Value="Cancel"/>
                         <Setter  Target="ListViewWithChbxsPlots.IsEnabled" Value="false"/>
                         <Setter  Target="ProgressGrid.Visibility" Value="Visible"/>
+                        <Setter  Target="FreqProgressSettingButton.IsEnabled" Value="false"/>
                         <Setter  Target="CancelComputationKeyBoardAccelerator.IsEnabled" Value="True"/>
                         <Setter  Target="FreqCounterButton.BorderBrush" Value="#00000000"/>
                         <!--this will stop blinking storyboard-->
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <StateTrigger  IsActive="{x:Bind ViewModel.IsComputationInProgress, Mode=OneWay}" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="FreqProgressIsParOkVStateG">
+                <VisualState x:Name="FreqProgressIsOkVState" />
+                <VisualState x:Name="FreqProgressNotOkVstate">
+                    <VisualState.Setters>
+                        <Setter  Target="FreqProgressStatusMessageTxbl.Foreground" Value="Red"/>
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <StateTrigger   IsActive="{x:Bind h:StaticConverters.InverseBool( ViewModel.FreqProgressViewModel.IsFreqProgressParametersOk), Mode=OneWay}" />
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
@@ -170,19 +182,24 @@
 
                 <Grid Margin="0,5,0,0">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Main Frequency Progress"/>
-                        <Button Padding="2">
-                            <SymbolIcon Symbol="Setting"/>
-                            <Button.Flyout>
+                        <TextBlock VerticalAlignment="Bottom" Text="Main Frequency Progress"/>
+                        <Button VerticalAlignment="Bottom"  x:Name="FreqProgressSettingButton" Padding="1">
+                            <Viewbox  Height="14" Width="14">
+                            <SymbolIcon  Symbol="Setting"/>
+                                </Viewbox>
+                                    <Button.Flyout>
                                 <Flyout>
                                     <StackPanel Orientation="Vertical">
-                                    <ComboBox Header="fft length" SelectedValue="{x:Bind  ViewModel.SegmnetSizeFreqProgress,Mode=TwoWay}" Width="200">
+                                        <ComboBox Header="fft length" SelectedValue="{x:Bind  ViewModel.FreqProgressViewModel.SegmnetSize,Mode=TwoWay}" Width="200">
+                                            <x:Int32>64</x:Int32>
                                             <x:Int32>128</x:Int32>
                                             <x:Int32>256</x:Int32>
                                             <x:Int32>512</x:Int32>
-                                    </ComboBox>
+                                            <x:Int32>1024</x:Int32>
+
+                                        </ComboBox>
                                     <mux:NumberBox Header="Step for progress computation:"  Minimum="1"
-                                         Value="{x:Bind ViewModel.StepForFreqProgress, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" SpinButtonPlacementMode="Inline" SmallChange="1" LargeChange="10" />
+                                         Value="{x:Bind ViewModel.FreqProgressViewModel.Step, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SpinButtonPlacementMode="Inline" SmallChange="1" LargeChange="10" />
                                     </StackPanel>
                                 </Flyout>
                             </Button.Flyout>
@@ -190,6 +207,7 @@
                     </StackPanel>
                     <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="FreqProgressToggleBigger" Content="Bigger" />
                 </Grid>
+                <TextBlock Margin="5,0,0,0" FontSize="10" TextWrapping="WrapWholeWords"  x:Name="FreqProgressStatusMessageTxbl" Text="{x:Bind ViewModel.FreqProgressViewModel.StatusMessage, Mode=OneWay}" ></TextBlock>
                 <oxyplot:PlotView x:Name="FreqProgressPlotView"   Height="100"  Model="{x:Bind ViewModel.FreqProgressPlotModel, Mode=OneWay}"/>
                 <!--oxyplot bug numero dont know: it cannot be in grid or cannot be without height?? so it is separated from nodata-->
                 <!--<TextBlock Canvas.ZIndex="1" Grid.Row="3" Margin="0,-200,0,0" Text="No data" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Style="{StaticResource TitleTextBlockStyle}" Visibility="{x:Bind  helpers:StaticConverters.BoolToVisiblityInverse(ViewModel.FreqCounterViewModel.IsDataAvailableForPlot), Mode=OneWay}"/>-->

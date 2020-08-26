@@ -62,7 +62,7 @@ namespace TremAn3.ViewModels
 
         private void MediaControllingViewModel_PositionChanged(double value)
         {
-            if (xcomAnnotation == null || ycomAnnotation == null|| freqProgressAnnotation == null) return;
+            if (xcomAnnotation == null || ycomAnnotation == null || freqProgressAnnotation == null) return;
             xcomAnnotation.X = value;
             ycomAnnotation.X = value;
             freqProgressAnnotation.X = value;
@@ -124,8 +124,8 @@ namespace TremAn3.ViewModels
             PSDPlotModel.InvalidatePlot(true);
             RefreshFreqProgressPlot();
         }
-            
-       private void RefreshFreqProgressPlot() => FreqProgressPlotModel.InvalidatePlot(true);
+
+        private void RefreshFreqProgressPlot() => FreqProgressPlotModel.InvalidatePlot(true);
 
         private PlotModel getPlotModelWithNoDataText()
         {
@@ -133,29 +133,7 @@ namespace TremAn3.ViewModels
             return model;
         }
 
-        private int _StepForFreqProgress = 2;
-
-        public int StepForFreqProgress
-        {
-            get => _StepForFreqProgress;
-            set {
-                if (Set(ref _StepForFreqProgress, value))
-                    ReDrawFreqProgress();
-                     }
-        }
-
-        private int _SegmnetSizeFreqProgress=256;
-
-        public int SegmnetSizeFreqProgress
-        {
-            get => _SegmnetSizeFreqProgress;
-            set {
-                if(Set(ref _SegmnetSizeFreqProgress, value))
-                    ReDrawFreqProgress();
-        }
-        }
-
-
+        public FreqProgressViewModel FreqProgressViewModel { get; set; } = new FreqProgressViewModel();
 
         //public enum PlotType
         //{
@@ -169,79 +147,68 @@ namespace TremAn3.ViewModels
             var psdPlotModel = new PlotModel();
             var xcomPlotModel = new PlotModel();
             var ycomPlotModel = new PlotModel();
-            var freqProgressPlotModel = new PlotModel();
-            double maxYOfFreqProgress =0;
             foreach (var comp in comps)
             {
-                comp.PrepareForDisplay(StepForFreqProgress, SegmnetSizeFreqProgress);
+                comp.PrepareForDisplay(FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize);
                 psdPlotModel.Series.Add(comp.PsdSeries);
                 xcomPlotModel.Series.Add(comp.XComSeries);
                 ycomPlotModel.Series.Add(comp.YComSeries);
-                freqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
-                //get maximum to better view 
-                maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max()? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
+
             }
-            recreateAnnotations();
+            xcomAnnotation = RecreateAnnotation();
+            ycomAnnotation = RecreateAnnotation();
             xcomPlotModel.Annotations.Add(xcomAnnotation);
             ycomPlotModel.Annotations.Add(ycomAnnotation);
-            freqProgressPlotModel.Annotations.Add(freqProgressAnnotation);
 
             PSDPlotModel = psdPlotModel;
             XCoMPlotModel = xcomPlotModel;
             YCoMPlotModel = ycomPlotModel;
-            freqProgressPlotModel.Axes.Add( new LinearAxis() {Maximum = maxYOfFreqProgress*1.1, Minimum = 0, MajorTickSize =2, MinorTickSize=0.5 , Position = AxisPosition.Left, Key = "Vertical" });
-            FreqProgressPlotModel = freqProgressPlotModel;
+            ReDrawFreqProgress();
             IsAllResultsNotObsolete = true;
         }
 
         public void ReDrawFreqProgress()
         {
-            if (FreqProgressPlotModel.Series?.Count == 0)
-                return;
-            FreqProgressPlotModel.Series.Clear();
+            var freqProgressPlotModel = new PlotModel();
             var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
 
             double maxYOfFreqProgress = 0;
             foreach (var comp in comps)
             {
-                comp.PrepareForDisplayFreqProgress(StepForFreqProgress,SegmnetSizeFreqProgress);
-                FreqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
+                try
+                {
+                    comp.PrepareForDisplayFreqProgress(FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize);
+                }
+                catch (FftSettingsException e)
+                {//when there is an error (i.e. window is longer than signal)
+                    FreqProgressViewModel.StatusMessage = e.Message;
+                    FreqProgressViewModel.IsFreqProgressParametersOk = false;
+                    FreqProgressPlotModel = getPlotModelWithNoDataText();//display No data (also exception and err message is handled in prepare)
+                    return;
+                }
+              
+
+                freqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
                 //get maximum to better view 
                 maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max() ? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
             }
+
+            FreqProgressViewModel.StatusMessage = $"Frequency resolution: {comps.First().Algorithm.frameRate / FreqProgressViewModel.SegmnetSize:F2} Hz. Number of segments computed: {comps.First().Algorithm.Results.FreqProgress.Count} ";
+
+            FreqProgressViewModel.IsFreqProgressParametersOk = true;
+            freqProgressAnnotation = RecreateAnnotation();
+            freqProgressPlotModel.Annotations.Add(freqProgressAnnotation);
+            freqProgressPlotModel.Axes.Add(new LinearAxis() { Maximum = maxYOfFreqProgress * 1.1, Minimum = 0, MajorTickSize = 2, MinorTickSize = 0.5, Position = AxisPosition.Left, Key = "Vertical" });
+            FreqProgressPlotModel = freqProgressPlotModel;
+
             RefreshFreqProgressPlot();
         }
-
-
 
         LineAnnotation xcomAnnotation;
         LineAnnotation ycomAnnotation;
         LineAnnotation freqProgressAnnotation;
-        void recreateAnnotations()
-        {
-            xcomAnnotation = new LineAnnotation()
-            {
-                Type = LineAnnotationType.Vertical,
-                ClipByXAxis = false,
-                Color = OxyColors.Black,
-                X = 0
-            };
-            ycomAnnotation = new LineAnnotation()
-            {
-                Type = LineAnnotationType.Vertical,
-                ClipByXAxis = false,
-                X = 0,
-                Color = OxyColors.Black,
-            };
-            freqProgressAnnotation = new LineAnnotation()
-            {
-                Type = LineAnnotationType.Vertical,
-                ClipByXAxis = false,
-                X = 0,
-                Color = OxyColors.Black,
 
-            };
-        }
+        LineAnnotation RecreateAnnotation() => new LineAnnotation() { Type = LineAnnotationType.Vertical, ClipByXAxis = false, X = 0, Color = OxyColors.Black };
 
         double _maximum;
 

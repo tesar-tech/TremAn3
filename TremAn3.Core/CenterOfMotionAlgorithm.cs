@@ -40,7 +40,7 @@ namespace TremAn3.Core
         public List<byte> Frame2 { get; set; }
 
         //frame rate (of video originaly)
-        readonly double frameRate;
+        readonly public double frameRate;
 
         readonly List<int> vecOfx;
         readonly List<int> vecOfy;
@@ -198,10 +198,13 @@ namespace TremAn3.Core
 
         public void GetFftDuringSignal(int segmentSize, int step)
         {
-            var fftDuringSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,segmentSize,step,false);
-            Results.FreqProgress = fftDuringSignal;
+            var fftProgressSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,segmentSize,step,false);
+            if (fftProgressSignal.Count == 1)
+                fftProgressSignal.Add(fftProgressSignal.First());
+
+            Results.FreqProgress = fftProgressSignal;
             var firstTime = Results.FrameTimes.First();
-            var numberOfTicks = fftDuringSignal.Count;
+            var numberOfTicks = fftProgressSignal.Count;
             var segmentInSec = (Results.FrameTimes.Last() - firstTime).TotalSeconds /(numberOfTicks-1);
             var range = Enumerable.Range(0, numberOfTicks).Select(x=>x*segmentInSec + firstTime.TotalSeconds).ToList();
             Results.FreqProgressTime = range;
