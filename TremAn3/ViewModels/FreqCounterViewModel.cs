@@ -171,7 +171,8 @@ namespace TremAn3.ViewModels
         {
             var freqProgressPlotModel = new PlotModel();
             var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
-
+            if (comps.Count < 1)
+                return;
             double maxYOfFreqProgress = 0;
             foreach (var comp in comps)
             {
