@@ -48,5 +48,18 @@ namespace TremAn3.Views
                 WindowManagerService.Current.SecondaryViews.Remove(_viewLifetimeControl);
             });
         }
+        //bacause it can be pressed fast and twice
+        bool _isCanRunContentDialog = true;
+        private async void RunStartupGuide_ClickAsync(object sender, RoutedEventArgs e)
+        {
+            if (_isCanRunContentDialog)
+            {
+                _isCanRunContentDialog = false;
+                FirstRunDialog fd = new FirstRunDialog(true);
+                await fd.ShowAsync();
+                _isCanRunContentDialog = true;
+
+            }
+        }
     }
 }
