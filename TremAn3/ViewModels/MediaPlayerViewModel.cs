@@ -73,6 +73,11 @@ namespace TremAn3.ViewModels
         {
         }
 
+        public void DrawingRectangleLoaded()
+        {
+            ViewModelLocator.Current.TeachingTipsViewModel.Start(5);
+        }
+
         public void DisposeSource()
         {
             var mediaSource = Source as MediaSource;

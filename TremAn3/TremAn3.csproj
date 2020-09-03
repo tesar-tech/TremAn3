@@ -199,6 +199,7 @@
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ShellContentDialogViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewModels\TeachingTipsViewModel.cs" />
     <Compile Include="ViewModels\VideoInfoViewModel.cs" />
     <Compile Include="ViewModels\VideoPropsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
@@ -393,7 +394,10 @@
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
     <Content Include="Assets\TremanLogo.png" />
-    <Content Include="Assets\tutorials\tutorial_01.png" />
+    <Content Include="Assets\tutorials\01_open_play_segment.gif" />
+    <Content Include="Assets\tutorials\02_roi.gif" />
+    <Content Include="Assets\tutorials\03_count.gif" />
+    <Content Include="Assets\tutorials\04_help.png" />
     <Content Include="Assets\Wide310x150Logo.scale-100.png" />
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />

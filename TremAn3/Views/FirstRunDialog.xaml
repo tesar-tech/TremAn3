@@ -24,6 +24,7 @@
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
+        
         <FlipView  x:Name="FlipView" SelectionChanged="FlipView_SelectionChanged"  >
 
             <Grid Tapped="FlipView_Tapped"  VerticalAlignment="Center" Width="480" >
@@ -31,12 +32,13 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <Image  Stretch="Uniform" Source="ms-appx:///Assets/tutorials/tutorial_01.png"/>
+                <Image  Stretch="Uniform" Source="ms-appx:///Assets/tutorials/01_open_play_segment.gif"/>
 
                 <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,0,0,5">
                     <Line />
-                    <TextBlock TextWrapping="WrapWholeWords" Text="- Open video from landing page, from main menu or by dragging and dropping the file."/>
-                    <TextBlock TextWrapping="WrapWholeWords" Text="- You can play or seek in video."/>
+                    <TextBlock TextWrapping="WrapWholeWords" Text="- Open video from landing page or from main menu."/>
+                    <TextBlock TextWrapping="WrapWholeWords" Text="- Play or seek in video."/>
+                    <TextBlock TextWrapping="WrapWholeWords" Text="- Select the time segment for analysis"/>
                 </StackPanel>
 
             </Grid>
@@ -46,12 +48,14 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Stretch="Uniform" Source="ms-appx:///Assets/tutorials/tutorial_01.png"/>
+                <Image Grid.Row="0" Stretch="Uniform" Source="ms-appx:///Assets/tutorials/02_roi.gif"/>
 
                 <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,0,0,5">
                     <Line />
-                    <TextBlock TextWrapping="WrapWholeWords" Text="- Select time segment for computation"/>
-                    <TextBlock TextWrapping="WrapWholeWords" Text="- Add, edit or remove ROIs by dragging on the video"/>
+                    <TextBlock TextWrapping="WrapWholeWords" Text="- Add ROIs by dragging on the video"/>
+                    <TextBlock TextWrapping="WrapWholeWords" Text="- Edit them by draging corners"/>
+                    <TextBlock TextWrapping="WrapWholeWords" Text="- Or set exact position"/>
+                    <TextBlock TextWrapping="WrapWholeWords" Text="- Delete them with the X button"/>
                 </StackPanel>
 
             </Grid>
@@ -61,15 +65,11 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <Image  Stretch="Uniform" Source="ms-appx:///Assets/tutorials/tutorial_01.png"/>
+                <Image  Stretch="Uniform" Source="ms-appx:///Assets/tutorials/03_count.gif"/>
 
                 <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,0,0,5">
                     <Line />
-                    <TextBlock TextWrapping="WrapWholeWords" >
-                        <Run Text="- Press"/>
-                        <Run Text="Count freq" Foreground="{ThemeResource SystemColorControlAccentBrush}"/>
-                        <Run Text="button to start the computation"/>
-                    </TextBlock>
+                    <TextBlock TextWrapping="WrapWholeWords" Text="- Press Count freq to start computation"/>
                     <TextBlock TextWrapping="WrapWholeWords" Text="- Review plots"/>
                 </StackPanel>
 
@@ -80,17 +80,16 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <Image  Stretch="Uniform" Source="ms-appx:///Assets/tutorials/tutorial_01.png"/>
+                <Image  Stretch="Uniform" Source="ms-appx:///Assets/tutorials/04_help.png"/>
 
                 <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,0,0,5">
                     <Line />
-                    <TextBlock TextWrapping="WrapWholeWords" Text="- You can always run this guide again from Help section."/>
-                    <TextBlock TextWrapping="WrapWholeWords" Text="- There is also a link to the official FAQ or contact address."/>
+                    <TextBlock TextWrapping="WrapWholeWords" Text="- Open help section for more information"/>
+                    <TextBlock TextWrapping="WrapWholeWords" Text="- You can also run this tutorial from there"/>
                 </StackPanel>
 
             </Grid>
-
-
+            
         </FlipView>
         <Grid Grid.Row="1">
             <Button Click="BtnNext_Click" x:Name="BtnNext" x:Uid="firstRunDialog_next" Content="Next" HorizontalAlignment="Right"></Button>

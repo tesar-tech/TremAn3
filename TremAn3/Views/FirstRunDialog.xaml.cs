@@ -1,9 +1,10 @@
 ﻿using System;
-
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
 
 namespace TremAn3.Views
@@ -62,6 +63,16 @@ namespace TremAn3.Views
             {
                 BtnNext.Visibility = Visibility.Visible;
                 BtnClose.Visibility = Visibility.Collapsed;
+            }
+
+            //Play gifs from start when user flip to them
+            var grid = (sender as FlipView).SelectedItem as Grid;
+            var img = grid?.Children.OfType<Image>().FirstOrDefault();
+            if (img != null && img.Source.GetType() == typeof(BitmapImage))
+            {
+                var bitmapImg = img.Source as BitmapImage;
+                bitmapImg.Stop();//all the gifs start playback when the flipview is loaded
+                bitmapImg.Play();//this is "restart"==> user will see them from beginning
             }
         }
 

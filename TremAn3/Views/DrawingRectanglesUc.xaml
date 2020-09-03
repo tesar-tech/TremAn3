@@ -7,12 +7,25 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helpers="using:TremAn3.Helpers"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     >
+    <UserControl.Resources>
+        <muxc:TeachingTip x:Name="TtRoi"
+            Target="{x:Bind canvas}"
+            IsOpen="{x:Bind TeachingTipsViewModel.IsRoiTtipOpened, Mode=TwoWay}"
+            PreferredPlacement="Center"
+            CloseButtonClick="{x:Bind TeachingTipsViewModel.TtRoiClosed}"
+            CloseButtonContent="Next"
+            Title="Click and drag on video to add ROIs"
+            Subtitle="(You can edit them afterwards)">
+            
+        </muxc:TeachingTip>
+    </UserControl.Resources>
 
-    <Viewbox  SizeChanged="Viewbox_SizeChanged"  >
+    <Viewbox   SizeChanged="Viewbox_SizeChanged"  >
             <ItemsControl  Background="Blue" 
                       Height="{x:Bind ViewModel.MaxHeight, Mode=OneWay}"
                       Width="{x:Bind ViewModel.MaxWidth, Mode=OneWay}"
@@ -32,7 +45,7 @@
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate >
-                    <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Transparent" />
+                    <Canvas  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Transparent" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>

@@ -9,12 +9,20 @@
     xmlns:h="using:TremAn3.Helpers"
     xmlns:views="using:TremAn3.Views"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:mycontrols="using:TremAn3.Controls"
-    
+    xmlns:mycontrols="using:TremAn3.Controls" xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     d:DesignHeight="300"
     d:DesignWidth="400">
     <UserControl.Resources>
-        
+        <muxc:TeachingTip x:Name="TtRangeSelector"
+            Target="{x:Bind MediaControlRangeSelector}"
+            IsOpen="{x:Bind TeachingTipsViewModel.IsMediaRangeSelectorTtipOpened, Mode=TwoWay}"
+            PreferredPlacement="Top"
+            ActionButtonClick="{x:Bind TeachingTipsViewModel.TtRangeSelectorClosed}"
+            CloseButtonContent="Next"
+            Title="Select range of video to analyze."
+            Subtitle="Use round thumb to seek in video">
+
+        </muxc:TeachingTip>
     </UserControl.Resources>
 
     <Grid>
@@ -22,7 +30,7 @@
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <views:DrawingRectanglesUc x:Name="DrawingRectangle"  Canvas.ZIndex="5"
+        <views:DrawingRectanglesUc x:Name="DrawingRectangle"  Canvas.ZIndex="5" Loaded="{x:Bind ViewModel.DrawingRectangleLoaded}"
                                   IsEnabled="{x:Bind  ViewModel.ParentVm.IsFreqCounterOpen, Mode=OneWay}" />
         <MediaPlayerElement x:Name="Mpe" AutoPlay="False" AreTransportControlsEnabled="False"/>
 
@@ -39,14 +47,14 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock VerticalAlignment="Center" Margin="3,0"  Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.MediaControllingViewModel.PositionSeconds), Mode=OneWay}"/>
 
-                <mycontrols:RangeSelectorWithValue Grid.Column="1" StepFrequency="0.05" x:DefaultBindMode="TwoWay"
+                <mycontrols:RangeSelectorWithValue x:Name="MediaControlRangeSelector" Grid.Column="1" StepFrequency="0.05" x:DefaultBindMode="TwoWay"
                         Margin="10,0"
                         ToolTipFormatString="{}{0:0.00}"
                         Minimum="0" 
 	                    Maximum="{x:Bind ViewModel.FreqCounterViewModel.Maximum, Mode=OneWay}"
                         RangeMax="{x:Bind ViewModel.FreqCounterViewModel.Maxrange}"
                         RangeMin="{x:Bind ViewModel.FreqCounterViewModel.Minrange}"
-                        Value="{x:Bind ViewModel.MediaControllingViewModel.PositionSeconds}"                       >
+                        Value="{x:Bind ViewModel.MediaControllingViewModel.PositionSeconds}"  >
             </mycontrols:RangeSelectorWithValue>
             </Grid>
 

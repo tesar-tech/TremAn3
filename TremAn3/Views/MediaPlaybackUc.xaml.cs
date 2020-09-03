@@ -23,10 +23,10 @@ namespace TremAn3.Views
 {
     public sealed partial class MediaPlaybackUc : UserControl
     {
-        private MediaPlayerViewModel ViewModel
-        {
-            get { return ViewModelLocator.Current.MediaPlayerViewModel; }
-        }
+
+        private TeachingTipsViewModel TeachingTipsViewModel => ViewModelLocator.Current.TeachingTipsViewModel;
+
+        private MediaPlayerViewModel ViewModel => ViewModelLocator.Current.MediaPlayerViewModel;
 
         public MediaPlaybackUc()
         {

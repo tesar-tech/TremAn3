@@ -40,7 +40,13 @@ namespace TremAn3.Views
             MediaPlayback.WhenNavigatedFrom();
         }
 
-
+        private void Page_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.B)
+            {
+                ViewModelLocator.Current.TeachingTipsViewModel.Start();
+            }
+        }
     }
 
 }

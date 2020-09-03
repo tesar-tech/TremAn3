@@ -12,10 +12,9 @@ namespace TremAn3.Views
     public sealed partial class DrawingRectanglesUc : UserControl
     {
 
-        private DrawingRectanglesViewModel ViewModel
-        {
-            get { return ViewModelLocator.Current.DrawingRectanglesViewModel; }
-        }
+        private TeachingTipsViewModel TeachingTipsViewModel => ViewModelLocator.Current.TeachingTipsViewModel;
+
+        private DrawingRectanglesViewModel ViewModel => ViewModelLocator.Current.DrawingRectanglesViewModel;
         public DrawingRectanglesUc()
         {
             this.InitializeComponent();
@@ -64,6 +63,6 @@ namespace TremAn3.Views
 
         private void Viewbox_SizeChanged(object sender, SizeChangedEventArgs e) => ViewModel.ChangeSizeProportion(e.NewSize.Width);
 
-
+     
     }
 }
