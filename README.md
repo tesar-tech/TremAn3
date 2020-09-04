@@ -1,5 +1,7 @@
 # TremAn3
 
+Available in [Microsoft Store](https://www.microsoft.com/cs-cz/p/treman3/9nl11tzlsfdp).
+
 ![treman logo](TremAn3/Assets/StoreLogo.scale-200.png?raw=true)
 
 TremaAn app measures frequency of tremor (e.g. Parkinsonian tremor) from video.
@@ -37,57 +39,4 @@ Alternatily it can be downloaded as msix package. Instructions [here](https://tr
 
 ## Changelog
 
-### 2020-06
-
-- Computation could be canceled.
-  - The button isn't disabled, the text is changed to `Cancel`.
-  - It works with the `Esc` key.
-- Now you can open video by drag&drop.
-  - When an unsupported file type is dropped, a notification with info will pop up.
-  - When dropping multiple files, the first supported will be opened.
-- Info about video file in title of the app window.
-  - Name, resolution, frame rate, size in MB.
-
-### 2020-04
-
-- Time range selector is within playback slider.
-  - More intuitive placement.
-- Secondary slider is added to proximity with CoM plots.
-  - Helps to understand relation between CoM plots and video.
-  - Only shows the selected time range (same as plots).
-- Vertical line in CoM plots to view correlation between video and CoM movement.
-  - Line follows video time position.
-  - Current video position is visibile in plots.
-- Mild flash on `Count freq` button as a warning of obsolete results.
-  - When plots are displayed, and ROI is moved it isn't in correlation anymore. So plot disappears and button starts flashing.
-- Buttons for making plots bigger.
-- Removes unnecessary buttons from playback area.
-- `No data` label for plots without data.
-
-### 2020-03
-
-- Multiple ROIs in one measurement.
-- Multiple lines in plots (one for every ROI)
-- ROI is in-place editable, has button for closing.
-- Export values to CSV. Just visible ones.
-- Better column names in exported files (with info about ROI).
-- Fixes wrong filename on exported csvs.
-- Exports CoMX and CoMY in different files.
-- Freq Counter is opened by default (after video is loaded).
-- X-Axis in CoM plots are in seconds (not frame number).
-  - It also respects the time range.
-- Lines on plots are thinner.
-
-### 2020-01
-
-- ROI size is adjustable by textboxes.
-- What's new dialog in the app
-- ROI implementation - works better on small details and insignificant movement.
-  - ROI is customizable (size and position changes)
-  - Also works with resolution reduction (speed boost).
-  - Works with window size changes.
-- Store badge in README  
-- In app notifications
-- CSV export
-- Support for x64 (fixes ffmpeginterop package)
-- FFmpegInteropX in nuget package
+See [releases](https://github.com/tesar-tech/TremAn3/releases).
