@@ -4,16 +4,34 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:TremAn3.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:h="using:TremAn3.Helpers"
     mc:Ignorable="d"
     
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <StackPanel>
-        <Button Margin="10,0" HorizontalContentAlignment="Center"   Content="Run start up guide" Click="RunStartupGuide_ClickAsync"></Button>
-        <Button Margin="10,0" HorizontalContentAlignment="Center"   Content="Turn on teaching tip" Click="TurnOnTeachingTips_ClickAsync"></Button>
+     
+
+        <StackPanel  VerticalAlignment="Center" HorizontalAlignment="Center">
+            <HyperlinkButton HorizontalAlignment="Center"  NavigateUri="https://github.com/tesar-tech/TremAn3" >
+                <StackPanel Orientation="Horizontal">
+                <PathIcon Margin="0,0,5,0" Style="{StaticResource GithubIcon}"  />
+                    <TextBlock TextDecorations="Underline" VerticalAlignment="Center" Text="Visit TremAn repository"/> 
+                </StackPanel>
+            </HyperlinkButton>
+            <HyperlinkButton HorizontalAlignment="Center" Content="Download test video (0.9 MB)" NavigateUri="https://github.com/tesar-tech/TremAn3/raw/master/NoApp/hand.mp4" />
+            <HyperlinkButton HorizontalAlignment="Center"  NavigateUri="https://github.com/tesar-tech/TremAn3/releases" >
+                <StackPanel Orientation="Horizontal">
+                    <!--<PathIcon Margin="0,0,5,0" Style="{StaticResource GithubIcon}"  />-->
+                    <TextBlock TextDecorations="Underline" VerticalAlignment="Center" Text="See what's new"/>
+                </StackPanel>
+            </HyperlinkButton>
+            <StackPanel Orientation="Horizontal">
+                <Button Margin="10" HorizontalContentAlignment="Center"   Content="Run start up guide" Click="RunStartupGuide_ClickAsync"></Button>
+                <Button Margin="10" HorizontalContentAlignment="Center"   Content="Turn on teaching tips" Click="TurnOnTeachingTips_ClickAsync"></Button>
+            </StackPanel>
         </StackPanel>
+            <TextBlock Margin="3"  Text="{x:Bind h:Helpers.VersionOfApp}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
 
     </Grid>
 </Page>

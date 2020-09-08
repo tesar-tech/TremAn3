@@ -14,7 +14,7 @@ namespace TremAn3.Services
 
         internal static async Task ShowIfAppropriateAsync()
         {
-            if ( SystemInformation.IsAppUpdated && !shown)
+            if (true || SystemInformation.IsAppUpdated && !shown)
             {
                 shown = true;
                 var dialog = new WhatsNewDialog();

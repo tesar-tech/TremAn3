@@ -4,25 +4,25 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    x:Uid="WhatsNewDialog"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:h="using:TremAn3.Helpers"
+ x:Uid="WhatsNewDialog"
     mc:Ignorable="d"
     d:DesignHeight="345"
     d:DesignWidth="550">
+    
     <ContentDialog.TitleTemplate>
         <DataTemplate x:DataType="x:String">
             <StackPanel Orientation="Horizontal">
                 <Image Source="ms-appx:///Assets/StoreLogo.png" Width="40" Height="40" />
-                <TextBlock Text="{x:Bind}" Margin="{StaticResource SmallLeftMargin}" VerticalAlignment="Center" />
+                <TextBlock Text="New update already installed" Margin="{StaticResource SmallLeftMargin}" VerticalAlignment="Center" />
             </StackPanel>
         </DataTemplate>
     </ContentDialog.TitleTemplate>
-    <ScrollViewer>
-        <StackPanel>
-            <!--<TextBlock
-                x:Uid="WhatsNew_Body"
-                TextWrapping="WrapWholeWords" />-->
-            <controls:MarkdownTextBlock x:Name="MarkdownText" Margin="6"/>
-        </StackPanel>
-    </ScrollViewer>
+    <StackPanel Orientation="Vertical">
+        <TextBlock HorizontalAlignment="Center" Margin="3"   >
+            <Run Text="Version"/>
+            <Run Text="{x:Bind h:Helpers.VersionOfApp}"/>
+        </TextBlock>
+        <HyperlinkButton Grid.Row="1" HorizontalAlignment="Center" Content="See what's new online" NavigateUri="https://github.com/tesar-tech/TremAn3/releases" />
+    </StackPanel>
 </ContentDialog>
