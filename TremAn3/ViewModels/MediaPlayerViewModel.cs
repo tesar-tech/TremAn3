@@ -43,6 +43,7 @@ namespace TremAn3.ViewModels
                 CurrentStorageFile = file;
                 await VideoPropsViewModel.UpdateVideoPropsByStorageFile(file);
                 ParentVm.RefreshTitle();
+                ViewModelLocator.Current.TeachingTipsViewModel.StartIfAppropriate(3);
             }
         }
 
@@ -73,12 +74,7 @@ namespace TremAn3.ViewModels
         {
         }
 
-        public void DrawingRectangleLoaded()
-        {
-            ViewModelLocator.Current.TeachingTipsViewModel.Start(5);
-        }
-
-        public void DisposeSource()
+              public void DisposeSource()
         {
             var mediaSource = Source as MediaSource;
             mediaSource?.Dispose();

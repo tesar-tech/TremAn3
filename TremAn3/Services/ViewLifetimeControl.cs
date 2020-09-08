@@ -68,6 +68,10 @@ namespace TremAn3.Services
             Id = ApplicationView.GetApplicationViewIdForWindow(_window);
             RegisterForEvents();
         }
+        public void Close()
+        {
+            _window.Close();
+        }
 
         public static ViewLifetimeControl CreateForCurrentView()
         {

@@ -16,8 +16,8 @@
         <muxc:TeachingTip x:Name="TtRangeSelector"
             Target="{x:Bind MediaControlRangeSelector}"
             IsOpen="{x:Bind TeachingTipsViewModel.IsMediaRangeSelectorTtipOpened, Mode=TwoWay}"
-            PreferredPlacement="Top"
-            ActionButtonClick="{x:Bind TeachingTipsViewModel.TtRangeSelectorClosed}"
+            PreferredPlacement="Bottom"
+            CloseButtonClick="{x:Bind TeachingTipsViewModel.TtRangeSelectorClosed}"
             CloseButtonContent="Next"
             Title="Select range of video to analyze."
             Subtitle="Use round thumb to seek in video">
@@ -30,7 +30,7 @@
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <views:DrawingRectanglesUc x:Name="DrawingRectangle"  Canvas.ZIndex="5" Loaded="{x:Bind ViewModel.DrawingRectangleLoaded}"
+        <views:DrawingRectanglesUc x:Name="DrawingRectangle"  Canvas.ZIndex="5" 
                                   IsEnabled="{x:Bind  ViewModel.ParentVm.IsFreqCounterOpen, Mode=OneWay}" />
         <MediaPlayerElement x:Name="Mpe" AutoPlay="False" AreTransportControlsEnabled="False"/>
 

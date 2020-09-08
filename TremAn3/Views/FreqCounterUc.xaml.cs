@@ -21,6 +21,8 @@ namespace TremAn3.Views
     public sealed partial class FreqCounterUc : UserControl
     {
 
+        private TeachingTipsViewModel TeachingTipsViewModel => ViewModelLocator.Current.TeachingTipsViewModel;
+
         public FreqCounterViewModel ViewModel{ get; set; }
         public FreqCounterUc()
         {

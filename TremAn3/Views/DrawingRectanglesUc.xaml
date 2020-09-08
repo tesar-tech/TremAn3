@@ -16,7 +16,7 @@
         <muxc:TeachingTip x:Name="TtRoi"
             Target="{x:Bind canvas}"
             IsOpen="{x:Bind TeachingTipsViewModel.IsRoiTtipOpened, Mode=TwoWay}"
-            PreferredPlacement="Center"
+            PreferredPlacement="Right"
             CloseButtonClick="{x:Bind TeachingTipsViewModel.TtRoiClosed}"
             CloseButtonContent="Next"
             Title="Click and drag on video to add ROIs"

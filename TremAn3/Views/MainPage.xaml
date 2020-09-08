@@ -15,9 +15,11 @@
     mc:Ignorable="d"
     xmlns:dd="using:TremAn3.Services.DragAndDrop"
        xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     extensions:ApplicationViewExtensions.Title="{x:Bind ViewModel.Title, Mode=OneWay}"
-    KeyDown="Page_KeyDown"
+
     >
+ 
 
 
     <Grid    AllowDrop="True">

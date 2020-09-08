@@ -10,9 +10,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <StackPanel>
         <Button Margin="10,0" HorizontalContentAlignment="Center"   Content="Run start up guide" Click="RunStartupGuide_ClickAsync"></Button>
-
+        <Button Margin="10,0" HorizontalContentAlignment="Center"   Content="Turn on teaching tip" Click="TurnOnTeachingTips_ClickAsync"></Button>
+        </StackPanel>
 
     </Grid>
 </Page>

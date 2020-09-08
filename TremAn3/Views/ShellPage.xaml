@@ -10,6 +10,17 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:viewModels="using:TremAn3.ViewModels"
     mc:Ignorable="d">
+    <Page.Resources>
+
+        <winui:TeachingTip x:Name="TtHelp"
+            Target="{x:Bind BtnHelp}"
+            IsOpen="{x:Bind TeachingTipsViewModel.IsHelpTtipOpened, Mode=TwoWay}"
+            PreferredPlacement="Bottom"
+            CloseButtonContent="Ok"
+            Title="Find more help here">
+
+        </winui:TeachingTip>
+    </Page.Resources>
 
     <i:Interaction.Behaviors>
         <ic:EventTriggerBehavior EventName="Loaded">
@@ -74,7 +85,7 @@
                 </winui:MenuBarItem>-->
             </winui:MenuBar>
             <ToggleButton Margin="1,0" Grid.Column="1"  Content="Frequency Counter"   IsChecked="{x:Bind viewModels: ViewModelLocator.Current.MainViewModel.IsFreqCounterOpen ,Mode=TwoWay}"/>
-            <Button Click="Button_ClickAsync" Grid.Column="2" Content="Help" Background="#0000">
+            <Button x:Name="BtnHelp" Click="Button_ClickAsync" Grid.Column="2" Content="Help" Background="#0000">
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Key="F1"/>
                 </Button.KeyboardAccelerators>

@@ -11,10 +11,8 @@ namespace TremAn3.Views
 {
     public sealed partial class MainPage : Page
     {
-        private MainViewModel ViewModel
-        {
-            get { return ViewModelLocator.Current.MainViewModel; }
-        }
+
+        private MainViewModel ViewModel => ViewModelLocator.Current.MainViewModel;
 
         public MainPage()
         {
@@ -38,14 +36,6 @@ namespace TremAn3.Views
         {
             base.OnNavigatedFrom(e);
             MediaPlayback.WhenNavigatedFrom();
-        }
-
-        private void Page_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
-        {
-            if (e.Key == Windows.System.VirtualKey.B)
-            {
-                ViewModelLocator.Current.TeachingTipsViewModel.Start();
-            }
         }
     }
 

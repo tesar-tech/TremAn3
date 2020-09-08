@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using TremAn3.Services;
+using TremAn3.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
@@ -60,6 +61,12 @@ namespace TremAn3.Views
                 _isCanRunContentDialog = true;
 
             }
+        }
+
+        private void TurnOnTeachingTips_ClickAsync(object sender, RoutedEventArgs e)
+        {
+            ViewModelLocator.Current.TeachingTipsViewModel.Start(0.1);
+            _viewLifetimeControl.Close();
         }
     }
 }

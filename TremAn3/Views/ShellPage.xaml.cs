@@ -12,6 +12,8 @@ namespace TremAn3.Views
     // https://github.com/Microsoft/WindowsTemplateStudio/blob/master/docs/projectTypes/menubar.md
     public sealed partial class ShellPage : Page
     {
+        private TeachingTipsViewModel TeachingTipsViewModel => ViewModelLocator.Current.TeachingTipsViewModel;
+
         public ShellViewModel ViewModel { get; } = new ShellViewModel();
 
         public ShellPage()
@@ -24,6 +26,7 @@ namespace TremAn3.Views
         private async void Button_ClickAsync(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             await MenuNavigationHelper.OpenInNewWindow(typeof(HelpPage));
+            
         }
     }
 }

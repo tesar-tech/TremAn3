@@ -26,6 +26,14 @@
         </Style>
         <toolkitConverters:StringFormatConverter x:Key="StringFormatConverter"></toolkitConverters:StringFormatConverter>
 
+        <mux:TeachingTip x:Name="TtCountFreq"
+            Target="{x:Bind FreqCounterButton}"
+            IsOpen="{x:Bind TeachingTipsViewModel.IsCountFreqTtipOpened, Mode=TwoWay}"
+            PreferredPlacement="Bottom"
+            CloseButtonClick="{x:Bind TeachingTipsViewModel.TtCountFreqClosed}"
+            CloseButtonContent="Next"
+            Title="Start computation here">
+        </mux:TeachingTip>
     </UserControl.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using TremAn3.Helpers;
+using Windows.ApplicationModel.VoiceCommands;
 
 namespace TremAn3.ViewModels
 {
@@ -19,11 +21,31 @@ namespace TremAn3.ViewModels
             set => Set(ref _IsRoiTtipOpened, value);
         }
 
+        private bool _IsAlreadyRunTeachingTips = LocalSettings.Read(false, nameof(IsAlreadyRunTeachingTips));
+
+        public bool IsAlreadyRunTeachingTips
+        {
+            get => _IsAlreadyRunTeachingTips;
+            set
+            {
+               if( Set(ref _IsAlreadyRunTeachingTips, value))
+                LocalSettings.Write(value);
+            }
+        }
+
         readonly Timer deferalStartTimer = new Timer();
+
+        internal void StartIfAppropriate(double deferralSeconds = 0)
+        {
+            if (!IsAlreadyRunTeachingTips)
+            {
+                Start(deferralSeconds);
+                IsAlreadyRunTeachingTips = true;
+            }
+        }
 
         internal void Start(double deferralSeconds = 0)
         {
-            return;
             if (deferralSeconds == 0)
                 IsRoiTtipOpened = true;
             else
@@ -59,8 +81,30 @@ namespace TremAn3.ViewModels
 
         public void TtRangeSelectorClosed()
         {
-
+            IsCountFreqTtipOpened = true;
         }
+
+        private bool _IsCountFreqTtipOpened;
+
+        public bool IsCountFreqTtipOpened
+        {
+            get => _IsCountFreqTtipOpened;
+            set => Set(ref _IsCountFreqTtipOpened, value);
+        }
+
+        public void TtCountFreqClosed()
+        {
+            IsHelpTtipOpened = true;
+        }
+        private bool _IsHelpTtipOpened;
+
+        public bool IsHelpTtipOpened
+        {
+            get => _IsHelpTtipOpened;
+            set => Set(ref _IsHelpTtipOpened, value);
+        }
+
+
 
     }
 }
