@@ -10,14 +10,12 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:helpers="using:TremAn3.Helpers"
     xmlns:views="using:TremAn3.Views"
+    xmlns:winui="using:Microsoft.UI.Xaml"
     Style="{StaticResource PageStyle}"
     Loaded="{x:Bind ViewModel.LoadedAsync}"
     mc:Ignorable="d"
     xmlns:dd="using:TremAn3.Services.DragAndDrop"
-       xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    extensions:ApplicationViewExtensions.Title="{x:Bind ViewModel.Title, Mode=OneWay}"
-
     >
  
 

@@ -38,6 +38,7 @@ namespace TremAn3.ViewModels
         }
         //public event EventHandler NotificationHandler;
 
+        
 
         public async void LoadedAsync()
         {
@@ -228,8 +229,9 @@ namespace TremAn3.ViewModels
         public string Title
         {
             get => _Title;
-            set => Set(ref _Title, value);
+            set { if (Set(ref _Title, value)) SetTitle?.Invoke(value); }
         }
+        public Action<string> SetTitle;
         public void RefreshTitle() => Title = MediaPlayerViewModel.VideoPropsViewModel.ToString();
 
         public FreqCounterViewModel FreqCounterViewModel { get => ViewModelLocator.Current.FreqCounterViewModel; }
