@@ -12,8 +12,8 @@ namespace TremAn3.Helpers
     {
         public static string[] GetSupportetVideoFormats()
         {
-            //this should be same as in appmanifest
-            string[] supportedFileTypes = { ".mov", ".mp4", ".wmv", ".avi", ".flv"};//has to be lowercase
+            //this should be same as in appxmanifest
+            string[] supportedFileTypes = { ".mov", ".mp4", ".wmv", ".avi", ".flv",".mpg"};//has to be lowercase
             return supportedFileTypes;
         }
     }

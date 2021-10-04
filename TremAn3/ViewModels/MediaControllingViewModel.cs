@@ -17,6 +17,12 @@ namespace TremAn3.ViewModels
         public MediaControllingViewModel()
         {
             MediaPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
+            MediaPlayer.MediaFailed += async (ee, cc) => {
+                await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    ViewModelLocator.Current.NoificationViewModel.SimpleNotification($"Something went wrong with video playback: {cc.Error}, with message: {cc.ErrorMessage}. Extended error code: {cc.ExtendedErrorCode}. Video is probably unsupported.");
+                });
+            };
 
         }
 

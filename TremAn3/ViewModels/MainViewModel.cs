@@ -64,13 +64,21 @@ namespace TremAn3.ViewModels
 
         private async Task OpenStorageFile(StorageFile file)
         {
-            if (file != null)
+            try
             {
-                await MediaPlayerViewModel.ChangeSourceAsync(file);
-                FreqCounterViewModel.ResetFreqCounter();
-                IsFreqCounterOpen = true;
-                _DataService.SaveOpenedFileToMru(file);
+                if (file != null)
+                {
+                    await MediaPlayerViewModel.ChangeSourceAsync(file);
+                    FreqCounterViewModel.ResetFreqCounter();
+                    IsFreqCounterOpen = true;
+                    _DataService.SaveOpenedFileToMru(file);
+                }
             }
+            catch (Exception ex)
+            {
+                ViewModelLocator.Current.NoificationViewModel.SimpleNotification($"Something went wrong opening video file ({file.Name}). Error message: {ex.Message}");
+            }
+           
         }
 
         public MediaPlayerViewModel MediaPlayerViewModel { get => ViewModelLocator.Current.MediaPlayerViewModel; }
