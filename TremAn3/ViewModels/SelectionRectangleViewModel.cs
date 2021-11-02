@@ -26,14 +26,22 @@ namespace TremAn3.ViewModels
 
         }
 
+      
+
 
         //if user clicked count freq, this is callde.  Roi size is extracted form vm (getModel)
         //and algorithm is initialized with some values about video
-        internal void InitializeCoM(int decodedPixelWidth, int decodedPixelHeight, double frameRate, double percentageOfResolution)
+        internal void InitializeCoM(int decodedPixelWidth, int decodedPixelHeight, double frameRate, double percentageOfResolution, Color color)
         {
-            var rect = GetModel(percentageOfResolution);
+            var rect = GetModel(percentageOfResolution,color);
             ComputationViewModel.InitializeCoM(decodedPixelWidth, decodedPixelHeight, frameRate, rect);
         }
+
+        //internal void InitializeCoM(RoiResultModel roiRes)
+        //{
+        //    ComputationViewModel.InitializeCoM(roiRes);
+        //}
+
 
         // part that is responsible for algorithm and plot
         public SelectionRectangleComputationViewModel ComputationViewModel { get; set; }
@@ -126,6 +134,8 @@ namespace TremAn3.ViewModels
                     RoiChanged();
             }
         }
+
+      
 
 
         //refresh plots, data here has changed (or plot should(not) be shown)
@@ -240,9 +250,9 @@ namespace TremAn3.ViewModels
         }
 
         //it goes to algorithm
-        internal SelectionRectangle GetModel(double percentageOfResolution)
+        internal SelectionRectangle GetModel(double percentageOfResolution, Color color)
         {
-            return new SelectionRectangle((X, Y, Width, Height), percentageOfResolution);
+            return new SelectionRectangle((X, Y, Width, Height),color, percentageOfResolution);
         }
 
         //used when exporting to csv

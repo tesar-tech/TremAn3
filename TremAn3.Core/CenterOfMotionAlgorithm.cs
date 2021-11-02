@@ -13,7 +13,7 @@ namespace TremAn3.Core
         {
             if ( rectangle.IsZeroSum)
                 rectangle.FullFromResolution(widthOfFrame, heightOfFrame);
-            rect = rectangle;
+            Rect = rectangle;
             this.widthOfFrame = (uint)widthOfFrame;
 
             this.frameRate = frameRate;
@@ -24,6 +24,13 @@ namespace TremAn3.Core
             startInd = this.widthOfFrame * rectangle.Y + rectangle.X;
             endInd = startInd + (rectangle.Height - 1) * this.widthOfFrame + rectangle.Width - 1;
         }
+        public CenterOfMotionAlgorithm(RoiResultModel rrm, double frameRate)
+        {//creating by model (saved result)
+         //Rect = new SelectionRectangle(rrm.RoiModel);//no need since rect are for UI only and
+         //this whole thing is recreated affter pressin Computation button
+            Results.ResultsModel = rrm.ResultsModel;
+            this.frameRate = frameRate;
+        }
 
         private uint widthOfFrame;
 
@@ -33,7 +40,7 @@ namespace TremAn3.Core
         /// </summary>
         readonly uint startInd;
         readonly uint endInd;
-        SelectionRectangle rect;
+        public SelectionRectangle Rect { get; private set; }
         //public byte[] Frame1 { get; set; }
         //public byte[] Frame2 { get; set; }
         public List<byte> Frame1 { get; set; }
@@ -69,7 +76,7 @@ namespace TremAn3.Core
             //tdiffminmaxList += sw.ElapsedMilliseconds;
             //sw.Restart();
 
-            var diffA = new double[rect.Height*rect.Width];
+            var diffA = new double[Rect.Height*Rect.Width];
             double maxA = double.MinValue;
             double minA = double.MaxValue;
 
@@ -90,7 +97,7 @@ namespace TremAn3.Core
             int iter = 0;
             for (uint s = startInd; s < endInd; s += widthOfFrame)//jumps on begining of lines of rect
             {
-                for (uint c = 0; c < rect.Width; c++)//iterates on single line
+                for (uint c = 0; c < Rect.Width; c++)//iterates on single line
                 {
                     int i = (int)(s + c) * 4;//index to RGBA Array
                     byte f1 = (byte)(0.2989 * Frame1[i] + 0.5870 * Frame1[i + 1] + 0.1140 * Frame1[i + 2]);//to gray
@@ -156,8 +163,8 @@ namespace TremAn3.Core
 
 
             }
-           Results.listComX.Add(comX);
-            Results.listComY.Add(comY);
+           Results.ResultsModel.ComX.Add(comX);
+            Results.ResultsModel.ComY.Add(comY);
         }
 
         public double GetMainFreqAndFillPsdDataFromComLists()
@@ -169,10 +176,10 @@ namespace TremAn3.Core
             //    lo += $",{v}";
             //}
             //remove mean from list
-            var avgX = Results.listComX.Average();
-            var avgY = Results.listComY.Average();
-            var listWithoutMeanX = Results.listComX.Select(x => x - avgX).ToList();
-            var listWithoutMeanY = Results.listComY.Select(x => x - avgY).ToList();
+            var avgX = Results.ResultsModel.ComX.Average();
+            var avgY = Results.ResultsModel.ComY.Average();
+            var listWithoutMeanX = Results.ResultsModel.ComX.Select(x => x - avgX).ToList();
+            var listWithoutMeanY = Results.ResultsModel.ComY.Select(x => x - avgY).ToList();
             //returned value is max from average of two spectrums
             FftResult fftX = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanX, false);// false bc avg is already removed
             FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanY, false);
@@ -202,12 +209,12 @@ namespace TremAn3.Core
             if (fftProgressSignal.Count == 1)
                 fftProgressSignal.Add(fftProgressSignal.First());
 
-            Results.FreqProgress = fftProgressSignal;
-            var firstTime = Results.FrameTimes.First();
+            Results.ResultsModel.FreqProgress = fftProgressSignal;
+            var firstTime = Results.ResultsModel.FrameTimes.First();
             var numberOfTicks = fftProgressSignal.Count;
-            var segmentInSec = (Results.FrameTimes.Last() - firstTime).TotalSeconds /(numberOfTicks-1);
+            var segmentInSec = (Results.ResultsModel.FrameTimes.Last() - firstTime).TotalSeconds /(numberOfTicks-1);
             var range = Enumerable.Range(0, numberOfTicks).Select(x=>x*segmentInSec + firstTime.TotalSeconds).ToList();
-            Results.FreqProgressTime = range;
+            Results.ResultsModel.FreqProgressTime = range;
         }
         
 

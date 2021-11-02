@@ -7,17 +7,17 @@ namespace TremAn3.Core
 {
     public class Results
     {
-        public List<TimeSpan> FrameTimes { get; set; } = new List<TimeSpan>();
+        //public List<TimeSpan> FrameTimes { get; set; } = new List<TimeSpan>();
 
-        public List<double> listComX = new List<double>();
-        public List<double> listComY = new List<double>();
+        //public List<double> listComX = new List<double>();
+        //public List<double> listComY = new List<double>();
         public List<(double x_freq, double y_power)> PsdAvgData { get; set; }
         public List<double> ListComXNoAvg
         {
             get
             {
-                var avgX = listComX.Average();
-                var noavg = listComX.Select(x => x - avgX).ToList();
+                var avgX = ResultsModel.ComX.Average();
+                var noavg = ResultsModel.ComX.Select(x => x - avgX).ToList();
                 return noavg;
             }
         }
@@ -26,13 +26,14 @@ namespace TremAn3.Core
         {
             get
             {
-                var avgY = listComY.Average();
-                var noavg = listComY.Select(x => x - avgY).ToList();
+                var avgY = ResultsModel.ComY.Average();
+                var noavg = ResultsModel.ComY.Select(x => x - avgY).ToList();
                 return noavg;
             }
         }
 
-        public List<double> FreqProgress { get; internal set; }
-        public List<double> FreqProgressTime { get; internal set; }
+        public ResultsModel ResultsModel { get;  set; } = new ResultsModel();
+
+
     }
 }

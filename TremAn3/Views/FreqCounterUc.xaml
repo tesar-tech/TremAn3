@@ -197,6 +197,12 @@
                 <Run Text="{x:Bind ViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
                 </TextBlock>-->
 
+                <TextBlock Grid.Row="1" Visibility="{x:Bind h:StaticConverters.FreqDoubleToVisibility(ViewModel.ParentVm.CurrentResultsViewModel.CoherenceResult), Mode=OneWay}">
+                <Run>Coherence:  </Run>
+                <Run Text="{x:Bind ViewModel.ParentVm.CurrentResultsViewModel.CoherenceResult , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
+                </TextBlock>
+
+
                 <Grid Margin="0,5,0,0">
                     <TextBlock Text="PSD:"/>
                     <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="PsdToggleBigger" Content="Bigger" />

@@ -7,7 +7,7 @@ using Windows.ApplicationModel;
 
 namespace TremAn3.Helpers
 {
-    public class Helpers
+    public  class Helpers
     {
         public static string VersionOfApp
         {
@@ -17,5 +17,14 @@ namespace TremAn3.Helpers
                 return $"{version.Major}.{ version.Minor}.{ version.Build}.{ version.Revision}";
             }
         }
+
     }
-}
+
+
+    public static class Defaults
+    {
+        public static string MeasurementsFolderName { get; } = "AllMeasurements";
+    }
+
+
+    }

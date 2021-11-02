@@ -191,10 +191,10 @@ namespace TremAn3.ViewModels
 
                 freqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
                 //get maximum to better view 
-                maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max() ? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
+                maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.ResultsModel.FreqProgress.Max() ? comp.Algorithm.Results.ResultsModel.FreqProgress.Max() : maxYOfFreqProgress;
             }
 
-            FreqProgressViewModel.StatusMessage = $"Frequency resolution: {comps.First().Algorithm.frameRate / FreqProgressViewModel.SegmnetSize:F2} Hz. Number of segments computed: {comps.First().Algorithm.Results.FreqProgress.Count} ";
+            FreqProgressViewModel.StatusMessage = $"Frequency resolution: {comps.First().Algorithm.frameRate / FreqProgressViewModel.SegmnetSize:F2} Hz. Number of segments computed: {comps.First().Algorithm.Results.ResultsModel.FreqProgress.Count} ";
 
             FreqProgressViewModel.IsFreqProgressParametersOk = true;
             freqProgressAnnotation = RecreateAnnotation();
