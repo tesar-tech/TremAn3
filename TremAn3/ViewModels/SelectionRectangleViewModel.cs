@@ -135,7 +135,7 @@ namespace TremAn3.ViewModels
             }
         }
 
-      
+
 
 
         //refresh plots, data here has changed (or plot should(not) be shown)

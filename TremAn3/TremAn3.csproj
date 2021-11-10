@@ -175,6 +175,7 @@
     <Compile Include="Activation\DefaultLaunchActivationHandler.cs" />
     <Compile Include="Services\BackgroundTaskService.cs" />
     <Compile Include="Services\DataService.cs" />
+    <Compile Include="Services\DialogService.cs" />
     <Compile Include="Services\DragAndDrop\DragDropService.cs" />
     <Compile Include="Services\DragAndDrop\DropConfiguration.cs" />
     <Compile Include="Services\DragAndDrop\ListViewDropConfiguration.cs" />
@@ -201,6 +202,8 @@
     <Compile Include="ViewModels\MediaControllingViewModel.cs" />
     <Compile Include="ViewModels\MediaPlayerViewModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
+    <Compile Include="ViewModels\PastMeasurementsViewModel.cs" />
+    <Compile Include="ViewModels\PlotModelsContainerViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
     <Compile Include="ViewModels\SchemeActivationSampleViewModel.cs" />
     <Compile Include="ViewModels\SelectionRectangleComputationViewModel.cs" />
@@ -229,6 +232,9 @@
     </Compile>
     <Compile Include="Views\MediaPlaybackUc.xaml.cs">
       <DependentUpon>MediaPlaybackUc.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PastMeasurementsUc.xaml.cs">
+      <DependentUpon>PastMeasurementsUc.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SchemeActivationSamplePage.xaml.cs">
       <DependentUpon>SchemeActivationSamplePage.xaml</DependentUpon>
@@ -315,6 +321,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MediaPlaybackUc.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PastMeasurementsUc.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

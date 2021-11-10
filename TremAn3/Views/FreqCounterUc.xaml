@@ -9,7 +9,6 @@
     xmlns:h="using:TremAn3.Helpers"
     xmlns:oxyplot="using:OxyPlot.Windows"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
     xmlns:mux="using:Microsoft.UI.Xaml.Controls"
     xmlns:vm="using:TremAn3.ViewModels"
     
@@ -18,6 +17,14 @@
     d:DesignWidth="400">
 
     <UserControl.Resources>
+        <Style TargetType="Line" BasedOn="{StaticResource LineSeparatorStyle }">
+            <Setter Property="X1" Value="0"/>
+            <Setter Property="X2" Value="1"/>
+            <Setter Property="Stretch" Value="Fill"/>
+            <Setter Property="Stroke" Value="{ThemeResource MenuFlyoutSeparatorThemeBrush}"/>
+            <Setter Property="Margin" Value="5,10"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+        </Style>
         <Style x:Key="ListViewWrapPanelStyle"  TargetType="ListViewItem" >
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Margin" Value="0"/>
@@ -73,17 +80,6 @@
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <StateTrigger  IsActive="{x:Bind  h:StaticConverters.NullBoolToBool( YComToggleBigger.IsChecked), Mode=OneWay}" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-            </VisualStateGroup>
-            <VisualStateGroup x:Name="PsdBiggerVisialStates">
-                <VisualState x:Name="PsdNotBigger" />
-                <VisualState x:Name="PsdBigger">
-                    <VisualState.Setters>
-                        <Setter  Target="PsdPlotView.Height" Value="222"/>
-                    </VisualState.Setters>
-                    <VisualState.StateTriggers>
-                        <StateTrigger  IsActive="{x:Bind  h:StaticConverters.NullBoolToBool( PsdToggleBigger.IsChecked), Mode=OneWay}" />
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
@@ -178,36 +174,58 @@
                     <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.ProgressPercentage, Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} %' }"  />
                     <ProgressBar Grid.Row="1" Grid.Column="1" MinWidth="0"   Value="{x:Bind ViewModel.ProgressPercentage, Mode=OneWay}" />
                 </Grid>
+                <Line/>
+
                 <Grid>
                     <TextBlock Text="CoM X movement:" HorizontalAlignment="Left"/>
                     <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="XComToggleBigger" Content="Bigger" />
 
                 </Grid>
-                <oxyplot:PlotView x:Name="XComPlotView"  Height="100"  Model="{x:Bind ViewModel.XCoMPlotModel, Mode=OneWay}"/>
+                <oxyplot:PlotView x:Name="XComPlotView"  Height="100"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.XCoMPlotModel, Mode=OneWay}"/>
                 <Slider Margin="15,0,3,0" IsEnabled="True" StepFrequency="0.05"  Minimum="{x:Bind ViewModel.Minrange, Mode=OneWay}" Maximum="{x:Bind ViewModel.Maxrange, Mode=OneWay}" Value="{x:Bind ViewModel.SliderPlotValue, Mode=TwoWay}"  >
 
                 </Slider>
+                <Line/>
+
                 <Grid>
                     <TextBlock Text="CoM Y movement:"/>
                     <ToggleButton Style="{StaticResource BiggerButtonStule}" x:Name="YComToggleBigger" Content="Bigger" />
                 </Grid>
-                <oxyplot:PlotView  x:Name="YComPlotView"  Height="100"  Model="{x:Bind ViewModel.YCoMPlotModel, Mode=OneWay}"/>
+                <oxyplot:PlotView  x:Name="YComPlotView"  Height="100"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.YCoMPlotModel, Mode=OneWay}"/>
                 <!--<TextBlock Grid.Row="1" Visibility="{x:Bind h:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
                 <Run>Main frequency:  </Run>
                 <Run Text="{x:Bind ViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
                 </TextBlock>-->
 
-                <TextBlock Grid.Row="1" Visibility="{x:Bind h:StaticConverters.FreqDoubleToVisibility(ViewModel.ParentVm.CurrentResultsViewModel.CoherenceResult), Mode=OneWay}">
-                <Run>Coherence:  </Run>
-                <Run Text="{x:Bind ViewModel.ParentVm.CurrentResultsViewModel.CoherenceResult , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
-                </TextBlock>
+                <Line Margin="5,10,5,0"/>
+
+                <mux:TabView x:Name="SpectralAnalysisTabView" SelectedIndex="0"  TabWidthMode="SizeToContent"    IsAddTabButtonVisible="False" >
+                    <mux:TabView.TabItems>
+                        
+                        <mux:TabViewItem  Header="PSD" IsClosable="False">
+                            <oxyplot:PlotView x:Name="PsdPlotView" Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.PSDPlotModel, Mode=OneWay}"/>
+                        </mux:TabViewItem>
+                        <mux:TabViewItem  Header="Amp Spectrum" IsClosable="False">
+                            <oxyplot:PlotView x:Name="AmpSpecPlotView" Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.AmpSpecPlotModel, Mode=OneWay}"/>
+                        </mux:TabViewItem>
+                    
+                    </mux:TabView.TabItems>
+                    <mux:TabView.TabStripHeader>
+                        <TextBlock Text="Spectral Analysis:" VerticalAlignment="Bottom" Margin="4,6" Style="{ThemeResource BaseTextBlockStyle}" />
+                    </mux:TabView.TabStripHeader>
+
+                    <mux:TabView.TabStripFooter>
+                        <ToggleButton Style="{StaticResource BiggerButtonStule}"   x:Name="SpectralAnalysisToggleBigger" Content="Bigger" />
+
+                    </mux:TabView.TabStripFooter>
+
+                   
 
 
-                <Grid Margin="0,5,0,0">
-                    <TextBlock Text="PSD:"/>
-                    <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="PsdToggleBigger" Content="Bigger" />
-                </Grid>
-                <oxyplot:PlotView x:Name="PsdPlotView"   Height="100"  Model="{x:Bind ViewModel.PSDPlotModel, Mode=OneWay}"/>
+                </mux:TabView>
+
+                <Line/>
+
 
                 <Grid Margin="0,5,0,0">
                     <StackPanel Orientation="Horizontal">
@@ -236,7 +254,7 @@
                     <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="FreqProgressToggleBigger" Content="Bigger" />
                 </Grid>
                 <TextBlock Margin="5,0,0,0" FontSize="10" TextWrapping="WrapWholeWords"  x:Name="FreqProgressStatusMessageTxbl" Text="{x:Bind ViewModel.FreqProgressViewModel.StatusMessage, Mode=OneWay}" ></TextBlock>
-                <oxyplot:PlotView x:Name="FreqProgressPlotView"   Height="100"  Model="{x:Bind ViewModel.FreqProgressPlotModel, Mode=OneWay}"/>
+                <oxyplot:PlotView x:Name="FreqProgressPlotView"   Height="100"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.FreqProgressPlotModel, Mode=OneWay}"/>
                 <!--oxyplot bug numero dont know: it cannot be in grid or cannot be without height?? so it is separated from nodata-->
                 <!--<TextBlock Canvas.ZIndex="1" Grid.Row="3" Margin="0,-200,0,0" Text="No data" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Style="{StaticResource TitleTextBlockStyle}" Visibility="{x:Bind  helpers:StaticConverters.BoolToVisiblityInverse(ViewModel.FreqCounterViewModel.IsDataAvailableForPlot), Mode=OneWay}"/>-->
                 <Grid Grid.Row="4">

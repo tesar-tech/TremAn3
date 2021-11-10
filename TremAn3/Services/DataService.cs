@@ -69,36 +69,55 @@ namespace TremAn3.Services
             return mruToken;
         }
 
-        internal async Task SaveMeasurementResults(MeasurementModel measurementModel, StorageFile currentStorageFile, string currentMruToken)
+        internal async Task<StorageFolder> SaveMeasurementResults(MeasurementModel measurementModel, StorageFile currentStorageVideoFile, string currentMruToken)
         {
             //resultsViewModel.Id = resultsViewModel.Id == Guid.Empty ? Guid.NewGuid(): resultsViewModel.Id;
             var allMeasurementsFolder = await GetFolder_AllMeasurements();
-            StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageFile, currentMruToken);
+            StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageVideoFile, currentMruToken);
             string measurementFolderAndFIleName = $"measurement_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.ff}_{measurementModel.Id}";
             StorageFolder folderForMeasurement = await measurementsFolderForVideo.CreateFolderAsync(measurementFolderAndFIleName, CreationCollisionOption.OpenIfExists);
-            await JsonServices.WriteToJsonFile(folderForMeasurement, $"{measurementFolderAndFIleName}.json", measurementModel);
-
-
-            //csvs will have similar structure of filename 
-
+            await SaveMeasurementResults(measurementModel, folderForMeasurement);//csvs will have similar structure of filename
+            return folderForMeasurement;                                                                                 
         }
 
-        public async Task<List<MeasurementModel>> GetPastMeasurements(StorageFile currentStorageFile, string currentMruToken)
+
+        /// <summary>
+        /// save measurement to folder which has the same name as file itself.
+        /// </summary>
+        /// <param name="measurementModel"></param>
+        /// <param name="folderForMeasurement"></param>
+        /// <returns></returns>
+        internal static async Task SaveMeasurementResults(MeasurementModel measurementModel, StorageFolder folderForMeasurement)
         {
-            List<MeasurementModel> measurementsModels = new List<MeasurementModel>();
+            await JsonServices.WriteToJsonFile(folderForMeasurement, $"{folderForMeasurement.Name}.json", measurementModel);
+        }
+
+        internal async Task DeleteAllMeasurementsForCurrentVideoFile()
+        {
+            await _measurementsFolderForVideo.DeleteAsync();
+        }
+
+        private StorageFolder _measurementsFolderForVideo;
+        public async Task<List<MeasurementViewModel>> GetPastMeasurements(StorageFile currentStorageFile, string currentMruToken)
+        {
+            var measurementsViewModels = new List<MeasurementViewModel>();
             var allMeasurementsFolder = await GetFolder_AllMeasurements();
-            StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageFile, currentMruToken);
-            var measurementsFolders = await measurementsFolderForVideo.GetFoldersAsync();
+             _measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageFile, currentMruToken);
+            var measurementsFolders = await _measurementsFolderForVideo.GetFoldersAsync();
             foreach (var mesFolder in measurementsFolders)
             {
                 var jsonFile = (await mesFolder.GetFilesAsync()).FirstOrDefault();
                 if (jsonFile is null) continue;
                 MeasurementModel measModel = await JsonServices.ReadFromJsonFile<MeasurementModel>(jsonFile);
-                measurementsModels.Add(measModel);
+                MeasurementViewModel vm = new MeasurementViewModel(measModel);
+                measurementsViewModels.Add(vm);
+                vm.FolderForMeasurement = mesFolder;
             }
 
-            return measurementsModels;
+            return measurementsViewModels;
         }
+
+        
 
 
         /// <summary>
@@ -137,6 +156,13 @@ namespace TremAn3.Services
             var cleanFileName = new string(file.Name.Select(m => invalidChars.Contains(m) ? '_' : m).ToArray());
             return cleanFileName;
         }
+
+        public async Task DeleteStoredViewModel(MeasurementViewModel vm)
+        {
+            await vm.FolderForMeasurement.DeleteAsync();
+        }
+
+      
 
     }
 }

@@ -1,0 +1,94 @@
+﻿<UserControl
+    x:Class="TremAn3.Views.PastMeasurementsUc"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TremAn3.Views"
+    xmlns:vms="using:TremAn3.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:h="using:TremAn3.Helpers"
+    mc:Ignorable="d"
+        xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        <DataTemplate x:Key="ContactListViewTemplate" x:DataType="vms:MeasurementViewModel">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock HorizontalAlignment="Left" Text="{x:Bind NameToDisplay, Mode=OneWay}" x:Phase="1" Margin="0,5,0,5"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button  Background="#00000000" BorderThickness="0" >
+                        <FontIcon Glyph="&#xE946;" />
+                        <Button.Flyout>
+                            <Flyout>
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="5" />
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Info"/>
+                                        <TextBlock Grid.Row="1" Text="Date taken"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{x:Bind h:StaticConverters.ToWellDateTimeString(DateTime)}"/>
+                                        <TextBlock Grid.Row="2" Text="Id"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="{x:Bind Id}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button Click="{x:Bind EditName }" Background="#00000000" BorderThickness="0" >
+                        <SymbolIcon Symbol="Edit"/>
+                    </Button>
+                    <Button Click="{x:Bind DeleteMe }" Background="#00000000" BorderThickness="0" >
+                        <SymbolIcon Symbol="Delete"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid  Padding="3,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="{x:Bind h:StaticConverters.IsListOfMeasurementsShownHeight(ViewModel.IsPastMeasurementsOpen), Mode=OneWay}"/>
+        </Grid.RowDefinitions>
+        <Line HorizontalAlignment="Stretch" StrokeThickness="2" X1="0" X2="1" Stretch="Fill" Margin="0,5,0,5" Stroke="{ThemeResource SystemControlForegroundChromeGrayBrush}" ></Line>
+        <Grid Grid.Row="1" >
+            <Button HorizontalAlignment="Left" Content="{x:Bind ViewModel.ButtonHideOrShowText, Mode=OneWay}" Click="{x:Bind ViewModel.ChangeIsPastMeOpen}"/>
+            <Button  Background="#00000000" BorderThickness="0"  HorizontalAlignment="Right">
+                <SymbolIcon Symbol="More" />
+                <Button.Flyout>
+                    <Flyout>
+                        <StackPanel>
+                            <AppBarButton  Icon="Delete"  Label="Delete all" Click="{x:Bind ViewModel.DeleteAllMeasurements}">
+                            </AppBarButton>
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+
+            
+            
+            <!--<ToggleSwitch HorizontalAlignment="Right" OffContent="Don't save every measurement" OnContent="Save every measurement" IsOn="{x:Bind ViewModel.IsSaveMeasurement,Mode=TwoWay}" />-->
+        </Grid>
+
+        <ListView Grid.Row="2" 
+            SelectedItem="{x:Bind ViewModel.SelectedMeasurementVm,Mode=TwoWay}"
+     ItemsSource="{x:Bind ViewModel.MeasurementsVms, Mode=OneWay}"
+    ItemTemplate="{StaticResource ContactListViewTemplate}"
+    BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+    HorizontalAlignment="Stretch"/>
+
+    </Grid>
+</UserControl>

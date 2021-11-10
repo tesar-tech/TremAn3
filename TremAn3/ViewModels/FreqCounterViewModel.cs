@@ -17,13 +17,18 @@ namespace TremAn3.ViewModels
 {
     public class FreqCounterViewModel : ViewModelBase
     {
-        public FreqCounterViewModel()
+        public FreqCounterViewModel(PlotModelsContainerViewModel pmcvm)
         {
-            _PSDPlotModel = getPlotModelWithNoDataText();
-            _XCoMPlotModel = getPlotModelWithNoDataText();
-            _YCoMPlotModel = getPlotModelWithNoDataText();
+            PlotModelsContainerViewModel = pmcvm;
+            //_PSDPlotModel = getPlotModelWithNoDataText();
+            //_XCoMPlotModel = getPlotModelWithNoDataText();
+            //_YCoMPlotModel = getPlotModelWithNoDataText();
         }
+
+     
         public MainViewModel ParentVm { get => ViewModelLocator.Current.MainViewModel; }
+
+        public PlotModelsContainerViewModel PlotModelsContainerViewModel { get; private set; }
 
         public void ResetFreqCounter()
         {
@@ -54,9 +59,8 @@ namespace TremAn3.ViewModels
         private void _timer_Tick(object sender, object e)
         {
             //invalidate plots here, so it doesn't slow the slider
-            XCoMPlotModel.InvalidatePlot(false);
-            YCoMPlotModel.InvalidatePlot(false);
-            FreqProgressPlotModel.InvalidatePlot(false);
+            PlotModelsContainerViewModel.InvalidateTimePlots(false);
+
             _annotationTimer.Stop();
         }
 
@@ -84,54 +88,17 @@ namespace TremAn3.ViewModels
             set => Set(ref _ProgressPercentage, value);
         }
 
-        private PlotModel _PSDPlotModel;
 
-        public PlotModel PSDPlotModel
-        {
-            get => _PSDPlotModel;
-            set => Set(ref _PSDPlotModel, value);
-        }
-
-        private PlotModel _XCoMPlotModel;
-
-        public PlotModel XCoMPlotModel
-        {
-            get => _XCoMPlotModel;
-            set => Set(ref _XCoMPlotModel, value);
-        }
-
-        private PlotModel _YCoMPlotModel;
-
-        public PlotModel YCoMPlotModel
-        {
-            get => _YCoMPlotModel;
-            set => Set(ref _YCoMPlotModel, value);
-        }
-
-        private PlotModel _FreqProgressPlotModel;
-
-        public PlotModel FreqProgressPlotModel
-        {
-            get => _FreqProgressPlotModel;
-            set => Set(ref _FreqProgressPlotModel, value);
-        }
 
 
         private void RefreshPlots()
         {
-            XCoMPlotModel.InvalidatePlot(true);
-            YCoMPlotModel.InvalidatePlot(true);
-            PSDPlotModel.InvalidatePlot(true);
-            RefreshFreqProgressPlot();
+            PlotModelsContainerViewModel.InvalidateAllPlots(true);
         }
 
-        private void RefreshFreqProgressPlot() => FreqProgressPlotModel.InvalidatePlot(true);
+        //private void RefreshFreqProgressPlot() => FreqProgressPlotModel.InvalidatePlot(true);
 
-        private PlotModel getPlotModelWithNoDataText()
-        {
-            var model = new PlotModel { Title = "No Data" };
-            return model;
-        }
+
 
         public FreqProgressViewModel FreqProgressViewModel { get; set; } = new FreqProgressViewModel();
 
@@ -145,12 +112,14 @@ namespace TremAn3.ViewModels
             var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
 
             var psdPlotModel = new PlotModel();
+            var ampSpecPlotModel = new PlotModel();
             var xcomPlotModel = new PlotModel();
             var ycomPlotModel = new PlotModel();
             foreach (var comp in comps)
             {
                 comp.PrepareForDisplay(FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize);
                 psdPlotModel.Series.Add(comp.PsdSeries);
+                ampSpecPlotModel.Series.Add(comp.AmpSpecSeries);
                 xcomPlotModel.Series.Add(comp.XComSeries);
                 ycomPlotModel.Series.Add(comp.YComSeries);
 
@@ -160,9 +129,10 @@ namespace TremAn3.ViewModels
             xcomPlotModel.Annotations.Add(xcomAnnotation);
             ycomPlotModel.Annotations.Add(ycomAnnotation);
 
-            PSDPlotModel = psdPlotModel;
-            XCoMPlotModel = xcomPlotModel;
-            YCoMPlotModel = ycomPlotModel;
+            PlotModelsContainerViewModel.PSDPlotModel = psdPlotModel;
+            PlotModelsContainerViewModel.AmpSpecPlotModel = ampSpecPlotModel;
+            PlotModelsContainerViewModel.XCoMPlotModel = xcomPlotModel;
+            PlotModelsContainerViewModel.YCoMPlotModel = ycomPlotModel;
             ReDrawFreqProgress();
             IsAllResultsNotObsolete = true;
         }
@@ -184,25 +154,25 @@ namespace TremAn3.ViewModels
                 {//when there is an error (i.e. window is longer than signal)
                     FreqProgressViewModel.StatusMessage = e.Message;
                     FreqProgressViewModel.IsFreqProgressParametersOk = false;
-                    FreqProgressPlotModel = getPlotModelWithNoDataText();//display No data (also exception and err message is handled in prepare)
+                    PlotModelsContainerViewModel.SetFreqProgressToNoData();//display No data (also exception and err message is handled in prepare)
                     return;
                 }
               
 
                 freqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
                 //get maximum to better view 
-                maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.ResultsModel.FreqProgress.Max() ? comp.Algorithm.Results.ResultsModel.FreqProgress.Max() : maxYOfFreqProgress;
+                maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max() ? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
             }
 
-            FreqProgressViewModel.StatusMessage = $"Frequency resolution: {comps.First().Algorithm.frameRate / FreqProgressViewModel.SegmnetSize:F2} Hz. Number of segments computed: {comps.First().Algorithm.Results.ResultsModel.FreqProgress.Count} ";
+            FreqProgressViewModel.StatusMessage = $"Frequency resolution: {comps.First().Algorithm.frameRate / FreqProgressViewModel.SegmnetSize:F2} Hz. Number of segments computed: {comps.First().Algorithm.Results.FreqProgress.Count} ";
 
             FreqProgressViewModel.IsFreqProgressParametersOk = true;
             freqProgressAnnotation = RecreateAnnotation();
             freqProgressPlotModel.Annotations.Add(freqProgressAnnotation);
             freqProgressPlotModel.Axes.Add(new LinearAxis() { Maximum = maxYOfFreqProgress * 1.1, Minimum = 0, MajorTickSize = 2, MinorTickSize = 0.5, Position = AxisPosition.Left, Key = "Vertical" });
-            FreqProgressPlotModel = freqProgressPlotModel;
+            PlotModelsContainerViewModel.FreqProgressPlotModel = freqProgressPlotModel;
 
-            RefreshFreqProgressPlot();
+            PlotModelsContainerViewModel.FreqProgressPlotModel.InvalidatePlot(true);
         }
 
         LineAnnotation xcomAnnotation;
@@ -226,14 +196,13 @@ namespace TremAn3.ViewModels
             }
         }
 
+        /// <summary>
+        /// set plots to NO data
+        /// </summary>
         internal void ResetResultDisplay()
         {
             //VideoMainFreq = -1;//means nothing
-            XCoMPlotModel = getPlotModelWithNoDataText();
-            YCoMPlotModel = getPlotModelWithNoDataText();
-            PSDPlotModel = getPlotModelWithNoDataText();
-            FreqProgressPlotModel = getPlotModelWithNoDataText();
-
+            PlotModelsContainerViewModel.SetAllModelsToNoData();
         }
 
         double _minrange;

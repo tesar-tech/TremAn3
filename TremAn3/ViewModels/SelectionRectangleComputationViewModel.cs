@@ -43,10 +43,14 @@ namespace TremAn3.ViewModels
                         Algorithm = null;
                         RaisePropertyChanged(nameof(HasResult));
                         PsdSeries.PlotModel.Series.Remove(PsdSeries);
+                        AmpSpecSeries.PlotModel.Series.Remove(AmpSpecSeries);
                         XComSeries.PlotModel.Series.Remove(XComSeries);
                         YComSeries.PlotModel.Series.Remove(YComSeries);
-                        PsdSeries = XComSeries = YComSeries = null;
+                        FreqProgressSeries.PlotModel.Series.Remove(FreqProgressSeries);
+                        PsdSeries = XComSeries = FreqProgressSeries = YComSeries = AmpSpecSeries = null;
                         parent.PlotsNeedRefresh.Invoke();
+                        //FreqCounterViewModel.PlotModelsContainerViewModel.InvalidateAllPlots(true);
+                        ViewModelLocator.Current.PastMeasurementsViewModel.RoiIsNotSameAsResult();
                     }
                     FreqCounterViewModel.IsRoiSameAsResultSomeChange(value);
                 }
@@ -70,7 +74,11 @@ namespace TremAn3.ViewModels
         public void PrepareForDisplay(int stepForFreqProgress, int segmnetSizeFreqProgress)
         {
             MainFreq = Algorithm.GetMainFreqAndFillPsdDataFromComLists();
-            PsdSeries = GetNewLineSeries(Algorithm.Results.PsdAvgData.Select(c => new DataPoint(c.x_freq, c.y_power)));
+            Algorithm.FillAmpSpectDataFromComLists();
+            AmpSpecSeries = GetNewLineSeries(Algorithm.Results.AmpSpecData.Frequencies
+                .Zip(Algorithm.Results.AmpSpecData.Values, (freq, value) => new DataPoint(freq, value)));
+            PsdSeries = GetNewLineSeries(Algorithm.Results.PsdAvgData.Frequencies
+                .Zip(Algorithm.Results.PsdAvgData.Values,(freq,value) =>  new DataPoint(freq, value)));
             XComSeries = GetNewLineSeries(Algorithm.Results.ListComXNoAvg.Zip(Algorithm.Results.ResultsModel.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
             YComSeries = GetNewLineSeries(Algorithm.Results.ListComYNoAvg.Zip(Algorithm.Results.ResultsModel.FrameTimes, (valy, valx) => new DataPoint(valx.TotalSeconds, valy)));
             //PrepareForDisplayFreqProgress(stepForFreqProgress, segmnetSizeFreqProgress);
@@ -80,8 +88,7 @@ namespace TremAn3.ViewModels
         public void PrepareForDisplayFreqProgress(int step, int segmnetSizeFreqProgress)
         {
            Algorithm.GetFftDuringSignal(segmnetSizeFreqProgress, step);//todo check inside, it has to compute lists firs
-           FreqProgressSeries =GetNewLineSeries(Algorithm.Results.ResultsModel.FreqProgress.Zip(Algorithm.Results.ResultsModel.FreqProgressTime, (valy, valx) => new DataPoint(valx, valy)));
-
+           FreqProgressSeries =GetNewLineSeries(Algorithm.Results.FreqProgress.Zip(Algorithm.Results.FreqProgressTime, (valy, valx) => new DataPoint(valx, valy)));
         }
 
 
@@ -103,6 +110,15 @@ namespace TremAn3.ViewModels
             get => _PsdSeries;
             set => Set(ref _PsdSeries, value);
         }
+
+        private LineSeries _AmpSpecSeries;
+
+        public LineSeries AmpSpecSeries
+        {
+            get => _AmpSpecSeries;
+            set => Set(ref _AmpSpecSeries, value);
+        }
+
 
 
         private LineSeries _XComSeries;
@@ -142,7 +158,7 @@ namespace TremAn3.ViewModels
         internal void ChangeVisibilityOfLines(bool isShowInPlot)
         {
             var thickness = isShowInPlot ? defaultStrokeThickness : notShownStrokeThickness;//when unvisible, just change thickness to small value
-            PsdSeries.StrokeThickness = XComSeries.StrokeThickness = YComSeries.StrokeThickness = thickness;
+            PsdSeries.StrokeThickness = AmpSpecSeries.StrokeThickness = XComSeries.StrokeThickness = YComSeries.StrokeThickness = thickness;
         }
     }
 }

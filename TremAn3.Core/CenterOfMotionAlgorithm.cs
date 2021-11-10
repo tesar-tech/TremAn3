@@ -169,52 +169,37 @@ namespace TremAn3.Core
 
         public double GetMainFreqAndFillPsdDataFromComLists()
         {
+            var psdX = Fft.Psd(Results.ResultsModel.ComX.RemoveAverage().ToArray(), frameRate);
+            var psdY = Fft.Psd(Results.ResultsModel.ComY.RemoveAverage().ToArray(), frameRate);
 
-            //var lo = "";
-            //foreach (var v in listComY)
-            //{
-            //    lo += $",{v}";
-            //}
-            //remove mean from list
-            var avgX = Results.ResultsModel.ComX.Average();
-            var avgY = Results.ResultsModel.ComY.Average();
-            var listWithoutMeanX = Results.ResultsModel.ComX.Select(x => x - avgX).ToList();
-            var listWithoutMeanY = Results.ResultsModel.ComY.Select(x => x - avgY).ToList();
-            //returned value is max from average of two spectrums
-            FftResult fftX = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanX, false);// false bc avg is already removed
-            FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanY, false);
+            Results.PsdAvgData.Values = psdX.Zip(psdY, (x, y) => (x + y) / 2).ToList();//do the average of psd
+            Results.PsdAvgData.Frequencies = Fft.GetFrequencies(psdX.Length, frameRate).ToList();
+                
+            int maxIndex = Results.PsdAvgData.Values.IndexOf(Results.PsdAvgData.Values.Max());
+            return Results.PsdAvgData.Frequencies[maxIndex];//returns freq where psd is heighest
+        }
 
-            List<double> avgSpecList = new List<double>();
-            //List<(double,double)> psdAvgData = new List<(double, double)>();
-            Results.PsdAvgData = new List<(double, double )>(); 
-            //List<(double,double)> psdXData = new List<(double, double)>();
-            //List<(double,double)> psdYData = new List<(double, double)>();
-            for (int i = 0; i < fftX.Values.Count; i++)
-
-            {
-                double avg = (fftX.Values[i] + fftY.Values[i]) / 2;
-                avgSpecList.Add(avg);
-                Results.PsdAvgData.Add((fftX.Frequencies[i],avg ));
-
-                //psdXData.Add((fftX.Frequencies[i],))
-            }
-            int maxIndex = avgSpecList.IndexOf(avgSpecList.Max());
-            return fftX.Frequencies[maxIndex];
+        public void FillAmpSpectDataFromComLists()
+        {
+            var ampSpecX = Fft.AmpSpec(Results.ResultsModel.ComX.RemoveAverage().ToArray());
+            var ampSpecY = Fft.AmpSpec(Results.ResultsModel.ComY.RemoveAverage().ToArray());
+            Results.AmpSpecData.Frequencies = Fft.GetFrequencies(ampSpecX.Length, frameRate).ToList();
+            Results.AmpSpecData.Values = ampSpecX.Zip(ampSpecY, (x, y) => (x + y) / 2).ToList();//do the average of x and y
         }
 
 
         public void GetFftDuringSignal(int segmentSize, int step)
         {
-            var fftProgressSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,segmentSize,step,false);
+            var fftProgressSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,segmentSize,step);
             if (fftProgressSignal.Count == 1)
                 fftProgressSignal.Add(fftProgressSignal.First());
 
-            Results.ResultsModel.FreqProgress = fftProgressSignal;
+            Results.FreqProgress = fftProgressSignal;
             var firstTime = Results.ResultsModel.FrameTimes.First();
             var numberOfTicks = fftProgressSignal.Count;
             var segmentInSec = (Results.ResultsModel.FrameTimes.Last() - firstTime).TotalSeconds /(numberOfTicks-1);
             var range = Enumerable.Range(0, numberOfTicks).Select(x=>x*segmentInSec + firstTime.TotalSeconds).ToList();
-            Results.ResultsModel.FreqProgressTime = range;
+            Results.FreqProgressTime = range;
         }
         
 

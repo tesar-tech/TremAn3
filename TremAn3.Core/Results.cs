@@ -5,13 +5,14 @@ using System.Text;
 
 namespace TremAn3.Core
 {
+    /// <summary>
+    /// here we have result that are computed from comX and comy, which is stored in ResultModel, which is saved to file
+    /// thus, these results (like psd or freq progress) is computed on the fly (not stored in file)
+    /// </summary>
     public class Results
     {
-        //public List<TimeSpan> FrameTimes { get; set; } = new List<TimeSpan>();
-
-        //public List<double> listComX = new List<double>();
-        //public List<double> listComY = new List<double>();
-        public List<(double x_freq, double y_power)> PsdAvgData { get; set; }
+        public PsdResult PsdAvgData { get; private set; } = new PsdResult();
+        public AmpSpecResult AmpSpecData { get; private set; } = new AmpSpecResult();
         public List<double> ListComXNoAvg
         {
             get
@@ -31,6 +32,9 @@ namespace TremAn3.Core
                 return noavg;
             }
         }
+
+        public List<double> FreqProgress { get; set; } = new List<double>();
+        public List<double> FreqProgressTime { get; set; }
 
         public ResultsModel ResultsModel { get;  set; } = new ResultsModel();
 

@@ -34,6 +34,8 @@ namespace TremAn3.Core
         public double Maxrange { get; set; }
         public double Minrange { get; set; }
         public double PositionSeconds { get; set; }
+
+        //public int FftSegmentSize { get; set; }
     }
 
     public class RoiResultModel
@@ -66,13 +68,16 @@ namespace TremAn3.Core
         
     }
 
+
+    /// <summary>
+    /// PSD is not saved here, cause it is computed from comx and comy...
+    /// </summary>
     public class ResultsModel
     {
         public List<TimeSpan> FrameTimes { get; private set; } = new List<TimeSpan>();
 
         public List<double> ComX { get; private set; } = new List<double>();
         public List<double> ComY { get; private set; } = new List<double>();
-        public List<double> FreqProgress { get;  set; } = new List<double>();
-        public List<double> FreqProgressTime { get;  set; }
+
     }
 }

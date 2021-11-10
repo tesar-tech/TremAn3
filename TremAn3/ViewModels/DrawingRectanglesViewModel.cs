@@ -45,7 +45,7 @@ namespace TremAn3.ViewModels
 
         }
 
-        public Action plotsNeedRefresh;
+        public Action plotsNeedRefresh { get; set; }
         public SelectionRectangleViewModel CurrentRoiInCreationProcess { get; set; }
 
         private uint _MaxHeight;

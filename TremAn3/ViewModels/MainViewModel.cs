@@ -72,46 +72,38 @@ namespace TremAn3.ViewModels
                 await MediaPlayerViewModel.ChangeSourceAsync(file);
                 FreqCounterViewModel.ResetFreqCounter();
                 IsFreqCounterOpen = true;
-                MediaPlayerViewModel.CurrentMruToken =  _DataService.SaveOpenedFileToMru(file);
+                MediaPlayerViewModel.CurrentMruToken = _DataService.SaveOpenedFileToMru(file);
                 fileOpenSuccess = true;
             }
             catch (Exception ex)
             {
                 ViewModelLocator.Current.NoificationViewModel.SimpleNotification($"Something went wrong opening video file ({file.Name}). Error message: {ex.Message}");
             }
+
+
             if (!fileOpenSuccess) return;
-           var pastMeasurementsModels =  await _DataService.GetPastMeasurements(MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
+            var pastMeasurementsModels = await _DataService.GetPastMeasurements(MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
+            PastMeasurementsViewModel.MeasurementsVms.Clear();
+            PastMeasurementsViewModel.AddVms(pastMeasurementsModels);
+            PastMeasurementsViewModel.SelectAndDisplayLastInAny();
+
+            //if (pastMeasurementsModels.Any())
+            //{
+            //    var lastMeas = pastMeasurementsModels[0];
+            //    ///JUST FOR TESTING
+            //    lastMeas.Model.FrameRate = 30.0;//just fo testing
+            //    ///
+            //    //_StoringMeasurementsService.DisplayMeasurementByModel(lastMeas.Model);
+
+            //}
 
 
-            var lastMeas = pastMeasurementsModels.OrderBy(x => x.DateTime).Last();
-            ///JUST FOR TESTING
-            lastMeas.FrameRate = 30.0;//just fo testing
-            ///
-            CurrentResultsViewModel = new ResultsViewModel();
-            CurrentResultsViewModel.CoherenceResult = lastMeas.Coherence;
-
-
-
-            MediaPlayerViewModel.MediaControllingViewModel.PositionSeconds = lastMeas.PositionSeconds;
-            MediaPlayerViewModel.FreqCounterViewModel.Maxrange = lastMeas.Maxrange;
-            MediaPlayerViewModel.FreqCounterViewModel.Minrange = lastMeas.Minrange;
-
-            foreach (var roiRes in lastMeas.RoiResultModels)
-            {
-                //this creates roi on video
-                var selvm =  ViewModelLocator.Current.DrawingRectanglesViewModel.CreateROIFromModel(roiRes);
-
-                //roi has alg inside, this alg hold data for plots
-                selvm.ComputationViewModel.Algorithm = new CenterOfMotionAlgorithm(roiRes, lastMeas.FrameRate);
-            }
-            FreqCounterViewModel.DisplayPlots();
-
-            
 
         }
+        public PastMeasurementsViewModel PastMeasurementsViewModel => ViewModelLocator.Current.PastMeasurementsViewModel;
 
         public MediaPlayerViewModel MediaPlayerViewModel { get => ViewModelLocator.Current.MediaPlayerViewModel; }
-        public ResultsViewModel CurrentResultsViewModel { get;  private set; }
+        public ResultsViewModel CurrentResultsViewModel { get; set; }
 
         private DataService _DataService;
         CancellationTokenSource source;
@@ -141,7 +133,7 @@ namespace TremAn3.ViewModels
                 ViewModelLocator.Current.DrawingRectanglesViewModel.AddMaxRoi();
 
             rois.ToList().ForEach(
-                x => x.InitializeCoM(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate, FreqCounterViewModel.PercentageOfResolution,x.Color));
+                x => x.InitializeCoM(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate, FreqCounterViewModel.PercentageOfResolution, x.Color));
             var comAlgs = rois.Select(x => x.ComputationViewModel.Algorithm);
 
             Stopwatch sw = new Stopwatch();
@@ -160,7 +152,18 @@ namespace TremAn3.ViewModels
             if (!source.IsCancellationRequested)
             {
                 Debug.WriteLine(sw.ElapsedMilliseconds);
-                FreqCounterViewModel.DisplayPlots();
+
+                MeasurementModel measurementModel = new MeasurementModel(comAlgs)
+                {
+                    Coherence = CurrentResultsViewModel.CoherenceResult,
+                    Minrange = MediaPlayerViewModel.FreqCounterViewModel.Minrange,
+                    Maxrange = MediaPlayerViewModel.FreqCounterViewModel.Maxrange,
+                    PositionSeconds = MediaPlayerViewModel.MediaControllingViewModel.PositionSeconds
+
+                };
+                MeasurementViewModel vm = new MeasurementViewModel(measurementModel);
+                PastMeasurementsViewModel.AddAndSelectVm(vm);
+                vm.FolderForMeasurement =  await _DataService.SaveMeasurementResults(measurementModel, MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
             }
             else
             {
@@ -168,17 +171,6 @@ namespace TremAn3.ViewModels
             }
             FreqCounterViewModel.IsComputationInProgress = false;
 
-
-
-            MeasurementModel measurementModel = new MeasurementModel(comAlgs)
-            {
-                Coherence = CurrentResultsViewModel.CoherenceResult,
-                Minrange = MediaPlayerViewModel.FreqCounterViewModel.Minrange,
-                Maxrange = MediaPlayerViewModel.FreqCounterViewModel.Maxrange,
-                PositionSeconds = MediaPlayerViewModel.MediaControllingViewModel.PositionSeconds
-            };
-
-            await  _DataService.SaveMeasurementResults(measurementModel, MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
 
 
         }
@@ -237,7 +229,7 @@ namespace TremAn3.ViewModels
             if (type == "comX" || type == "comY")
                 one_x = rois[0].ComputationViewModel.Algorithm.Results.ResultsModel.FrameTimes.Select(x => x.TotalSeconds).ToList();
             else if (type == "psd")
-                one_x = rois[0].ComputationViewModel.Algorithm.Results.PsdAvgData.Select(x => x.x_freq).ToList();
+                one_x = rois[0].ComputationViewModel.Algorithm.Results.PsdAvgData.Frequencies;
 
 
             List<List<double>> multiple_ys = null;
@@ -247,7 +239,7 @@ namespace TremAn3.ViewModels
             else if (type == "comY")
                 multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.ListComYNoAvg).ToList();
             else if (type == "psd")
-                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.PsdAvgData.Select(y => y.y_power).ToList()).ToList();
+                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.PsdAvgData.Values).ToList();
 
             string xHeader = type == "psd" ? "freq [Hz]" : "time[s]";
             string yHeader = type == "psd" ? "PSD" : type == "comX" ? "CoMX" : "CoMY";
