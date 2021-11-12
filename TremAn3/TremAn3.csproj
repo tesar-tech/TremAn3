@@ -204,6 +204,7 @@
     <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="ViewModels\PastMeasurementsViewModel.cs" />
     <Compile Include="ViewModels\PlotModelsContainerViewModel.cs" />
+    <Compile Include="ViewModels\PlotModelWithTypeViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
     <Compile Include="ViewModels\SchemeActivationSampleViewModel.cs" />
     <Compile Include="ViewModels\SelectionRectangleComputationViewModel.cs" />

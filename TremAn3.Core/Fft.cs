@@ -187,6 +187,8 @@ namespace TremAn3.Core
 
     }
 
+
+
     public class AmpSpecResult
     {
         public List<double> Frequencies { get; set; } = new List<double>();

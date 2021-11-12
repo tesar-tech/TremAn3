@@ -5,6 +5,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -112,27 +113,44 @@ namespace TremAn3.ViewModels
             var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
 
             var psdPlotModel = new PlotModel();
-            var ampSpecPlotModel = new PlotModel();
+            //var ampSpecPlotModel = new PlotModel();
             var xcomPlotModel = new PlotModel();
             var ycomPlotModel = new PlotModel();
             foreach (var comp in comps)
             {
                 comp.PrepareForDisplay(FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize);
-                psdPlotModel.Series.Add(comp.PsdSeries);
-                ampSpecPlotModel.Series.Add(comp.AmpSpecSeries);
-                xcomPlotModel.Series.Add(comp.XComSeries);
-                ycomPlotModel.Series.Add(comp.YComSeries);
+                psdPlotModel.Series.Add(comp.LineSeriesDict[DataSeriesType.Psd]);
+                xcomPlotModel.Series.Add(comp.LineSeriesDict[DataSeriesType.ComX]);
+                ycomPlotModel.Series.Add(comp.LineSeriesDict[DataSeriesType.ComY]);
 
             }
-            xcomAnnotation = RecreateAnnotation();
+            xcomAnnotation =
             ycomAnnotation = RecreateAnnotation();
             xcomPlotModel.Annotations.Add(xcomAnnotation);
             ycomPlotModel.Annotations.Add(ycomAnnotation);
 
             PlotModelsContainerViewModel.PSDPlotModel = psdPlotModel;
-            PlotModelsContainerViewModel.AmpSpecPlotModel = ampSpecPlotModel;
             PlotModelsContainerViewModel.XCoMPlotModel = xcomPlotModel;
             PlotModelsContainerViewModel.YCoMPlotModel = ycomPlotModel;
+
+            //this basically compute the psd, amps spec, etc...
+            comps.ForEach(comp => comp.PrepareForDisplay(FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize));
+
+            foreach (var pmwt in PlotModelsContainerViewModel.PlotModels)
+            {
+                pmwt.PlotModel = new PlotModel();
+                foreach (var comp in comps)
+                {
+                    pmwt.PlotModel.Series.Add(comp.LineSeriesDict[pmwt.DataSeriesType]);
+                }
+                if(pmwt.DataSeriesType == DataSeriesType.ComX || pmwt.DataSeriesType == DataSeriesType.ComY)
+                    pmwt.PlotModel.Annotations.Add(RecreateAnnotation());
+
+
+            }
+            PlotModelsContainerViewModel.RaisePlotModelsPropChange();
+
+
             ReDrawFreqProgress();
             IsAllResultsNotObsolete = true;
         }
@@ -159,7 +177,7 @@ namespace TremAn3.ViewModels
                 }
               
 
-                freqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
+                freqProgressPlotModel.Series.Add(comp.LineSeriesDict[DataSeriesType.FreqProgress]);
                 //get maximum to better view 
                 maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max() ? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
             }

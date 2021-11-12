@@ -41,4 +41,17 @@ namespace TremAn3.Helpers
         }
     }
 
+    [System.AttributeUsage(AttributeTargets.Property)]
+    public class PlotNameAttribute : Attribute
+    {
+        public string PlotName { get; private set; }
+
+        public PlotNameAttribute(string PlotName)
+        {
+            this.PlotName = PlotName;
+        }
+    }
+
+ 
+
 }

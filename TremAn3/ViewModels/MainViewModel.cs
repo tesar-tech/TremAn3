@@ -229,17 +229,17 @@ namespace TremAn3.ViewModels
             if (type == "comX" || type == "comY")
                 one_x = rois[0].ComputationViewModel.Algorithm.Results.ResultsModel.FrameTimes.Select(x => x.TotalSeconds).ToList();
             else if (type == "psd")
-                one_x = rois[0].ComputationViewModel.Algorithm.Results.PsdAvgData.Frequencies;
+                one_x = rois[0].ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.Psd].X;
 
 
             List<List<double>> multiple_ys = null;
 
             if (type == "comX")
-                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.ListComXNoAvg).ToList();
+                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList();
             else if (type == "comY")
-                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.ListComYNoAvg).ToList();
+                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.ComY].Y).ToList();
             else if (type == "psd")
-                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.PsdAvgData.Values).ToList();
+                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.Psd].Y).ToList();
 
             string xHeader = type == "psd" ? "freq [Hz]" : "time[s]";
             string yHeader = type == "psd" ? "PSD" : type == "comX" ? "CoMX" : "CoMY";

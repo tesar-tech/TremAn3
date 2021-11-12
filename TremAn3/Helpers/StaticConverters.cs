@@ -1,10 +1,14 @@
 ﻿
+using OxyPlot;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TremAn3.Core;
+using TremAn3.ViewModels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -57,6 +61,8 @@ namespace TremAn3.Helpers
                 return 100;
             return 222;
         }
+
+
 
     }
     public static class MathConverters

@@ -11,6 +11,7 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:mux="using:Microsoft.UI.Xaml.Controls"
     xmlns:vm="using:TremAn3.ViewModels"
+    xmlns:core="using:TremAn3.Core"
     
     mc:Ignorable="d"
     d:DesignHeight="300"
@@ -200,15 +201,35 @@
                 <Line Margin="5,10,5,0"/>
 
                 <mux:TabView x:Name="SpectralAnalysisTabView" SelectedIndex="0"  TabWidthMode="SizeToContent"    IsAddTabButtonVisible="False" >
+                    <mux:TabView.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.ThemeDictionaries>
+                                <ResourceDictionary x:Key="Default">
+                                    <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{ThemeResource SystemAccentColor}" />
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Dark">
+                                    <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{ThemeResource SystemAccentColor}" />
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Light">
+                                    <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{ThemeResource SystemAccentColor}" />
+                                </ResourceDictionary>
+                            </ResourceDictionary.ThemeDictionaries>
+                        </ResourceDictionary>
+                    </mux:TabView.Resources>
                     <mux:TabView.TabItems>
                         
                         <mux:TabViewItem  Header="PSD" IsClosable="False">
                             <oxyplot:PlotView x:Name="PsdPlotView" Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.PSDPlotModel, Mode=OneWay}"/>
                         </mux:TabViewItem>
                         <mux:TabViewItem  Header="Amp Spectrum" IsClosable="False">
-                            <oxyplot:PlotView x:Name="AmpSpecPlotView" Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.AmpSpecPlotModel, Mode=OneWay}"/>
+                            <oxyplot:PlotView x:Name="AmpSpecPlotView"
+                                     Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
+                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew( ViewModel.PlotModelsContainerViewModel.PlotModels, core:DataSeriesType.AmpSpec ), Mode=OneWay}"/>
                         </mux:TabViewItem>
-                    
+
+                                     <!--Model="{x:Bind  ViewModel.PlotModelsContainerViewModel.PlotModels[core:DataSeriesType.AmpSpec] , Mode=OneWay}"/>-->
+
+                        <!--Model="{x:Bind ViewModel.PlotModelsContainerViewModel.PlotModels[0].PlotModel, Mode=OneWay}"/>-->
                     </mux:TabView.TabItems>
                     <mux:TabView.TabStripHeader>
                         <TextBlock Text="Spectral Analysis:" VerticalAlignment="Bottom" Margin="4,6" Style="{ThemeResource BaseTextBlockStyle}" />
