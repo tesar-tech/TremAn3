@@ -182,7 +182,9 @@
                     <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="XComToggleBigger" Content="Bigger" />
 
                 </Grid>
-                <oxyplot:PlotView x:Name="XComPlotView"  Height="100"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.XCoMPlotModel, Mode=OneWay}"/>
+                <oxyplot:PlotView x:Name="XComPlotView"  Height="100"
+                Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.ComX ), Mode=OneWay}"/>
+
                 <Slider Margin="15,0,3,0" IsEnabled="True" StepFrequency="0.05"  Minimum="{x:Bind ViewModel.Minrange, Mode=OneWay}" Maximum="{x:Bind ViewModel.Maxrange, Mode=OneWay}" Value="{x:Bind ViewModel.SliderPlotValue, Mode=TwoWay}"  >
 
                 </Slider>
@@ -192,7 +194,10 @@
                     <TextBlock Text="CoM Y movement:"/>
                     <ToggleButton Style="{StaticResource BiggerButtonStule}" x:Name="YComToggleBigger" Content="Bigger" />
                 </Grid>
-                <oxyplot:PlotView  x:Name="YComPlotView"  Height="100"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.YCoMPlotModel, Mode=OneWay}"/>
+                <oxyplot:PlotView  x:Name="YComPlotView"  Height="100"
+                Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.ComY ), Mode=OneWay}"/>
+
+              
                 <!--<TextBlock Grid.Row="1" Visibility="{x:Bind h:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
                 <Run>Main frequency:  </Run>
                 <Run Text="{x:Bind ViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
@@ -219,12 +224,14 @@
                     <mux:TabView.TabItems>
                         
                         <mux:TabViewItem  Header="PSD" IsClosable="False">
-                            <oxyplot:PlotView x:Name="PsdPlotView" Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.PSDPlotModel, Mode=OneWay}"/>
+                            <oxyplot:PlotView x:Name="PsdPlotView" Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
+                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Psd ), Mode=OneWay}"/>
+
                         </mux:TabViewItem>
                         <mux:TabViewItem  Header="Amp Spectrum" IsClosable="False">
                             <oxyplot:PlotView x:Name="AmpSpecPlotView"
                                      Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
-                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew( ViewModel.PlotModelsContainerViewModel.PlotModels, core:DataSeriesType.AmpSpec ), Mode=OneWay}"/>
+                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.AmpSpec ), Mode=OneWay}"/>
                         </mux:TabViewItem>
 
                                      <!--Model="{x:Bind  ViewModel.PlotModelsContainerViewModel.PlotModels[core:DataSeriesType.AmpSpec] , Mode=OneWay}"/>-->
@@ -275,7 +282,9 @@
                     <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="FreqProgressToggleBigger" Content="Bigger" />
                 </Grid>
                 <TextBlock Margin="5,0,0,0" FontSize="10" TextWrapping="WrapWholeWords"  x:Name="FreqProgressStatusMessageTxbl" Text="{x:Bind ViewModel.FreqProgressViewModel.StatusMessage, Mode=OneWay}" ></TextBlock>
-                <oxyplot:PlotView x:Name="FreqProgressPlotView"   Height="100"  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.FreqProgressPlotModel, Mode=OneWay}"/>
+                <oxyplot:PlotView x:Name="FreqProgressPlotView"   Height="100"
+                Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.FreqProgress ), Mode=OneWay}"/>
+
                 <!--oxyplot bug numero dont know: it cannot be in grid or cannot be without height?? so it is separated from nodata-->
                 <!--<TextBlock Canvas.ZIndex="1" Grid.Row="3" Margin="0,-200,0,0" Text="No data" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Style="{StaticResource TitleTextBlockStyle}" Visibility="{x:Bind  helpers:StaticConverters.BoolToVisiblityInverse(ViewModel.FreqCounterViewModel.IsDataAvailableForPlot), Mode=OneWay}"/>-->
                 <Grid Grid.Row="4">

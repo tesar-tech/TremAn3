@@ -16,117 +16,62 @@ namespace TremAn3.ViewModels
 
         public PlotModelsContainerViewModel()
         {
-            _PlotModelsProps = GetType()
-                 .GetProperties()
-                 .Where(prop => prop.PropertyType == typeof(PlotModel))
-                 .ToList();
+            //_PlotModelsProps = GetType()
+            //     .GetProperties()
+            //     .Where(prop => prop.PropertyType == typeof(PlotModel))
+            //     .ToList();
 
             //PlotModels.Add(new PlotModelWithTypeViewModel() { DataSeriesType=Core.DataSeriesType.AmpSpec });
         }
 
-        private List<PropertyInfo> _PlotModelsProps;//this is useful when assigning something to properties
+        //private List<PropertyInfo> _PlotModelsProps;//this is useful when assigning something to properties
 
         public void SetAllModelsToNoData()
         {
-            _PlotModelsProps.ForEach(x => x.SetValue(this, getPlotModelWithNoDataText()));
             PlotModels.ToList().ForEach(x => x.PlotModel = getPlotModelWithNoDataText());
-           RaisePlotModelsPropChange();
         }
         public void SetFreqProgressToNoData()
         {
-            FreqProgressPlotModel = getPlotModelWithNoDataText();
+            PlotModels.First(x => x.DataSeriesType == DataSeriesType.FreqProgress).PlotModel = getPlotModelWithNoDataText();
         }
 
         public void InvalidateTimePlots(bool updateData)
         {
-            TimePlotModels.ForEach(x => x.InvalidatePlot(updateData));
-
+            PlotModels.Where(x =>
+            x.DataSeriesType == DataSeriesType.FreqProgress ||
+            x.DataSeriesType == DataSeriesType.ComX ||
+            x.DataSeriesType == DataSeriesType.ComY)
+            .ToList().ForEach(x=>x.PlotModel.InvalidatePlot(updateData));
+            //TimePlotModels.ForEach(x => x.InvalidatePlot(updateData));
         }
         public void InvalidateAllPlots(bool updateData)
         {
             PlotModels.ToList().ForEach(x => x.PlotModel.InvalidatePlot(updateData));
-            AllPlotModels.ForEach(x => x.InvalidatePlot(updateData));
         }
 
         public ObservableCollection<PlotModelWithTypeViewModel> PlotModels { get; set; } =
             new ObservableCollection<PlotModelWithTypeViewModel>();
 
-        private List<PlotModel> TimePlotModels
-        {
-            get =>
-new List<PlotModel> { XCoMPlotModel, YCoMPlotModel, FreqProgressPlotModel }
-;
-        }
 
-
-        public List<PlotModel> AllPlotModels
-        {
-            get =>
-new List<PlotModel> { PSDPlotModel, XCoMPlotModel, YCoMPlotModel, FreqProgressPlotModel }
-;
-        }
-
-        private PlotModel _PSDPlotModel;
-
-        [Helpers.PlotName("Psd")]
-        public PlotModel PSDPlotModel
-        {
-            get => _PSDPlotModel;
-            set => Set(ref _PSDPlotModel, value);
-        }
-
-
-        private PlotModel _XCoMPlotModel;
-
-        public PlotModel XCoMPlotModel
-        {
-            get => _XCoMPlotModel;
-            set => Set(ref _XCoMPlotModel, value);
-        }
-
-        private PlotModel _YCoMPlotModel;
-
-        public PlotModel YCoMPlotModel
-        {
-            get => _YCoMPlotModel;
-            set => Set(ref _YCoMPlotModel, value);
-        }
-
-        private PlotModel _FreqProgressPlotModel;
-
-        public PlotModel FreqProgressPlotModel
-        {
-            get => _FreqProgressPlotModel;
-            set => Set(ref _FreqProgressPlotModel, value);
-        }
         private PlotModel getPlotModelWithNoDataText()
         {
             return new PlotModel { Title = "No Data" };
         }
 
 
-        public void SetPlotModel(DataSeriesType type, PlotModel newPlotModel)
-        {
-            var oldPlotModel = PlotModels.FirstOrDefault(x => x.DataSeriesType == type);
-            if (oldPlotModel != null)
-                oldPlotModel.PlotModel = newPlotModel;
-
-        }
 
         /// <summary>
         /// this needs to be done when new plotModel is presented. Don't want to do it 
         /// </summary>
-        public void RaisePlotModelsPropChange() => RaisePropertyChanged(nameof(PlotModels));
 
 
-        public PlotModel GetPlotModelByDsTypeOrCreateNew(ObservableCollection<PlotModelWithTypeViewModel> coll, DataSeriesType type)
+        public PlotModel GetPlotModelByDsTypeOrCreateNew( DataSeriesType type)
         {
-
-            var plotModel = coll.SingleOrDefault(x => x.DataSeriesType == type);
+            var plotModel = PlotModels.SingleOrDefault(x => x.DataSeriesType == type);
 
             if (plotModel == null)
             {
-                plotModel = new PlotModelWithTypeViewModel() { DataSeriesType = DataSeriesType.AmpSpec };
+                plotModel = new PlotModelWithTypeViewModel() { DataSeriesType = type };
                 PlotModels.Add(plotModel);
             }
             return plotModel.PlotModel;

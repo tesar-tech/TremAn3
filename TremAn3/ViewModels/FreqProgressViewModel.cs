@@ -20,7 +20,7 @@ namespace TremAn3.ViewModels
             set
             {
                 if (Set(ref _Step, value))
-                    FreqCounterViewModel.ReDrawFreqProgress();
+                    FreqCounterViewModel.ReDrawFreqProgress(true);
             }
         }
 
@@ -32,7 +32,7 @@ namespace TremAn3.ViewModels
             set
             {
                 if (Set(ref _SegmnetSize, value))
-                    FreqCounterViewModel.ReDrawFreqProgress();
+                    FreqCounterViewModel.ReDrawFreqProgress(true);
             }
         }
 
