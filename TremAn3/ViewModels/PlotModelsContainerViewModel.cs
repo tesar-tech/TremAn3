@@ -14,18 +14,6 @@ namespace TremAn3.ViewModels
     public class PlotModelsContainerViewModel : ViewModelBase
     {
 
-        public PlotModelsContainerViewModel()
-        {
-            //_PlotModelsProps = GetType()
-            //     .GetProperties()
-            //     .Where(prop => prop.PropertyType == typeof(PlotModel))
-            //     .ToList();
-
-            //PlotModels.Add(new PlotModelWithTypeViewModel() { DataSeriesType=Core.DataSeriesType.AmpSpec });
-        }
-
-        //private List<PropertyInfo> _PlotModelsProps;//this is useful when assigning something to properties
-
         public void SetAllModelsToNoData()
         {
             PlotModels.ToList().ForEach(x => x.PlotModel = getPlotModelWithNoDataText());
@@ -42,7 +30,6 @@ namespace TremAn3.ViewModels
             x.DataSeriesType == DataSeriesType.ComX ||
             x.DataSeriesType == DataSeriesType.ComY)
             .ToList().ForEach(x=>x.PlotModel.InvalidatePlot(updateData));
-            //TimePlotModels.ForEach(x => x.InvalidatePlot(updateData));
         }
         public void InvalidateAllPlots(bool updateData)
         {
@@ -59,17 +46,15 @@ namespace TremAn3.ViewModels
         }
 
 
-
         /// <summary>
-        /// this needs to be done when new plotModel is presented. Don't want to do it 
+        /// this needs to be done when new plotModel is presented. 
         /// </summary>
-
 
         public PlotModel GetPlotModelByDsTypeOrCreateNew( DataSeriesType type)
         {
             var plotModel = PlotModels.SingleOrDefault(x => x.DataSeriesType == type);
 
-            if (plotModel == null)
+            if (plotModel == null)//adding new plot models, when xaml asks for them
             {
                 plotModel = new PlotModelWithTypeViewModel() { DataSeriesType = type };
                 PlotModels.Add(plotModel);
