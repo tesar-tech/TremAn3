@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using TremAn3.Core.SignalProcessing;
 
 namespace TremAn3.Core
 {
@@ -13,7 +14,7 @@ namespace TremAn3.Core
         {
             if ( rectangle.IsZeroSum)
                 rectangle.FullFromResolution(widthOfFrame, heightOfFrame);
-            rect = rectangle;
+            Rect = rectangle;
             this.widthOfFrame = (uint)widthOfFrame;
 
             this.frameRate = frameRate;
@@ -24,6 +25,13 @@ namespace TremAn3.Core
             startInd = this.widthOfFrame * rectangle.Y + rectangle.X;
             endInd = startInd + (rectangle.Height - 1) * this.widthOfFrame + rectangle.Width - 1;
         }
+        public CenterOfMotionAlgorithm(RoiResultModel rrm, double frameRate)
+        {//creating by model (saved result)
+         //Rect = new SelectionRectangle(rrm.RoiModel);//no need since rect are for UI only and
+         //this whole thing is recreated affter pressin Computation button
+            Results.ResultsModel = rrm.ResultsModel;
+            this.frameRate = frameRate;
+        }
 
         private uint widthOfFrame;
 
@@ -33,7 +41,7 @@ namespace TremAn3.Core
         /// </summary>
         readonly uint startInd;
         readonly uint endInd;
-        SelectionRectangle rect;
+        public SelectionRectangle Rect { get; private set; }
         //public byte[] Frame1 { get; set; }
         //public byte[] Frame2 { get; set; }
         public List<byte> Frame1 { get; set; }
@@ -69,7 +77,7 @@ namespace TremAn3.Core
             //tdiffminmaxList += sw.ElapsedMilliseconds;
             //sw.Restart();
 
-            var diffA = new double[rect.Height*rect.Width];
+            var diffA = new double[Rect.Height*Rect.Width];
             double maxA = double.MinValue;
             double minA = double.MaxValue;
 
@@ -90,7 +98,7 @@ namespace TremAn3.Core
             int iter = 0;
             for (uint s = startInd; s < endInd; s += widthOfFrame)//jumps on begining of lines of rect
             {
-                for (uint c = 0; c < rect.Width; c++)//iterates on single line
+                for (uint c = 0; c < Rect.Width; c++)//iterates on single line
                 {
                     int i = (int)(s + c) * 4;//index to RGBA Array
                     byte f1 = (byte)(0.2989 * Frame1[i] + 0.5870 * Frame1[i + 1] + 0.1140 * Frame1[i + 2]);//to gray
@@ -156,56 +164,89 @@ namespace TremAn3.Core
 
 
             }
-           Results.listComX.Add(comX);
-            Results.listComY.Add(comY);
+           Results.ResultsModel.ComX.Add(comX);
+            Results.ResultsModel.ComY.Add(comY);
         }
 
-        public double GetMainFreqAndFillPsdDataFromComLists()
+        /// <summary>
+        /// computes all other series from comX and comY
+        /// </summary>
+        public void ComputeAllData()
         {
 
-            //var lo = "";
-            //foreach (var v in listComY)
-            //{
-            //    lo += $",{v}";
-            //}
-            //remove mean from list
-            var avgX = Results.listComX.Average();
-            var avgY = Results.listComY.Average();
-            var listWithoutMeanX = Results.listComX.Select(x => x - avgX).ToList();
-            var listWithoutMeanY = Results.listComY.Select(x => x - avgY).ToList();
-            //returned value is max from average of two spectrums
-            FftResult fftX = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanX, false);// false bc avg is already removed
-            FftResult fftY = Fft.GetAmpSpectrumAndMax(frameRate, listWithoutMeanY, false);
+            var comXNoAvg = Results.ResultsModel.ComX.RemoveAverage();
+            var comYNoAvg = Results.ResultsModel.ComY.RemoveAverage();
 
-            List<double> avgSpecList = new List<double>();
-            //List<(double,double)> psdAvgData = new List<(double, double)>();
-            Results.PsdAvgData = new List<(double, double )>(); 
-            //List<(double,double)> psdXData = new List<(double, double)>();
-            //List<(double,double)> psdYData = new List<(double, double)>();
-            for (int i = 0; i < fftX.Values.Count; i++)
-
+            var frameTimes = Results.ResultsModel.FrameTimes.Select(x => x.TotalSeconds).ToList();
+            //comx
+            DataResult drComX = new DataResult()
             {
-                double avg = (fftX.Values[i] + fftY.Values[i]) / 2;
-                avgSpecList.Add(avg);
-                Results.PsdAvgData.Add((fftX.Frequencies[i],avg ));
+                X = frameTimes,
+                Y = comXNoAvg
+            };
+            Results.DataResultsDict.Add(DataSeriesType.ComX, drComX);
 
-                //psdXData.Add((fftX.Frequencies[i],))
+            //comy
+            DataResult drComY = new DataResult()
+            {
+                X = frameTimes,
+                Y = comYNoAvg            };
+            Results.DataResultsDict.Add(DataSeriesType.ComY, drComY);
+
+
+            //psd
+            var psdX = FreqAnalysis.Psd(comXNoAvg.ToArray(), frameRate);
+            var psdY = FreqAnalysis.Psd(comYNoAvg.ToArray(), frameRate);
+
+            DataResult drPsd = new DataResult()
+            {
+                X = SignalProcessingHelpers.GetFrequencies(psdX.Length, frameRate).ToList(),
+                Y = psdX.Zip(psdY, (x, y) => (x + y) / 2).ToList()//do the average of x and y
+            };
+            Results.DataResultsDict.Add(DataSeriesType.Psd, drPsd);
+            
+            //ampspec
+            var ampSpecX = Fft.AmpSpec(comXNoAvg.ToArray());
+            var ampSpecY = Fft.AmpSpec(comYNoAvg.ToArray());
+            DataResult dr = new DataResult()
+            {
+                X = SignalProcessingHelpers.GetFrequencies(ampSpecX.Length, frameRate).ToList(),
+                Y = ampSpecX.Zip(ampSpecY, (x, y) => (x + y) / 2).ToList()//do the average of x and y
+            };
+            Results.DataResultsDict.Add(DataSeriesType.AmpSpec, dr);
+
+            //welch
+            DataResult drWelch = new DataResult();
+          
+            try
+            {
+                var welchX = FreqAnalysis.Welch(comXNoAvg, frameRate);
+                var welchY = FreqAnalysis.Welch(comYNoAvg, frameRate);
+                drWelch.X = SignalProcessingHelpers.GetFrequencies(welchX.Count(), frameRate).ToList();
+                drWelch.Y = welchX.Zip(welchY, (x, y) => (x + y) / 2).Abs().ToList();
+            
             }
-            int maxIndex = avgSpecList.IndexOf(avgSpecList.Max());
-            return fftX.Frequencies[maxIndex];
+            catch (Exception ex)
+            {
+                drWelch.ErrorMessage = ex.Message;
+                //throw;
+            }
+            
+            Results.DataResultsDict.Add(DataSeriesType.Welch, drWelch);
+
         }
 
 
         public void GetFftDuringSignal(int segmentSize, int step)
         {
-            var fftProgressSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.ListComXNoAvg,Results.ListComYNoAvg,segmentSize,step,false);
+            var fftProgressSignal =  FreqAnalysis.ComputeFftDuringSignalForTwoSignals(frameRate,Results.DataResultsDict[DataSeriesType.ComX].Y, Results.DataResultsDict[DataSeriesType.ComY].Y, segmentSize,step);
             if (fftProgressSignal.Count == 1)
                 fftProgressSignal.Add(fftProgressSignal.First());
 
             Results.FreqProgress = fftProgressSignal;
-            var firstTime = Results.FrameTimes.First();
+            var firstTime = Results.ResultsModel.FrameTimes.First();
             var numberOfTicks = fftProgressSignal.Count;
-            var segmentInSec = (Results.FrameTimes.Last() - firstTime).TotalSeconds /(numberOfTicks-1);
+            var segmentInSec = (Results.ResultsModel.FrameTimes.Last() - firstTime).TotalSeconds /(numberOfTicks-1);
             var range = Enumerable.Range(0, numberOfTicks).Select(x=>x*segmentInSec + firstTime.TotalSeconds).ToList();
             Results.FreqProgressTime = range;
         }

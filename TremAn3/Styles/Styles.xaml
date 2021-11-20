@@ -5,6 +5,18 @@
         xmlns:media="using:Windows.UI.Xaml.Media"
 
     >
+
+
+    <Style x:Key="LineSeparatorStyle"  TargetType="Line">
+        <Setter Property="X1" Value="0"/>
+        <Setter Property="X2" Value="1"/>
+        <Setter Property="Stretch" Value="Fill"/>
+        <Setter Property="Stroke" Value="{ThemeResource MenuFlyoutSeparatorThemeBrush}"/>
+        <Setter Property="Margin" Value="30"/>
+        <Setter Property="StrokeThickness" Value="2"/>
+    </Style>
+
+
     <Style x:Key="BiggerButtonStule" TargetType="ToggleButton">
         <Setter Property="Padding" Value="1"/>
         <Setter Property="FontSize" Value="14"/>

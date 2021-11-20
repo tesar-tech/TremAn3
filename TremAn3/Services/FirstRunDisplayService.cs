@@ -13,7 +13,7 @@ namespace TremAn3.Services
 
         internal static async Task ShowIfAppropriateAsync()
         {
-            if (SystemInformation.IsFirstRun && !shown)
+            if (SystemInformation.Instance.IsFirstRun && !shown)
             {
                 shown = true;
                 var dialog = new FirstRunDialog();

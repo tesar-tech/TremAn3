@@ -10,16 +10,14 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:helpers="using:TremAn3.Helpers"
     xmlns:views="using:TremAn3.Views"
+    xmlns:winui="using:Microsoft.UI.Xaml"
     Style="{StaticResource PageStyle}"
     Loaded="{x:Bind ViewModel.LoadedAsync}"
     mc:Ignorable="d"
     xmlns:dd="using:TremAn3.Services.DragAndDrop"
-       xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    extensions:ApplicationViewExtensions.Title="{x:Bind ViewModel.Title, Mode=OneWay}"
-
     >
- 
+
 
 
     <Grid    AllowDrop="True">
@@ -49,6 +47,7 @@
                     <VisualState.Setters>
                         <Setter Target="LandingGrid.Visibility" Value="Collapsed"/>
                         <Setter Target="MediaPlayback.Visibility" Value="Visible"/>
+                        <!--<Setter Target="GridMediPlaybackAndPastMeasurements" Value="Visible"/>-->
                         <Setter Target="MediaPlayback.DrawingRectangle.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
@@ -65,22 +64,28 @@
 
         <controls:InAppNotification Canvas.ZIndex="2"  VerticalOffset="-50" HorizontalOffset="-200" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="Notif" ></controls:InAppNotification>
         <Grid x:Name="LandingGrid">
-        <StackPanel  VerticalAlignment="Center" HorizontalAlignment="Center">
-        <Button Content="Open Video File (Ctrl + O)" FontSize="30" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"  />
-            <HyperlinkButton HorizontalAlignment="Center" Content="Download test video (0.9 MB)" NavigateUri="https://github.com/tesar-tech/TremAn3/raw/master/NoApp/hand.mp4" />
-            <HyperlinkButton HorizontalAlignment="Center"  NavigateUri="https://github.com/tesar-tech/TremAn3" >
-                <StackPanel Orientation="Horizontal">
-                <PathIcon Margin="0,0,5,0" Style="{StaticResource GithubIcon}"  />
-                    <TextBlock TextDecorations="Underline" VerticalAlignment="Center" Text="Visit TremAn repository"/> 
-                </StackPanel>
-            </HyperlinkButton>
-        </StackPanel>
+            <StackPanel  VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Button Content="Open Video File (Ctrl + O)" FontSize="30" Click="{x:Bind ViewModel.OpenVideo_ButtonClickAsync}"  />
+                <HyperlinkButton HorizontalAlignment="Center" Content="Download test video (0.9 MB)" NavigateUri="https://github.com/tesar-tech/TremAn3/raw/master/NoApp/hand.mp4" />
+                <HyperlinkButton HorizontalAlignment="Center"  NavigateUri="https://github.com/tesar-tech/TremAn3" >
+                    <StackPanel Orientation="Horizontal">
+                        <PathIcon Margin="0,0,5,0" Style="{StaticResource GithubIcon}"  />
+                        <TextBlock TextDecorations="Underline" VerticalAlignment="Center" Text="Visit TremAn repository"/>
+                    </StackPanel>
+                </HyperlinkButton>
+            </StackPanel>
             <TextBlock Margin="3"  Text="{x:Bind helpers:Helpers.VersionOfApp}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
         </Grid>
 
 
-
-        <views:MediaPlaybackUc x:Name="MediaPlayback" Visibility="Collapsed"/>
+        <Grid x:Name="GridMediPlaybackAndPastMeasurements" Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="{x:Bind helpers:StaticConverters.HeightOfMeasurementsInMainPage(ViewModel.PastMeasurementsViewModel.IsPastMeasurementsOpen), Mode=OneWay}"/>
+            </Grid.RowDefinitions>
+            <views:MediaPlaybackUc x:Name="MediaPlayback" Visibility="Collapsed"/>
+            <views:PastMeasurementsUc Grid.Row="1"/>
+        </Grid>
 
 
         <controls:GridSplitter CursorBehavior="ChangeOnSplitterHover"   Grid.Column="1" />

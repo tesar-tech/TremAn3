@@ -10,7 +10,7 @@ namespace TremAn3.ViewModels
   public  class NotificationViewModel:ViewModelBase
     {
 
-      
+
         public event Action<string> NotificationHandler;
 
         internal void SimpleNotification(string v)

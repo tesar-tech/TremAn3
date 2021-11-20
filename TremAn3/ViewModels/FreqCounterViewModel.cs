@@ -5,10 +5,12 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TremAn3.Core;
+using TremAn3.Services;
 using Windows.Media.Protection.PlayReady;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -17,13 +19,15 @@ namespace TremAn3.ViewModels
 {
     public class FreqCounterViewModel : ViewModelBase
     {
-        public FreqCounterViewModel()
+        public FreqCounterViewModel(PlotModelsContainerViewModel pmcvm)
         {
-            _PSDPlotModel = getPlotModelWithNoDataText();
-            _XCoMPlotModel = getPlotModelWithNoDataText();
-            _YCoMPlotModel = getPlotModelWithNoDataText();
+            PlotModelsContainerViewModel = pmcvm;
         }
+
+
         public MainViewModel ParentVm { get => ViewModelLocator.Current.MainViewModel; }
+
+        public PlotModelsContainerViewModel PlotModelsContainerViewModel { get; private set; }
 
         public void ResetFreqCounter()
         {
@@ -46,7 +50,7 @@ namespace TremAn3.ViewModels
                 _annotationTimer.Interval = TimeSpan.FromSeconds(0.01);
                 _annotationTimer.Tick += _timer_Tick;
             }
-            _annotationTimer?.Start();
+            _annotationTimer.Start();
         }
 
 
@@ -54,18 +58,14 @@ namespace TremAn3.ViewModels
         private void _timer_Tick(object sender, object e)
         {
             //invalidate plots here, so it doesn't slow the slider
-            XCoMPlotModel.InvalidatePlot(false);
-            YCoMPlotModel.InvalidatePlot(false);
-            FreqProgressPlotModel.InvalidatePlot(false);
+            PlotModelsContainerViewModel.InvalidateTimePlots(false);
+
             _annotationTimer.Stop();
         }
 
         private void MediaControllingViewModel_PositionChanged(double value)
         {
-            if (xcomAnnotation == null || ycomAnnotation == null || freqProgressAnnotation == null) return;
-            xcomAnnotation.X = value;
-            ycomAnnotation.X = value;
-            freqProgressAnnotation.X = value;
+            timeAnotations.ForEach(x => x.X = value);
             StartTimer();//invalidated on tick
         }
 
@@ -84,96 +84,97 @@ namespace TremAn3.ViewModels
             set => Set(ref _ProgressPercentage, value);
         }
 
-        private PlotModel _PSDPlotModel;
 
-        public PlotModel PSDPlotModel
-        {
-            get => _PSDPlotModel;
-            set => Set(ref _PSDPlotModel, value);
-        }
-
-        private PlotModel _XCoMPlotModel;
-
-        public PlotModel XCoMPlotModel
-        {
-            get => _XCoMPlotModel;
-            set => Set(ref _XCoMPlotModel, value);
-        }
-
-        private PlotModel _YCoMPlotModel;
-
-        public PlotModel YCoMPlotModel
-        {
-            get => _YCoMPlotModel;
-            set => Set(ref _YCoMPlotModel, value);
-        }
-
-        private PlotModel _FreqProgressPlotModel;
-
-        public PlotModel FreqProgressPlotModel
-        {
-            get => _FreqProgressPlotModel;
-            set => Set(ref _FreqProgressPlotModel, value);
-        }
 
 
         private void RefreshPlots()
         {
-            XCoMPlotModel.InvalidatePlot(true);
-            YCoMPlotModel.InvalidatePlot(true);
-            PSDPlotModel.InvalidatePlot(true);
-            RefreshFreqProgressPlot();
-        }
-
-        private void RefreshFreqProgressPlot() => FreqProgressPlotModel.InvalidatePlot(true);
-
-        private PlotModel getPlotModelWithNoDataText()
-        {
-            var model = new PlotModel { Title = "No Data" };
-            return model;
+            PlotModelsContainerViewModel.InvalidateAllPlots(true);
         }
 
         public FreqProgressViewModel FreqProgressViewModel { get; set; } = new FreqProgressViewModel();
 
-        //public enum PlotType
-        //{
-        //    XCoM, YCoM, PSDAvg
-        //}
+        public ResultsViewModel CurrentGlobalScopedResultsViewModel { get; set; } = new ResultsViewModel();
+
 
         public void DisplayPlots()
         {
             var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
 
-            var psdPlotModel = new PlotModel();
-            var xcomPlotModel = new PlotModel();
-            var ycomPlotModel = new PlotModel();
-            foreach (var comp in comps)
+            //this basically compute the psd, amps spec, etc...
+            comps.ForEach(comp => comp.PrepareForDisplay(FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize));
+            timeAnotations.Clear();//discard current anotations (new will be added)
+
+            foreach (var pmwt in PlotModelsContainerViewModel.PlotModels)
             {
-                comp.PrepareForDisplay(FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize);
-                psdPlotModel.Series.Add(comp.PsdSeries);
-                xcomPlotModel.Series.Add(comp.XComSeries);
-                ycomPlotModel.Series.Add(comp.YComSeries);
+                if (pmwt.DataSeriesType == DataSeriesType.FreqProgress)
+                    continue;//freq progress has its own plotting logic. see regrawfreqProgress
 
+                var firstDatares = comps.First().Algorithm.Results.DataResultsDict[pmwt.DataSeriesType];
+                if (firstDatares.IsOk)
+                {
+                    pmwt.PlotModel = new PlotModel();
+                    foreach (var comp in comps)
+                    {
+                        var series = comp.LineSeriesDict[pmwt.DataSeriesType];
+                        pmwt.PlotModel.Series.Add(series);//add series with same type (psd, etc..)
+                    }
+                }
+                else
+                    pmwt.PlotModel = new PlotModel { Title = firstDatares.ErrorMessage };
+                //for com x and com y add anotation
+                if (pmwt.DataSeriesType == DataSeriesType.ComX || pmwt.DataSeriesType == DataSeriesType.ComY)
+                {
+                    var newAno = RecreateAnnotation();
+                    timeAnotations.Add(newAno);
+                    pmwt.PlotModel.Annotations.Add(newAno);
+                }
             }
-            xcomAnnotation = RecreateAnnotation();
-            ycomAnnotation = RecreateAnnotation();
-            xcomPlotModel.Annotations.Add(xcomAnnotation);
-            ycomPlotModel.Annotations.Add(ycomAnnotation);
 
-            PSDPlotModel = psdPlotModel;
-            XCoMPlotModel = xcomPlotModel;
-            YCoMPlotModel = ycomPlotModel;
             ReDrawFreqProgress();
+
+            //global scoped results
+            CurrentGlobalScopedResultsViewModel.ComputeAllResults(ParentVm.MediaPlayerViewModel.VideoPropsViewModel.FrameRate,
+                comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList(),
+                comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComY].Y).ToList());
+
+            foreach (var pwmt in PlotModelsContainerViewModel.PlotModelsGlobalScope)
+            {
+                var res = CurrentGlobalScopedResultsViewModel.DataResultsDict[pwmt.DataSeriesType];
+                if (res.IsOk)
+                {
+                    pwmt.PlotModel = new PlotModel();
+                    LineSeries s = new LineSeries();
+                    s.ItemsSource = (res.X.Zip(res.Y, (x, y) => new DataPoint(x, y)));
+                    pwmt.PlotModel.Series.Add(s);
+                    s.Color = OxyColors.Black;
+                }
+                else
+                {
+                    pwmt.PlotModel = new PlotModel { Title = res.ErrorMessage };
+                }
+            }
+
+
+
+            RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
             IsAllResultsNotObsolete = true;
+
+
         }
 
-        public void ReDrawFreqProgress()
+        /// <summary>
+        /// Freq progress has its own logic how to rewrite plots. It is mainly bcs of different segements sizes for fft. Some of
+        /// them does not produce result. And this method is called when segment size is changed
+        /// solo caller -> if only freq progress redraw is call, raise prop change, otherwise do it somewhere else
+        /// </summary>
+        public void ReDrawFreqProgress(bool isSoloCaller = false)
         {
             var freqProgressPlotModel = new PlotModel();
             var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
             if (comps.Count < 1)
                 return;
-            double maxYOfFreqProgress = 0;
+            //double maxYOfFreqProgress = 0;
             foreach (var comp in comps)
             {
                 try
@@ -184,30 +185,35 @@ namespace TremAn3.ViewModels
                 {//when there is an error (i.e. window is longer than signal)
                     FreqProgressViewModel.StatusMessage = e.Message;
                     FreqProgressViewModel.IsFreqProgressParametersOk = false;
-                    FreqProgressPlotModel = getPlotModelWithNoDataText();//display No data (also exception and err message is handled in prepare)
+                    PlotModelsContainerViewModel.SetFreqProgressToNoData();//display No data (also exception and err message is handled in prepare)
+                    if (isSoloCaller)
+                        RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
                     return;
                 }
-              
 
-                freqProgressPlotModel.Series.Add(comp.FreqProgressSeries);
+                freqProgressPlotModel.Series.Add(comp.LineSeriesDict[DataSeriesType.FreqProgress]);
                 //get maximum to better view 
-                maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max() ? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
+                //maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max() ? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
             }
 
             FreqProgressViewModel.StatusMessage = $"Frequency resolution: {comps.First().Algorithm.frameRate / FreqProgressViewModel.SegmnetSize:F2} Hz. Number of segments computed: {comps.First().Algorithm.Results.FreqProgress.Count} ";
 
             FreqProgressViewModel.IsFreqProgressParametersOk = true;
-            freqProgressAnnotation = RecreateAnnotation();
+            var freqProgressAnnotation = RecreateAnnotation();
+            timeAnotations.Add(freqProgressAnnotation);
             freqProgressPlotModel.Annotations.Add(freqProgressAnnotation);
-            freqProgressPlotModel.Axes.Add(new LinearAxis() { Maximum = maxYOfFreqProgress * 1.1, Minimum = 0, MajorTickSize = 2, MinorTickSize = 0.5, Position = AxisPosition.Left, Key = "Vertical" });
-            FreqProgressPlotModel = freqProgressPlotModel;
+            var maxYOfFreqProgress = comps.Max(comp => comp.Algorithm.Results.FreqProgress.Max());
 
-            RefreshFreqProgressPlot();
+            freqProgressPlotModel.Axes.Add(new LinearAxis() { Maximum = maxYOfFreqProgress * 1.1, Minimum = 0, MajorTickSize = 2, MinorTickSize = 0.5, Position = AxisPosition.Left, Key = "Vertical" });
+            PlotModelsContainerViewModel.PlotModels.First(x => x.DataSeriesType == DataSeriesType.FreqProgress).PlotModel = freqProgressPlotModel;
+            //PlotModelsContainerViewModel.PlotModels.First(x => x.DataSeriesType == DataSeriesType.FreqProgress).PlotModel.InvalidatePlot(true);
+            if (isSoloCaller)
+                RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
+
         }
 
-        LineAnnotation xcomAnnotation;
-        LineAnnotation ycomAnnotation;
-        LineAnnotation freqProgressAnnotation;
+
+        List<LineAnnotation> timeAnotations = new List<LineAnnotation>();
 
         LineAnnotation RecreateAnnotation() => new LineAnnotation() { Type = LineAnnotationType.Vertical, ClipByXAxis = false, X = 0, Color = OxyColors.Black };
 
@@ -226,14 +232,14 @@ namespace TremAn3.ViewModels
             }
         }
 
+        /// <summary>
+        /// set plots to NO data
+        /// </summary>
         internal void ResetResultDisplay()
         {
             //VideoMainFreq = -1;//means nothing
-            XCoMPlotModel = getPlotModelWithNoDataText();
-            YCoMPlotModel = getPlotModelWithNoDataText();
-            PSDPlotModel = getPlotModelWithNoDataText();
-            FreqProgressPlotModel = getPlotModelWithNoDataText();
-
+            PlotModelsContainerViewModel.SetAllModelsToNoData();
+            RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
         }
 
         double _minrange;
@@ -322,22 +328,6 @@ namespace TremAn3.ViewModels
             set => Set(ref _percentageOfResolution, value);
         }
 
-        private double _VideoMainFreq = -1;
-
-        //lower than zero means: no value
-        //(same as null, but null does not update raise prop)
-        //public double VideoMainFreq
-        //{
-        //    get => _VideoMainFreq;
-        //    set
-        //    {
-        //        if (_VideoMainFreq == value) return;
-        //        _VideoMainFreq = value;
-        //        RaisePropertyChanged();
-        //    }
-        //}
-
-
         private double _SliderPlotValue;
 
         public double SliderPlotValue
@@ -354,8 +344,11 @@ namespace TremAn3.ViewModels
         private MediaControllingViewModel MediaControllingViewModel { get => ViewModelLocator.Current.MediaControllingViewModel; }
 
 
+        public async Task DisplaySpectralAnalysisInfo()
+        {
 
+            await DialogService.DisplaySpectralAnalysisInfo();
 
-
+        }
     }
 }

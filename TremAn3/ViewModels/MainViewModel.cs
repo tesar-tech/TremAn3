@@ -31,23 +31,25 @@ namespace TremAn3.ViewModels
 {
     public partial class MainViewModel : ViewModelBase
     {
-        public MainViewModel(DataService  dataService)
+        public MainViewModel(DataService dataService, StoringMeasurementsService sms)
         {
             _DataService = dataService;
+            _StoringMeasurementsService = sms;
             //FreqCounterViewModel = new FreqCounterViewModel(this);
         }
         //public event EventHandler NotificationHandler;
 
+        private StoringMeasurementsService _StoringMeasurementsService;
 
         public async void LoadedAsync()
         {
-//#if DEBUG
-//            StorageFile videoFile = (StorageFile)(await KnownFolders.PicturesLibrary.TryGetItemAsync("hand.mp4"));
-//            await OpenStorageFile(videoFile);
-//#endif
+            //#if DEBUG
+            //            StorageFile videoFile = (StorageFile)(await KnownFolders.PicturesLibrary.TryGetItemAsync("hand.mp4"));
+            //            await OpenStorageFile(videoFile);
+            //#endif
             if (ViewModelLocator.Current.SettingsViewModel.IsLoadRecentVideoOnAppStart)
             {
-                var videoFile =await _DataService.GetLastOpenedFile();
+                var videoFile = await _DataService.GetLastOpenedFile();
                 await OpenStorageFile(videoFile);
             }
 
@@ -63,16 +65,45 @@ namespace TremAn3.ViewModels
 
         private async Task OpenStorageFile(StorageFile file)
         {
-            if (file != null)
+            bool fileOpenSuccess = false;
+            try
             {
+                if (file == null) return;
                 await MediaPlayerViewModel.ChangeSourceAsync(file);
                 FreqCounterViewModel.ResetFreqCounter();
                 IsFreqCounterOpen = true;
-                _DataService.SaveOpenedFileToMru(file);
+                MediaPlayerViewModel.CurrentMruToken = _DataService.SaveOpenedFileToMru(file);
+                fileOpenSuccess = true;
             }
+            catch (Exception ex)
+            {
+                ViewModelLocator.Current.NoificationViewModel.SimpleNotification($"Something went wrong opening video file ({file.Name}). Error message: {ex.Message}");
+            }
+
+
+            if (!fileOpenSuccess) return;
+            var pastMeasurementsModels = await _DataService.GetPastMeasurements(MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
+            PastMeasurementsViewModel.MeasurementsVms.Clear();
+            PastMeasurementsViewModel.AddVms(pastMeasurementsModels);
+            PastMeasurementsViewModel.SelectAndDisplayLastInAny();
+
+            //if (pastMeasurementsModels.Any())
+            //{
+            //    var lastMeas = pastMeasurementsModels[0];
+            //    ///JUST FOR TESTING
+            //    lastMeas.Model.FrameRate = 30.0;//just fo testing
+            //    ///
+            //    //_StoringMeasurementsService.DisplayMeasurementByModel(lastMeas.Model);
+
+            //}
+
+
+
         }
+        public PastMeasurementsViewModel PastMeasurementsViewModel => ViewModelLocator.Current.PastMeasurementsViewModel;
 
         public MediaPlayerViewModel MediaPlayerViewModel { get => ViewModelLocator.Current.MediaPlayerViewModel; }
+
         private DataService _DataService;
         CancellationTokenSource source;
 
@@ -101,7 +132,7 @@ namespace TremAn3.ViewModels
                 ViewModelLocator.Current.DrawingRectanglesViewModel.AddMaxRoi();
 
             rois.ToList().ForEach(
-                x => x.InitializeCoM(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate, FreqCounterViewModel.PercentageOfResolution));
+                x => x.InitializeCoM(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate, FreqCounterViewModel.PercentageOfResolution, x.Color));
             var comAlgs = rois.Select(x => x.ComputationViewModel.Algorithm);
 
             Stopwatch sw = new Stopwatch();
@@ -110,17 +141,36 @@ namespace TremAn3.ViewModels
 
             source = new CancellationTokenSource();
             await Computation(grabber, comAlgs, source);//this modifies comAlgs that are part of FreqCounterVm
+            //Coherence coherenceBetween2Windows = new Coherence();
+
+
+            //CurrentResultsViewModel = new ResultsViewModel(comAlgs);
+            //CurrentResultsViewModel.CoherenceResult = coherenceBetween2Windows.Compute();
+
 
             if (!source.IsCancellationRequested)
             {
                 Debug.WriteLine(sw.ElapsedMilliseconds);
-                FreqCounterViewModel.DisplayPlots();
+
+                MeasurementModel measurementModel = new MeasurementModel(comAlgs)
+                {
+                    //Coherence = CurrentResultsViewModel.CoherenceResult,
+                    Minrange = MediaPlayerViewModel.FreqCounterViewModel.Minrange,
+                    Maxrange = MediaPlayerViewModel.FreqCounterViewModel.Maxrange,
+                    PositionSeconds = MediaPlayerViewModel.MediaControllingViewModel.PositionSeconds
+
+                };
+                MeasurementViewModel vm = new MeasurementViewModel(measurementModel);
+                PastMeasurementsViewModel.AddAndSelectVm(vm);
+                vm.FolderForMeasurement =  await _DataService.SaveMeasurementResults(measurementModel, MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
             }
             else
             {
                 FreqCounterViewModel.ProgressPercentage = 0;
             }
             FreqCounterViewModel.IsComputationInProgress = false;
+
+
 
         }
 
@@ -149,7 +199,7 @@ namespace TremAn3.ViewModels
                     comAlg.Frame2 = frame2;
 
                     comAlg.GetComFromCurrentARGBFrames();
-                    comAlg.Results.FrameTimes.Add(grabber.TimeOfFrameOnCurrentIndex);
+                    comAlg.Results.ResultsModel.FrameTimes.Add(grabber.TimeOfFrameOnCurrentIndex);
                 }
 
                 FreqCounterViewModel.ProgressPercentage = grabber.ProgressPercentage;
@@ -176,19 +226,19 @@ namespace TremAn3.ViewModels
 
             List<double> one_x = null;
             if (type == "comX" || type == "comY")
-                one_x = rois[0].ComputationViewModel.Algorithm.Results.FrameTimes.Select(x => x.TotalSeconds).ToList();
+                one_x = rois[0].ComputationViewModel.Algorithm.Results.ResultsModel.FrameTimes.Select(x => x.TotalSeconds).ToList();
             else if (type == "psd")
-                one_x = rois[0].ComputationViewModel.Algorithm.Results.PsdAvgData.Select(x => x.x_freq).ToList();
+                one_x = rois[0].ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.Psd].X;
 
 
             List<List<double>> multiple_ys = null;
 
             if (type == "comX")
-                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.ListComXNoAvg).ToList();
+                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList();
             else if (type == "comY")
-                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.ListComYNoAvg).ToList();
+                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.ComY].Y).ToList();
             else if (type == "psd")
-                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.PsdAvgData.Select(y => y.y_power).ToList()).ToList();
+                multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.Psd].Y).ToList();
 
             string xHeader = type == "psd" ? "freq [Hz]" : "time[s]";
             string yHeader = type == "psd" ? "PSD" : type == "comX" ? "CoMX" : "CoMY";
@@ -228,8 +278,9 @@ namespace TremAn3.ViewModels
         public string Title
         {
             get => _Title;
-            set => Set(ref _Title, value);
+            set { if (Set(ref _Title, value)) SetTitle?.Invoke(value); }
         }
+        public Action<string> SetTitle;
         public void RefreshTitle() => Title = MediaPlayerViewModel.VideoPropsViewModel.ToString();
 
         public FreqCounterViewModel FreqCounterViewModel { get => ViewModelLocator.Current.FreqCounterViewModel; }
@@ -252,7 +303,7 @@ namespace TremAn3.ViewModels
 
         }
 
-  
+
 
     }
 }

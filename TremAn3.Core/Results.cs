@@ -5,34 +5,34 @@ using System.Text;
 
 namespace TremAn3.Core
 {
+    /// <summary>
+    /// here we have result that are computed from comX and comy, which is stored in ResultModel, which is saved to file
+    /// thus, these results (like psd or freq progress) is computed on the fly (not stored in file)
+    /// </summary>
     public class Results
     {
-        public List<TimeSpan> FrameTimes { get; set; } = new List<TimeSpan>();
 
-        public List<double> listComX = new List<double>();
-        public List<double> listComY = new List<double>();
-        public List<(double x_freq, double y_power)> PsdAvgData { get; set; }
-        public List<double> ListComXNoAvg
-        {
-            get
-            {
-                var avgX = listComX.Average();
-                var noavg = listComX.Select(x => x - avgX).ToList();
-                return noavg;
-            }
-        }
+        public List<double> FreqProgress { get; set; } = new List<double>();
+        public List<double> FreqProgressTime { get; set; }
 
-        public List<double> ListComYNoAvg
-        {
-            get
-            {
-                var avgY = listComY.Average();
-                var noavg = listComY.Select(x => x - avgY).ToList();
-                return noavg;
-            }
-        }
+        public ResultsModel ResultsModel { get;  set; } = new ResultsModel();
 
-        public List<double> FreqProgress { get; internal set; }
-        public List<double> FreqProgressTime { get; internal set; }
+        public Dictionary<DataSeriesType, DataResult> DataResultsDict { get; set; } = new Dictionary<DataSeriesType, DataResult>();
+
     }
+
+    public class DataResult
+    {
+        //public DataSeriesType DataSeriesType{ get; set; }
+        public List<double> X { get; set; }
+        public List<double> Y { get; set; }
+
+        public bool IsOk { get => string.IsNullOrWhiteSpace(ErrorMessage); }
+        public string ErrorMessage { get; set; }
+    }
+    public enum DataSeriesType
+    {
+        Psd, ComX, ComY, AmpSpec, FreqProgress, Coherence,Welch
+    }
+
 }

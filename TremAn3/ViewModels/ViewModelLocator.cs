@@ -21,9 +21,15 @@ namespace TremAn3.ViewModels
             SimpleIoc.Default.Register(() => new NotificationViewModel());
             SimpleIoc.Default.Register(() => new DrawingRectanglesViewModel());
             SimpleIoc.Default.Register(() => new MediaControllingViewModel());
-            SimpleIoc.Default.Register(() => new FreqCounterViewModel());
+            SimpleIoc.Default.Register<FreqCounterViewModel>();
             SimpleIoc.Default.Register(() => new TeachingTipsViewModel());
             SimpleIoc.Default.Register(() => new DataService());
+            SimpleIoc.Default.Register(() => new StoringMeasurementsService());
+            SimpleIoc.Default.Register(() => new ResultsViewModel());
+            SimpleIoc.Default.Register<PastMeasurementsViewModel>();
+            SimpleIoc.Default.Register<PlotModelsContainerViewModel>();
+
+
             Register<MainViewModel, MainPage>();
             //Register<MediaPlayerViewModel, MediaPlayerPage>();
             Register<SettingsViewModel, SettingsPage>();
@@ -49,6 +55,10 @@ namespace TremAn3.ViewModels
         public MediaControllingViewModel MediaControllingViewModel => SimpleIoc.Default.GetInstance<MediaControllingViewModel>();
         public FreqCounterViewModel FreqCounterViewModel => SimpleIoc.Default.GetInstance<FreqCounterViewModel>();
         public TeachingTipsViewModel TeachingTipsViewModel => SimpleIoc.Default.GetInstance<TeachingTipsViewModel>();
+        public PastMeasurementsViewModel PastMeasurementsViewModel => SimpleIoc.Default.GetInstance<PastMeasurementsViewModel>();
+
+        
+        //public ResultsViewModel CurrentResultsViewModel => SimpleIoc.Default.GetInstance<ResultsViewModel>();
 
         public void Register<VM, V>()
             where VM : class

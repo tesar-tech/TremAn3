@@ -29,6 +29,8 @@ namespace TremAn3.ViewModels
             }
         }
 
+        //token of the current video file used for creating folder of video
+        public string CurrentMruToken { get; set; }
 
         public VideoPropsViewModel VideoPropsViewModel { get; set; } = new VideoPropsViewModel();
 

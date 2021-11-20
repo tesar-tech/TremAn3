@@ -20,6 +20,7 @@
             <Rectangle Tag="rb" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
             <Rectangle Tag="lb" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
 
+           
         <Button  Padding="{x:Bind helpers:StaticConverters.DoubleToThicknessWDivisor( ViewModel.CornerSize,3.9), Mode=OneWay}" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Top">
             <Viewbox >
                 <SymbolIcon  Symbol="Edit" Foreground="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}"/>

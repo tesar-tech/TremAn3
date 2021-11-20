@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace TremAn3.Core
@@ -7,33 +8,36 @@ namespace TremAn3.Core
     public class SelectionRectangle
     {
 
-        public SelectionRectangle((double X, double Y, double width, double height) value, double percentageOfResolution = 100)
+        public SelectionRectangle((double X, double Y, double width, double height) value,Color color, double percentageOfResolution = 100)
         {
-            sizeReductionFactor = percentageOfResolution / 100;
-            x = (uint)Math.Round(value.X);
-            y = (uint)Math.Round(value.Y);
-            width= (uint)Math.Round(value.width);
-            height =(uint)Math.Round(value.height);
+            RoiModel =  new RoiModel();
+            RoiModel.SizeReductionFactor = percentageOfResolution / 100;
+            RoiModel.X= (uint)Math.Round(value.X);
+            RoiModel.Y = (uint)Math.Round(value.Y);
+            RoiModel.Width = (uint)Math.Round(value.width);
+            RoiModel.Height = (uint)Math.Round(value.height);
+            RoiModel.Color = color;
         }
-    
-        private double sizeReductionFactor;
-        private uint x;
-        private uint y;
-        private uint width;
-        private uint height;
 
-        public uint X { get =>   (uint)Math.Round( x * sizeReductionFactor);  set => x = value; }//its uint here bcsof pixels
-        public uint Y { get =>  (uint)Math.Round(y * sizeReductionFactor); set => y = value; }
-        public uint Width { get => (uint)Math.Round(width * sizeReductionFactor); set => width = value; }
-        public uint Height { get => (uint)Math.Round(height * sizeReductionFactor); set => height = value; }
+        public SelectionRectangle(RoiModel model)
+        {//From saved file 
+            RoiModel = model;
+        }
+
+        public RoiModel RoiModel { get; private set; } 
+
+        public uint X { get =>   (uint)Math.Round(RoiModel.X* RoiModel.SizeReductionFactor);  }//its uint here bcsof pixels
+        public uint Y { get =>  (uint)Math.Round(RoiModel.Y* RoiModel.SizeReductionFactor);  }
+        public uint Width { get => (uint)Math.Round(RoiModel.Width* RoiModel.SizeReductionFactor);  }
+        public uint Height { get => (uint)Math.Round(RoiModel.Height* RoiModel.SizeReductionFactor); }
 
         public bool IsZeroSum { get => X + Y + Width + Height == 0; }
 
         //this does respect already used percentageOfResolution
         internal  void FullFromResolution(int width, int height)
         {
-            Width = (uint)width;
-            Height = (uint)height;
+            RoiModel.Width = (uint)width;
+            RoiModel.Height = (uint)height;
         }
     }
 }

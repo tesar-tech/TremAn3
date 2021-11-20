@@ -54,8 +54,8 @@ namespace TremAn3.Core.Tests.XUnit
         public void GetAmpSpectrumAndMax_ShortVec_sameResult()
         {
             List<double> Vector = CreateVector(1, 13,-10,10);
-            FftResult fft = new FftResult();
-            FftResult result = Fft.GetAmpSpectrumAndMax(1, Vector);
+            PsdResult fft = new PsdResult();
+            PsdResult result = Fft.GetAmpSpectrumAndMax(1, Vector);
             for (int i = 0; i < result.Values.Count; i++)
             {
                 result.Values[i] *= 1e13;
@@ -79,8 +79,8 @@ namespace TremAn3.Core.Tests.XUnit
         {
             List<double> vecX = new List<double>() { 319.5, 319.570564104974, 319.570564104974, 319.387187167831 };
             List<double> vecY = new List<double>() { 239.5, 239.690534471355, 239.690534471355, 239.447377199610 };
-            FftResult resultX = Fft.GetAmpSpectrumAndMax(29.966, vecX);
-            FftResult resultY = Fft.GetAmpSpectrumAndMax(29.966, vecY);
+            PsdResult resultX = Fft.GetAmpSpectrumAndMax(29.966, vecX);
+            PsdResult resultY = Fft.GetAmpSpectrumAndMax(29.966, vecY);
             resultY.Values = resultY.Values.Select(x => Math.Round(x, 7)).ToList();
             resultX.Values = resultX.Values.Select(x => Math.Round(x, 7)).ToList();
             List<double> matlabValuesX = new List<double>() { 0, 0.1964851 };
@@ -132,7 +132,7 @@ namespace TremAn3.Core.Tests.XUnit
             List<double> vector1 = Enumerable.Range(0,256).Select(x=>(double)x).ToList();
             List<double> vector2 = Enumerable.Range(5,256).Select(x=>(double)x).ToList();
             List<double> expected = new List<double>();
-            List<double> vys = Fft.ComputeFftDuringSignalForTwoSignals(fs, vector1,vector2,256,1,false);
+            List<double> vys = Fft.ComputeFftDuringSignalForTwoSignals(fs, vector1,vector2,256,1);
             for (int i = 0; i < 1040; i++)
             {
                 expected.Add(7);

@@ -1,10 +1,14 @@
 ﻿
+using OxyPlot;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TremAn3.Core;
+using TremAn3.ViewModels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -31,6 +35,7 @@ namespace TremAn3.Helpers
         public static bool InverseBool(bool val) => !val;
         public static Thickness IntToThickness(double val) => new Thickness(val);
         public static Thickness DoubleToThicknessWDivisor(double val,double divisor = 1) => new Thickness(val/divisor);
+        public static Thickness DoubleToThicknessWDivisor(int val,double divisor = 1) => DoubleToThicknessWDivisor((double)val,divisor);
 
 
 
@@ -44,6 +49,20 @@ namespace TremAn3.Helpers
 
         public static Symbol IsPlayingToIcon(bool isPlaying) => isPlaying ? Symbol.Pause : Symbol.Play;
         //public static Visibility MoreThanZeroToCollapsed(int count) => count > 0 ? Visibility.Collapsed : Visibility.Visible;
+
+
+        public static GridLength IsListOfMeasurementsShownHeight(bool isShown) => isShown ? new GridLength(1, GridUnitType.Star) : new GridLength(0, GridUnitType.Pixel);
+        public static GridLength HeightOfMeasurementsInMainPage(bool isShown) => isShown ? new GridLength(1, GridUnitType.Star) :  GridLength.Auto;
+
+        public static string ToWellDateTimeString(DateTime d) => d.ToString(Defaults.DateTimeFormatForMeasurements);
+        public static double SpectralAnalysisBiggerToggleToSizeOfPlot(bool? IsChecked)
+        {
+            if (IsChecked == null || !IsChecked.Value)
+                return 100;
+            return 222;
+        }
+
+
 
     }
     public static class MathConverters

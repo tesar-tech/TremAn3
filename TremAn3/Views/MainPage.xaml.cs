@@ -6,6 +6,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using GalaSoft.MvvmLight;
+using Microsoft.Toolkit.Uwp.UI;
 
 namespace TremAn3.Views
 {
@@ -18,6 +19,7 @@ namespace TremAn3.Views
         {
             InitializeComponent();
             ViewModelLocator.Current.NoificationViewModel.NotificationHandler += ViewModel_NotificationHandler;
+            ViewModel.SetTitle =  s=> ApplicationViewExtensions.SetTitle(this, s);//todo: move this to xaml back (broken in winui2.7)
         }
 
         private void ViewModel_NotificationHandler(string message)

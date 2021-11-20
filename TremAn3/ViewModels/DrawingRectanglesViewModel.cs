@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TremAn3.Core;
 using TremAn3.Core.Helpers;
 
 namespace TremAn3.ViewModels
@@ -31,7 +32,20 @@ namespace TremAn3.ViewModels
             return s;
         }
 
-        public Action plotsNeedRefresh;
+        internal SelectionRectangleViewModel CreateROIFromModel(RoiResultModel roiresultModel)
+        {
+
+            SelectionRectangleViewModel s = new SelectionRectangleViewModel(roiresultModel.RoiModel.X, roiresultModel.RoiModel.Y, MaxWidth, MaxHeight, roiresultModel.RoiModel.SizeReductionFactor, roiresultModel.RoiModel.Color);
+            s.Width = roiresultModel.RoiModel.Width;
+            s.Height = roiresultModel.RoiModel.Height;
+            SelectionRectanglesViewModels.Add(s);
+            s.DeleteMeAction += selectionToDelete => SelectionRectanglesViewModels.Remove(selectionToDelete);
+            s.PlotsNeedRefresh += () => plotsNeedRefresh.Invoke();
+            return s;
+
+        }
+
+        public Action plotsNeedRefresh { get; set; }
         public SelectionRectangleViewModel CurrentRoiInCreationProcess { get; set; }
 
         private uint _MaxHeight;
