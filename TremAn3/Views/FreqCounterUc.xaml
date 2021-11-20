@@ -203,6 +203,8 @@
                 <Run Text="{x:Bind ViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
                 </TextBlock>-->
 
+                
+
                 <Line Margin="5,10,5,0"/>
 
                 <mux:TabView x:Name="SpectralAnalysisTabView" SelectedIndex="0"  TabWidthMode="SizeToContent"    IsAddTabButtonVisible="False" >

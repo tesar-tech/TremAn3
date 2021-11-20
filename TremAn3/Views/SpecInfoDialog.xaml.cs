@@ -17,9 +17,9 @@ using Windows.UI.Xaml.Navigation;
 
 namespace TremAn3.Views
 {
-    public sealed partial class SpectralAnalysisInfoDialog : ContentDialog
+    public sealed partial class SpecInfoDialog : ContentDialog
     {
-        public SpectralAnalysisInfoDialog()
+        public SpecInfoDialog()
         {
             this.InitializeComponent();
         }

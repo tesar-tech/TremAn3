@@ -74,6 +74,8 @@ namespace TremAn3.ViewModels
 
             foreach (var res in Algorithm.Results.DataResultsDict)
             {
+
+                if(res.Value.IsOk)
                 LineSeriesDict.Add(res.Key, GetNewLineSeries( res.Value.X.Zip(res.Value.Y,(x,y) => new DataPoint(x, y)) )  );
             }
 

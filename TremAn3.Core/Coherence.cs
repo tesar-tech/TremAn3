@@ -42,13 +42,19 @@ namespace TremAn3.Core
             var b_y = ComYAllRois[1].ToArray();
             var bb = b_x.Zip(b_y, (x, y) => Math.Sqrt(x * x + y * y));
 
-            var cohe = FreqAnalysis.mscohe(aa, bb, w, ov, frameRate).Select(x => x.Magnitude);
-
-            var dr = new DataResult()
+            var dr = new DataResult();
+            try
             {
-                Y = cohe.ToD().ToList(),
-                X = SignalProcessingHelpers.GetFrequencies(cohe.Count(), frameRate).ToList()
-            };
+                var cohe = FreqAnalysis.mscohe(aa, bb, w, ov, frameRate).Select(x => x.Magnitude);
+
+                dr.Y = cohe.ToD().ToList();
+                dr.X = SignalProcessingHelpers.GetFrequencies(cohe.Count(), frameRate).ToList();
+            }
+            catch (Exception ex)
+            {
+                dr.ErrorMessage = ex.Message;
+            }
+
             return dr;
 
         }

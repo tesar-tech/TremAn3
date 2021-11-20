@@ -17,6 +17,7 @@ namespace TremAn3.ViewModels
         public void SetAllModelsToNoData()
         {
             PlotModels.ToList().ForEach(x => x.PlotModel = getPlotModelWithNoDataText());
+            PlotModelsGlobalScope.ToList().ForEach(x => x.PlotModel = getPlotModelWithNoDataText());
         }
         public void SetFreqProgressToNoData()
         {
@@ -34,11 +35,15 @@ namespace TremAn3.ViewModels
         public void InvalidateAllPlots(bool updateData)
         {
             PlotModels.ToList().ForEach(x => x.PlotModel.InvalidatePlot(updateData));
+            PlotModelsGlobalScope.ToList().ForEach(x => x.PlotModel.InvalidatePlot(updateData));
         }
 
+        //there is one line series for every roi. For example amp spectrum
         public List<PlotModelWithTypeViewModel> PlotModels { get; set; } =
             new List<PlotModelWithTypeViewModel>();
 
+
+        //there is only one series for all rois. For example coherence
         public List<PlotModelWithTypeViewModel> PlotModelsGlobalScope { get; set; } =
          new List<PlotModelWithTypeViewModel>();
 

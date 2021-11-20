@@ -216,14 +216,22 @@ namespace TremAn3.Core
             Results.DataResultsDict.Add(DataSeriesType.AmpSpec, dr);
 
             //welch
-            var welchX = FreqAnalysis.Welch(comXNoAvg, frameRate);
-            var welchY = FreqAnalysis.Welch(comYNoAvg, frameRate);
-
-            DataResult drWelch = new DataResult()
+            DataResult drWelch = new DataResult();
+          
+            try
             {
-                X = SignalProcessingHelpers.GetFrequencies(welchX.Count(), frameRate).ToList(),
-                Y = welchX.Zip(welchY, (x, y) => (x + y) / 2).Abs().ToList()//do the average of x and y
-            };
+                var welchX = FreqAnalysis.Welch(comXNoAvg, frameRate);
+                var welchY = FreqAnalysis.Welch(comYNoAvg, frameRate);
+                drWelch.X = SignalProcessingHelpers.GetFrequencies(welchX.Count(), frameRate).ToList();
+                drWelch.Y = welchX.Zip(welchY, (x, y) => (x + y) / 2).Abs().ToList();
+            
+            }
+            catch (Exception ex)
+            {
+                drWelch.ErrorMessage = ex.Message;
+                //throw;
+            }
+            
             Results.DataResultsDict.Add(DataSeriesType.Welch, drWelch);
 
         }

@@ -24,7 +24,7 @@ namespace TremAn3.ViewModels
             PlotModelsContainerViewModel = pmcvm;
         }
 
-     
+
         public MainViewModel ParentVm { get => ViewModelLocator.Current.MainViewModel; }
 
         public PlotModelsContainerViewModel PlotModelsContainerViewModel { get; private set; }
@@ -109,11 +109,19 @@ namespace TremAn3.ViewModels
             {
                 if (pmwt.DataSeriesType == DataSeriesType.FreqProgress)
                     continue;//freq progress has its own plotting logic. see regrawfreqProgress
-                pmwt.PlotModel = new PlotModel();
-                foreach (var comp in comps)
+
+                var firstDatares = comps.First().Algorithm.Results.DataResultsDict[pmwt.DataSeriesType];
+                if (firstDatares.IsOk)
                 {
-                    pmwt.PlotModel.Series.Add(comp.LineSeriesDict[pmwt.DataSeriesType]);//add series with same type (psd, etc..)
+                    pmwt.PlotModel = new PlotModel();
+                    foreach (var comp in comps)
+                    {
+                        var series = comp.LineSeriesDict[pmwt.DataSeriesType];
+                        pmwt.PlotModel.Series.Add(series);//add series with same type (psd, etc..)
+                    }
                 }
+                else
+                    pmwt.PlotModel = new PlotModel { Title = firstDatares.ErrorMessage };
                 //for com x and com y add anotation
                 if (pmwt.DataSeriesType == DataSeriesType.ComX || pmwt.DataSeriesType == DataSeriesType.ComY)
                 {
@@ -127,7 +135,7 @@ namespace TremAn3.ViewModels
 
             //global scoped results
             CurrentGlobalScopedResultsViewModel.ComputeAllResults(ParentVm.MediaPlayerViewModel.VideoPropsViewModel.FrameRate,
-                comps.Select(x=>x.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList(),
+                comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList(),
                 comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComY].Y).ToList());
 
             foreach (var pwmt in PlotModelsContainerViewModel.PlotModelsGlobalScope)
@@ -152,7 +160,7 @@ namespace TremAn3.ViewModels
             RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
             IsAllResultsNotObsolete = true;
 
-            
+
         }
 
         /// <summary>
@@ -178,8 +186,8 @@ namespace TremAn3.ViewModels
                     FreqProgressViewModel.StatusMessage = e.Message;
                     FreqProgressViewModel.IsFreqProgressParametersOk = false;
                     PlotModelsContainerViewModel.SetFreqProgressToNoData();//display No data (also exception and err message is handled in prepare)
-                    if(isSoloCaller)
-                    RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
+                    if (isSoloCaller)
+                        RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
                     return;
                 }
 
@@ -194,13 +202,13 @@ namespace TremAn3.ViewModels
             var freqProgressAnnotation = RecreateAnnotation();
             timeAnotations.Add(freqProgressAnnotation);
             freqProgressPlotModel.Annotations.Add(freqProgressAnnotation);
-             var maxYOfFreqProgress  = comps.Max(comp => comp.Algorithm.Results.FreqProgress.Max());
+            var maxYOfFreqProgress = comps.Max(comp => comp.Algorithm.Results.FreqProgress.Max());
 
             freqProgressPlotModel.Axes.Add(new LinearAxis() { Maximum = maxYOfFreqProgress * 1.1, Minimum = 0, MajorTickSize = 2, MinorTickSize = 0.5, Position = AxisPosition.Left, Key = "Vertical" });
             PlotModelsContainerViewModel.PlotModels.First(x => x.DataSeriesType == DataSeriesType.FreqProgress).PlotModel = freqProgressPlotModel;
             //PlotModelsContainerViewModel.PlotModels.First(x => x.DataSeriesType == DataSeriesType.FreqProgress).PlotModel.InvalidatePlot(true);
-            if(isSoloCaller)
-            RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
+            if (isSoloCaller)
+                RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
 
         }
 
@@ -320,7 +328,7 @@ namespace TremAn3.ViewModels
             set => Set(ref _percentageOfResolution, value);
         }
 
-           private double _SliderPlotValue;
+        private double _SliderPlotValue;
 
         public double SliderPlotValue
         {
@@ -340,7 +348,7 @@ namespace TremAn3.ViewModels
         {
 
             await DialogService.DisplaySpectralAnalysisInfo();
-        
+
         }
     }
 }
