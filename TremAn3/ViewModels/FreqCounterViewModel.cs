@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TremAn3.Core;
+using TremAn3.Services;
 using Windows.Media.Protection.PlayReady;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -334,5 +335,12 @@ namespace TremAn3.ViewModels
         }
         private MediaControllingViewModel MediaControllingViewModel { get => ViewModelLocator.Current.MediaControllingViewModel; }
 
+
+        public async Task DisplaySpectralAnalysisInfo()
+        {
+
+            await DialogService.DisplaySpectralAnalysisInfo();
+        
+        }
     }
 }

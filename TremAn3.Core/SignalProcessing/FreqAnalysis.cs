@@ -13,16 +13,16 @@ namespace TremAn3.Core.SignalProcessing
 
         public static IEnumerable<Complex32> mscohe(IEnumerable<double> signal1, IEnumerable<double> signal2, int windowLength, int segmentOverlapLength, double fs)
         {
-            var cpsd = Welch(signal1, windowLength, segmentOverlapLength, fs, signal2);
-            var welch1 = Welch(signal1, windowLength, segmentOverlapLength, fs);
-            var welch2 = Welch(signal2, windowLength, segmentOverlapLength, fs);
+            var cpsd = Welch(signal1,fs, windowLength, segmentOverlapLength,  signal2);
+            var welch1 = Welch(signal1,fs, windowLength, segmentOverlapLength);
+            var welch2 = Welch(signal2,fs, windowLength, segmentOverlapLength);
 
             var welch1_welch2 = welch1.Zip(welch2, (one, two) => one * two);
             var cohe = cpsd.Select(x => x * x).Zip(welch1_welch2, (c, p) => c / p);
             return cohe;
         }
 
-        public static IEnumerable<Complex32> Welch(IEnumerable<double> signal1, int windowLength, int segmentOverlapLength, double fs, IEnumerable<double> signal2 = null)
+        public static IEnumerable<Complex32> Welch(IEnumerable<double> signal1, double fs, int windowLength = 256, int segmentOverlapLength = 255, IEnumerable<double> signal2 = null)
         {
 
             bool isCpsd = signal2 != null && signal2.Count() != 0;

@@ -255,6 +255,9 @@
     <Compile Include="Views\ShellPage.xaml.cs">
       <DependentUpon>ShellPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SpectralAnalysisInfoDialog.xaml.cs">
+      <DependentUpon>SpectralAnalysisInfoDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\VideoInfoPage.xaml.cs">
       <DependentUpon>VideoInfoPage.xaml</DependentUpon>
     </Compile>
@@ -349,6 +352,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ShellPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SpectralAnalysisInfoDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

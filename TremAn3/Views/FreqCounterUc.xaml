@@ -222,16 +222,25 @@
                         </ResourceDictionary>
                     </mux:TabView.Resources>
                     <mux:TabView.TabStripHeader>
-                        <TextBlock Text="Spectral Analysis:" VerticalAlignment="Bottom" Margin="4,6" Style="{ThemeResource BaseTextBlockStyle}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button Click="{x:Bind ViewModel.DisplaySpectralAnalysisInfo}"   Background="#00000000"  Padding="0" BorderThickness="0" Margin="4,6"  VerticalAlignment="Bottom">
+                                <FontIcon Glyph="&#xF167;" />
+                            </Button>
+                            <TextBlock Text="Spectral Analysis:" VerticalAlignment="Bottom" Margin="4,6" Style="{ThemeResource BaseTextBlockStyle}" />
+                        </StackPanel>
                     </mux:TabView.TabStripHeader>
                     <mux:TabView.TabItems>
 
                         <mux:TabViewItem  Header="PSD" IsClosable="False">
                             <oxyplot:PlotView x:Name="PsdPlotView" Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
                                   Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Psd ), Mode=OneWay}"/>
-
                         </mux:TabViewItem>
-                        
+
+                        <mux:TabViewItem Header="Welch" IsClosable="False">
+                            <oxyplot:PlotView  Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
+                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Welch ), Mode=OneWay}"/>
+                        </mux:TabViewItem>
+
                         <mux:TabViewItem  Header="Amp Spectrum" IsClosable="False">
                             <oxyplot:PlotView x:Name="AmpSpecPlotView"
                                      Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"

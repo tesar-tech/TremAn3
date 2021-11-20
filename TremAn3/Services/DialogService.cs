@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TremAn3.Views;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -44,6 +45,10 @@ namespace TremAn3.Services
                 return null;
         }
 
-
+        internal static async Task DisplaySpectralAnalysisInfo()
+        {
+            SpectralAnalysisInfoDialog sd = new SpectralAnalysisInfoDialog();
+            await sd.ShowAsync();
+        }
     }
 }

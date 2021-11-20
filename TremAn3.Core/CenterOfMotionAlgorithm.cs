@@ -215,21 +215,18 @@ namespace TremAn3.Core
             };
             Results.DataResultsDict.Add(DataSeriesType.AmpSpec, dr);
 
-            //Coherence coherenceBetween2firstChannels = new Coherence((int)frameRate,);
+            //welch
+            var welchX = FreqAnalysis.Welch(comXNoAvg, frameRate);
+            var welchY = FreqAnalysis.Welch(comYNoAvg, frameRate);
+
+            DataResult drWelch = new DataResult()
+            {
+                X = SignalProcessingHelpers.GetFrequencies(welchX.Count(), frameRate).ToList(),
+                Y = welchX.Zip(welchY, (x, y) => (x + y) / 2).Abs().ToList()//do the average of x and y
+            };
+            Results.DataResultsDict.Add(DataSeriesType.Welch, drWelch);
 
         }
-        //public double GetMainFreqAndFillPsdDataFromComLists()
-        //{
-
-                
-        //    //int maxIndex = Results.PsdAvgData.Values.IndexOf(Results.PsdAvgData.Values.Max());
-        //    //return Results.PsdAvgData.Frequencies[maxIndex];//returns freq where psd is heighest
-        //}
-
-        //public void FillAmpSpectDataFromComLists()
-        //{
-            
-        //}
 
 
         public void GetFftDuringSignal(int segmentSize, int step)

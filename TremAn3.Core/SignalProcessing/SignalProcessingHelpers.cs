@@ -21,6 +21,9 @@ namespace TremAn3.Core.SignalProcessing
 
         public static double[] GetFrequencies(int count, double fs)
          => Generate.LinearSpaced(count, 0, fs / 2).ToArray();
+
+        public static IEnumerable<double> Abs(this IEnumerable<Complex32> vector)
+            => vector.Select(x => x.Magnitude).ToD();
         public static List<double> RemoveAverage(this List<double> array)
         {
             var average = array.Average();
