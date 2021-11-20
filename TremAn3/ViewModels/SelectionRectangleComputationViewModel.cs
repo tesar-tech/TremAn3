@@ -109,46 +109,7 @@ namespace TremAn3.ViewModels
         private readonly OxyColor color;
 
 
-        //private List<LineSeries> LineSeriesValues
-        //{
-        //    get
-        //    {
-        //        return GetType().GetProperties().Where(prop => prop.PropertyType == typeof(LineSeries))
-        //                .Select(x => (LineSeries)x.GetValue(this)).ToList();
-        //    }
-        //}
-        //private List<System.Reflection.PropertyInfo> LineSeriesProps
-        //{
-        //    get
-        //    {
-        //        return GetType().GetProperties().Where(prop => prop.PropertyType == typeof(LineSeries)).ToList();
-        //    }
-        //}
-
-
-        //public LineSeries PsdSeries { get; set; }
-
-        ////public LineSeries AmpSpecSeries { get; set; }
-        
-
-        //public LineSeries XComSeries { get; set; }
-
-
-        //public LineSeries YComSeries { get; set; }
-
-
-        //public LineSeries FreqProgressSeries { get; set; }
-
-
-        //private double _MainFreq;
-
-        //public double MainFreq
-        //{
-        //    get => _MainFreq;
-        //    set => Set(ref _MainFreq, value);
-        //}
-
-        //if this result is not shown in plot, thickness of line will be lowerd
+      
         internal void ChangeVisibilityOfLines(bool isShowInPlot)
         {
             var thickness = isShowInPlot ? defaultStrokeThickness : notShownStrokeThickness;//when unvisible, just change thickness to small value

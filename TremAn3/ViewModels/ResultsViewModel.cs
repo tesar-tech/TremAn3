@@ -11,25 +11,25 @@ namespace TremAn3.ViewModels
     public  class ResultsViewModel : ViewModelBase
     {
 
-        private double _CoherenceResult = 0;
-        private IEnumerable<CenterOfMotionAlgorithm> comAlgs;
-
-        public ResultsViewModel()
+        
+        
+        /// <summary>
+        /// computes all the results and place it into the DataResutlsDict
+        /// </summary>
+        /// <param name="frameRate"></param>
+        /// <param name="comXAllRois"></param>
+        /// <param name="comYAllRois"></param>
+        public void ComputeAllResults(double frameRate, List<List<double>> comXAllRois, List<List<double>> comYAllRois)
         {
+            Coherence coherence = new Coherence((int)frameRate, comXAllRois, comYAllRois);
+            DataResultsDict.Clear();
+            DataResultsDict.Add(DataSeriesType.Coherence, coherence.Compute());
 
         }
-        public ResultsViewModel(IEnumerable<CenterOfMotionAlgorithm> comAlgs)
-        {
-            this.comAlgs = comAlgs;
-        }
 
-        public double CoherenceResult
-        {
-            get => _CoherenceResult;
-            set => Set(ref _CoherenceResult, value);
-        }
+        public Dictionary<DataSeriesType, DataResult> DataResultsDict { get; set; } = new Dictionary<DataSeriesType, DataResult>();
 
-        public Guid Id { get; set; } = Guid.Empty;
+        //public Guid Id { get; set; } = Guid.Empty;
 
 
     }

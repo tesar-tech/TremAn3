@@ -109,7 +109,7 @@
                         <Setter  Target="FreqProgressSettingButton.IsEnabled" Value="false"/>
                         <Setter  Target="CancelComputationKeyBoardAccelerator.IsEnabled" Value="True"/>
                         <Setter  Target="FreqCounterButton.BorderBrush" Value="#00000000"/>
-                      
+
                         <!--this will stop blinking storyboard-->
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
@@ -167,7 +167,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.Resources>
-                           
+
                     </Grid.Resources>
                     <Border x:Name="CompInProgressBorder" CornerRadius="5" BorderThickness="2" HorizontalAlignment="Center" BorderBrush="{ThemeResource SystemColorControlAccentColor}" Grid.ColumnSpan="2">
                         <TextBlock Margin="2" Foreground="{ThemeResource SystemColorControlAccentColor}" HorizontalAlignment="Center"  x:Name="ComputationInProgressTxbl" Text="Computation In Progress"/>
@@ -197,7 +197,7 @@
                 <oxyplot:PlotView  x:Name="YComPlotView"  Height="100"
                 Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.ComY ), Mode=OneWay}"/>
 
-              
+
                 <!--<TextBlock Grid.Row="1" Visibility="{x:Bind h:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
                 <Run>Main frequency:  </Run>
                 <Run Text="{x:Bind ViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
@@ -221,35 +221,37 @@
                             </ResourceDictionary.ThemeDictionaries>
                         </ResourceDictionary>
                     </mux:TabView.Resources>
+                    <mux:TabView.TabStripHeader>
+                        <TextBlock Text="Spectral Analysis:" VerticalAlignment="Bottom" Margin="4,6" Style="{ThemeResource BaseTextBlockStyle}" />
+                    </mux:TabView.TabStripHeader>
                     <mux:TabView.TabItems>
-                        
+
                         <mux:TabViewItem  Header="PSD" IsClosable="False">
                             <oxyplot:PlotView x:Name="PsdPlotView" Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
                                   Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Psd ), Mode=OneWay}"/>
 
                         </mux:TabViewItem>
+                        
                         <mux:TabViewItem  Header="Amp Spectrum" IsClosable="False">
                             <oxyplot:PlotView x:Name="AmpSpecPlotView"
                                      Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
                                   Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.AmpSpec ), Mode=OneWay}"/>
                         </mux:TabViewItem>
 
-                                     <!--Model="{x:Bind  ViewModel.PlotModelsContainerViewModel.PlotModels[core:DataSeriesType.AmpSpec] , Mode=OneWay}"/>-->
+                        <mux:TabViewItem  Header="Coherence" IsClosable="False">
+                            <oxyplot:PlotView 
+                                     Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
+                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetGlobalScopedPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Coherence ), Mode=OneWay}"/>
+                        </mux:TabViewItem>
+
+                        <!--Model="{x:Bind  ViewModel.PlotModelsContainerViewModel.PlotModels[core:DataSeriesType.AmpSpec] , Mode=OneWay}"/>-->
 
                         <!--Model="{x:Bind ViewModel.PlotModelsContainerViewModel.PlotModels[0].PlotModel, Mode=OneWay}"/>-->
                     </mux:TabView.TabItems>
-                    <mux:TabView.TabStripHeader>
-                        <TextBlock Text="Spectral Analysis:" VerticalAlignment="Bottom" Margin="4,6" Style="{ThemeResource BaseTextBlockStyle}" />
-                    </mux:TabView.TabStripHeader>
 
                     <mux:TabView.TabStripFooter>
                         <ToggleButton Style="{StaticResource BiggerButtonStule}"   x:Name="SpectralAnalysisToggleBigger" Content="Bigger" />
-
                     </mux:TabView.TabStripFooter>
-
-                   
-
-
                 </mux:TabView>
 
                 <Line/>
@@ -260,9 +262,9 @@
                         <TextBlock VerticalAlignment="Bottom" Text="Main Frequency Progress"/>
                         <Button VerticalAlignment="Bottom"  x:Name="FreqProgressSettingButton" Padding="1">
                             <Viewbox  Height="14" Width="14">
-                            <SymbolIcon  Symbol="Setting"/>
-                                </Viewbox>
-                                    <Button.Flyout>
+                                <SymbolIcon  Symbol="Setting"/>
+                            </Viewbox>
+                            <Button.Flyout>
                                 <Flyout>
                                     <StackPanel Orientation="Vertical">
                                         <ComboBox Header="fft length" SelectedValue="{x:Bind  ViewModel.FreqProgressViewModel.SegmnetSize,Mode=TwoWay}" Width="200">
@@ -272,7 +274,7 @@
                                             <x:Int32>512</x:Int32>
                                             <x:Int32>1024</x:Int32>
                                         </ComboBox>
-                                    <mux:NumberBox Header="Step for progress computation:"  Minimum="1"
+                                        <mux:NumberBox Header="Step for progress computation:"  Minimum="1"
                                          Value="{x:Bind ViewModel.FreqProgressViewModel.Step, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SpinButtonPlacementMode="Inline" SmallChange="1" LargeChange="10" />
                                     </StackPanel>
                                 </Flyout>

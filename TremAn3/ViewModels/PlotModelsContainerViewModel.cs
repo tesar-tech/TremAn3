@@ -36,8 +36,11 @@ namespace TremAn3.ViewModels
             PlotModels.ToList().ForEach(x => x.PlotModel.InvalidatePlot(updateData));
         }
 
-        public ObservableCollection<PlotModelWithTypeViewModel> PlotModels { get; set; } =
-            new ObservableCollection<PlotModelWithTypeViewModel>();
+        public List<PlotModelWithTypeViewModel> PlotModels { get; set; } =
+            new List<PlotModelWithTypeViewModel>();
+
+        public List<PlotModelWithTypeViewModel> PlotModelsGlobalScope { get; set; } =
+         new List<PlotModelWithTypeViewModel>();
 
 
         private PlotModel getPlotModelWithNoDataText()
@@ -62,6 +65,21 @@ namespace TremAn3.ViewModels
             return plotModel.PlotModel;
 
         }
+
+        public PlotModel GetGlobalScopedPlotModelByDsTypeOrCreateNew(DataSeriesType type)
+        {
+            var plotModel = PlotModelsGlobalScope.SingleOrDefault(x => x.DataSeriesType == type);
+
+            if (plotModel == null)//adding new plot models, when xaml asks for them
+            {
+                plotModel = new PlotModelWithTypeViewModel() { DataSeriesType = type };
+                PlotModelsGlobalScope.Add(plotModel);
+            }
+            return plotModel.PlotModel;
+
+        }
+
+
     }
 
 }

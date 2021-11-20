@@ -103,7 +103,6 @@ namespace TremAn3.ViewModels
         public PastMeasurementsViewModel PastMeasurementsViewModel => ViewModelLocator.Current.PastMeasurementsViewModel;
 
         public MediaPlayerViewModel MediaPlayerViewModel { get => ViewModelLocator.Current.MediaPlayerViewModel; }
-        public ResultsViewModel CurrentResultsViewModel { get; set; }
 
         private DataService _DataService;
         CancellationTokenSource source;
@@ -142,11 +141,11 @@ namespace TremAn3.ViewModels
 
             source = new CancellationTokenSource();
             await Computation(grabber, comAlgs, source);//this modifies comAlgs that are part of FreqCounterVm
-            Coherence coherenceBetween2Windows = new Coherence();
+            //Coherence coherenceBetween2Windows = new Coherence();
 
 
-            CurrentResultsViewModel = new ResultsViewModel(comAlgs);
-            CurrentResultsViewModel.CoherenceResult = coherenceBetween2Windows.Compute();
+            //CurrentResultsViewModel = new ResultsViewModel(comAlgs);
+            //CurrentResultsViewModel.CoherenceResult = coherenceBetween2Windows.Compute();
 
 
             if (!source.IsCancellationRequested)
@@ -155,7 +154,7 @@ namespace TremAn3.ViewModels
 
                 MeasurementModel measurementModel = new MeasurementModel(comAlgs)
                 {
-                    Coherence = CurrentResultsViewModel.CoherenceResult,
+                    //Coherence = CurrentResultsViewModel.CoherenceResult,
                     Minrange = MediaPlayerViewModel.FreqCounterViewModel.Minrange,
                     Maxrange = MediaPlayerViewModel.FreqCounterViewModel.Maxrange,
                     PositionSeconds = MediaPlayerViewModel.MediaControllingViewModel.PositionSeconds

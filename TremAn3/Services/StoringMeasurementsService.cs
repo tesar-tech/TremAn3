@@ -14,8 +14,8 @@ namespace TremAn3.Services
         {
 
             var mainVm = ViewModelLocator.Current.MainViewModel;
-            mainVm.CurrentResultsViewModel = new ResultsViewModel();
-            mainVm.CurrentResultsViewModel.CoherenceResult = measurementModel.Coherence;
+            //mainVm.CurrentResultsViewModel = new ResultsViewModel();
+            //mainVm.CurrentResultsViewModel.CoherenceResult = measurementModel.Coherence;
 
 
 

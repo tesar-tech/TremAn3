@@ -28,7 +28,7 @@ namespace TremAn3.Core
         public string Name { get; set; }
         public Guid Id { get; set; }
         public DateTime DateTime { get; set; }
-        public double Coherence { get; set; }
+        //public double Coherence { get; set; }
         public List<RoiResultModel> RoiResultModels { get; set; } = new List<RoiResultModel>();
         public double FrameRate { get; set; }
         public double Maxrange { get; set; }

@@ -47,10 +47,13 @@ namespace TremAn3.Core
         //public DataSeriesType DataSeriesType{ get; set; }
         public List<double> X { get; set; }
         public List<double> Y { get; set; }
+
+        public bool IsOk { get => string.IsNullOrWhiteSpace(ErrorMessage); }
+        public string ErrorMessage { get; set; }
     }
     public enum DataSeriesType
     {
-        Psd, ComX, ComY, AmpSpec, FreqProgress
+        Psd, ComX, ComY, AmpSpec, FreqProgress, Coherence
     }
 
 }

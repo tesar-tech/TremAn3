@@ -93,6 +93,9 @@ namespace TremAn3.ViewModels
 
         public FreqProgressViewModel FreqProgressViewModel { get; set; } = new FreqProgressViewModel();
 
+        public ResultsViewModel CurrentGlobalScopedResultsViewModel { get; set; } = new ResultsViewModel();
+
+
         public void DisplayPlots()
         {
             var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
@@ -120,8 +123,35 @@ namespace TremAn3.ViewModels
             }
 
             ReDrawFreqProgress();
+
+            //global scoped results
+            CurrentGlobalScopedResultsViewModel.ComputeAllResults(ParentVm.MediaPlayerViewModel.VideoPropsViewModel.FrameRate,
+                comps.Select(x=>x.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList(),
+                comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComY].Y).ToList());
+
+            foreach (var pwmt in PlotModelsContainerViewModel.PlotModelsGlobalScope)
+            {
+                var res = CurrentGlobalScopedResultsViewModel.DataResultsDict[pwmt.DataSeriesType];
+                if (res.IsOk)
+                {
+                    pwmt.PlotModel = new PlotModel();
+                    LineSeries s = new LineSeries();
+                    s.ItemsSource = (res.X.Zip(res.Y, (x, y) => new DataPoint(x, y)));
+                    pwmt.PlotModel.Series.Add(s);
+                    s.Color = OxyColors.Black;
+                }
+                else
+                {
+                    pwmt.PlotModel = new PlotModel { Title = res.ErrorMessage };
+                }
+            }
+
+
+
             RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
             IsAllResultsNotObsolete = true;
+
+            
         }
 
         /// <summary>

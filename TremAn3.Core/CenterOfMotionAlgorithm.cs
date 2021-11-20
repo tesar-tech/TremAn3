@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using TremAn3.Core.SignalProcessing;
 
 namespace TremAn3.Core
 {
@@ -194,25 +195,27 @@ namespace TremAn3.Core
 
 
             //psd
-            var psdX = Fft.Psd(comXNoAvg.ToArray(), frameRate);
-            var psdY = Fft.Psd(comYNoAvg.ToArray(), frameRate);
+            var psdX = FreqAnalysis.Psd(comXNoAvg.ToArray(), frameRate);
+            var psdY = FreqAnalysis.Psd(comYNoAvg.ToArray(), frameRate);
 
             DataResult drPsd = new DataResult()
             {
-                X = Fft.GetFrequencies(psdX.Length, frameRate).ToList(),
+                X = SignalProcessingHelpers.GetFrequencies(psdX.Length, frameRate).ToList(),
                 Y = psdX.Zip(psdY, (x, y) => (x + y) / 2).ToList()//do the average of x and y
             };
             Results.DataResultsDict.Add(DataSeriesType.Psd, drPsd);
             
             //ampspec
-            var ampSpecX = Fft.AmpSpec(Results.ResultsModel.ComX.RemoveAverage().ToArray());
-            var ampSpecY = Fft.AmpSpec(Results.ResultsModel.ComY.RemoveAverage().ToArray());
+            var ampSpecX = Fft.AmpSpec(comXNoAvg.ToArray());
+            var ampSpecY = Fft.AmpSpec(comYNoAvg.ToArray());
             DataResult dr = new DataResult()
             {
-                X = Fft.GetFrequencies(ampSpecX.Length, frameRate).ToList(),
+                X = SignalProcessingHelpers.GetFrequencies(ampSpecX.Length, frameRate).ToList(),
                 Y = ampSpecX.Zip(ampSpecY, (x, y) => (x + y) / 2).ToList()//do the average of x and y
             };
             Results.DataResultsDict.Add(DataSeriesType.AmpSpec, dr);
+
+            //Coherence coherenceBetween2firstChannels = new Coherence((int)frameRate,);
 
         }
         //public double GetMainFreqAndFillPsdDataFromComLists()
@@ -231,7 +234,7 @@ namespace TremAn3.Core
 
         public void GetFftDuringSignal(int segmentSize, int step)
         {
-            var fftProgressSignal =  Fft.ComputeFftDuringSignalForTwoSignals(frameRate,Results.DataResultsDict[DataSeriesType.ComX].Y, Results.DataResultsDict[DataSeriesType.ComY].Y, segmentSize,step);
+            var fftProgressSignal =  FreqAnalysis.ComputeFftDuringSignalForTwoSignals(frameRate,Results.DataResultsDict[DataSeriesType.ComX].Y, Results.DataResultsDict[DataSeriesType.ComY].Y, segmentSize,step);
             if (fftProgressSignal.Count == 1)
                 fftProgressSignal.Add(fftProgressSignal.First());
 
