@@ -47,6 +47,7 @@
                     <VisualState.Setters>
                         <Setter Target="LandingGrid.Visibility" Value="Collapsed"/>
                         <Setter Target="MediaPlayback.Visibility" Value="Visible"/>
+                        <Setter Target="PastMeasurements.Visibility" Value="Visible"/>
                         <!--<Setter Target="GridMediPlaybackAndPastMeasurements" Value="Visible"/>-->
                         <Setter Target="MediaPlayback.DrawingRectangle.Visibility" Value="Visible"/>
                     </VisualState.Setters>
@@ -84,7 +85,7 @@
                 <RowDefinition Height="{x:Bind helpers:StaticConverters.HeightOfMeasurementsInMainPage(ViewModel.PastMeasurementsViewModel.IsPastMeasurementsOpen), Mode=OneWay}"/>
             </Grid.RowDefinitions>
             <views:MediaPlaybackUc x:Name="MediaPlayback" Visibility="Collapsed"/>
-            <views:PastMeasurementsUc Grid.Row="1"/>
+            <views:PastMeasurementsUc x:Name="PastMeasurements" Visibility="Collapsed" Grid.Row="1"/>
         </Grid>
 
 
