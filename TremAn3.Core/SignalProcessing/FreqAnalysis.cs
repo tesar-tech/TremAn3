@@ -44,7 +44,7 @@ namespace TremAn3.Core.SignalProcessing
 
             var segmentLength = windowLength;
             var data_length = signal1.Count();
-            var window = NWaves.Windows.Window.Hamming(segmentLength);
+            var window = Window.Hamming(segmentLength).ToF();
             var windowCompensation = window.Select(x => x * x).Sum();
             int segmentCounter = 0;
             //fftlength is same as segmentLenght
