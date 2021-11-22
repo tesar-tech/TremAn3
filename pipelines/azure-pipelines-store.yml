@@ -40,9 +40,9 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-  SourceFolder: '$(appxPackageDir)'
-  Contents: '**\*.msixupload'
-  TargetFolder: '$(Build.ArtifactStagingDirectory)' 
+    SourceFolder: '$(appxPackageDir)'
+    Contents: '**\*.msixupload'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)' 
 
 - task: PowerShell@2
   displayName: Debug info ls package dir. App version.
