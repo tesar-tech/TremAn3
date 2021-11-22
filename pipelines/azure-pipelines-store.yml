@@ -10,7 +10,7 @@ variables:
   buildPlatform: 'x86'
   buildConfiguration: 'Release'
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
-  majorMinorBuildVer: "1.3"
+  majorMinorBuildVer: "1.4"
   buildNum: $[counter(variables['majorMinorBuildVer'], 0)] # this number increment with every build. Starts with 0, when majorMinor changes
   versionOfApp: '$(majorMinorBuildVer).$(buildNum).0' #revision number has to be 0, otherwise it will drop the package in store.
 
@@ -38,6 +38,11 @@ steps:
                   /p:AppxPackageSigningEnabled=false' #store will sign package
     configuration: '$(buildConfiguration)'
 
+- task: CopyFiles@2
+  inputs:
+  SourceFolder: '$(appxPackageDir)'
+  Contents: '**\*.msixupload'
+  TargetFolder: '$(Build.ArtifactStagingDirectory)' 
 
 - task: PowerShell@2
   displayName: Debug info ls package dir. App version.
@@ -54,7 +59,7 @@ steps:
     metadataUpdateMethod: 'JsonMetadata'
     metadataPath: '$(system.defaultworkingdirectory)\NoApp\Store\appMetadata' # path where storeListing exists (with images)
     updateImages: true
-    packagePath: '$(appxPackageDir)\*.appxupload'
+    packagePath: '$(Build.ArtifactStagingDirectory)\**\*.msixupload'
     force: true #force will delete any in progess submission
     skipPolling: true #pipeline will finish after package is approved (or declined)
     deletePackages: true
