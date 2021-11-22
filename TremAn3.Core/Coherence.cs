@@ -1,10 +1,6 @@
-﻿using NWaves.Signals;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using NWaves.Operations;
-using NWaves.FeatureExtractors.Base;
-using NWaves.Signals;
 using System.Linq;
 using TremAn3.Core.SignalProcessing;
 

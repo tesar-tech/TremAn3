@@ -342,3 +342,7 @@ healthchecksdb
 # Ignore Mac DS_Store files
 .DS_Store
 *.DS_Store
+
+# treman tests
+NoApp/Treman_matlab_and_dotnet_interactive_tests/output.m
+NoApp/Treman_matlab_and_dotnet_interactive_tests/*.asv
