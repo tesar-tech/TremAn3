@@ -74,7 +74,7 @@ namespace TremAn3.Services
             //resultsViewModel.Id = resultsViewModel.Id == Guid.Empty ? Guid.NewGuid(): resultsViewModel.Id;
             var allMeasurementsFolder = await GetFolder_AllMeasurements();
             StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageVideoFile, currentMruToken);
-            string measurementFolderAndFIleName = $"measurement_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.ff}_{measurementModel.Id}";
+            string measurementFolderAndFIleName = $"m_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.ff}_{measurementModel.Id.ToString().Substring(0,8)}";
             StorageFolder folderForMeasurement = await measurementsFolderForVideo.CreateFolderAsync(measurementFolderAndFIleName, CreationCollisionOption.OpenIfExists);
             await SaveMeasurementResults(measurementModel, folderForMeasurement);//csvs will have similar structure of filename
             return folderForMeasurement;                                                                                 
@@ -129,7 +129,7 @@ namespace TremAn3.Services
         /// <returns></returns>
         private async Task<StorageFolder> GetFolderForVideo(StorageFolder measurementsFolder, StorageFile currentStorageFile, string currentMruToken)
         {
-            string videoFolderName = $"video_{GetPathToSourceForFileName(currentStorageFile)}_{currentMruToken}";
+            string videoFolderName = $"v_{GetPathToSourceForFileName(currentStorageFile)}_{currentMruToken.Substring(1,8)}";
             StorageFolder videoFolder = await measurementsFolder.CreateFolderAsync(videoFolderName, CreationCollisionOption.OpenIfExists);
             return videoFolder;
         }
@@ -153,7 +153,7 @@ namespace TremAn3.Services
         private string GetPathToSourceForFileName(StorageFile file)
         {
             var invalidChars = Path.GetInvalidFileNameChars();
-            var cleanFileName = new string(file.Name.Select(m => invalidChars.Contains(m) ? '_' : m).ToArray());
+            var cleanFileName = new string(file.Name.Select(m => invalidChars.Contains(m) ? '_' : m).Take(30).ToArray());
             return cleanFileName;
         }
 

@@ -24,7 +24,7 @@ namespace TremAn3.Helpers
 
     public static class Defaults
     {
-        public static string MeasurementsFolderName { get; } = "AllMeasurements";
+        public static string MeasurementsFolderName { get; } = "AllM";
 
         public static string DateTimeFormatForMeasurements => "yyyy-MM-dd HH:mm:ss";
     }
