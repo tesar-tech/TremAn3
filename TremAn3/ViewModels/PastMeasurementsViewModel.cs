@@ -9,34 +9,22 @@ using TremAn3.Core;
 using TremAn3.Helpers;
 using TremAn3.Services;
 using Windows.Storage;
-using TremAn3.Helpers;
+using Windows.UI.Core;
 
 namespace TremAn3.ViewModels
 {
     public class PastMeasurementsViewModel : ViewModelBase
     {
 
-        public PastMeasurementsViewModel(StoringMeasurementsService sms, DataService ds)
+        public PastMeasurementsViewModel(MeasurementsService sms, DataService ds)
         {
             _StoringMeasurementsService = sms;
             _DataService = ds;
         }
 
-        private StoringMeasurementsService _StoringMeasurementsService;
+        private MeasurementsService _StoringMeasurementsService;
         private DataService _DataService;
 
-
-        //private bool _IsSaveMeasurement = LocalSettings.Read(true, nameof(IsSaveMeasurement));
-
-        //public bool IsSaveMeasurement
-        //{
-        //    get => _IsSaveMeasurement;
-        //    set
-        //    {
-        //        if (Set(ref _IsSaveMeasurement, value))
-        //            LocalSettings.Write(value);
-        //    }
-        //}
 
 
         private bool _IsPastMeasurementsOpen;
@@ -69,9 +57,9 @@ namespace TremAn3.ViewModels
         /// <summary>
         /// when the result is changed (roi is moved) it does not fit current measurement, thus is unselected
         /// </summary>
-        internal void RoiIsNotSameAsResult()
+        internal async Task RoiIsNotSameAsResult()
         {
-            SelectedMeasurementVm = null;
+            await SelectedMeasurementVmSet(null);
         }
 
         public ObservableCollection<MeasurementViewModel> MeasurementsVms
@@ -82,26 +70,33 @@ namespace TremAn3.ViewModels
 
         private MeasurementViewModel _SelectedMeasurementVm;
 
-        public MeasurementViewModel SelectedMeasurementVm
+        public MeasurementViewModel SelectedMeasurementVm => _SelectedMeasurementVm;//set is inside method
+
+        public async Task SelectedMeasurementVmSet(MeasurementViewModel value, bool isBasedOnViewModel = false)
         {
-            get => _SelectedMeasurementVm;
-            set
+
+            if (!Set(ref _SelectedMeasurementVm, value)) return;
+
+            if (value == null)
             {
-
-                if (!Set(ref _SelectedMeasurementVm, value)) return;
-
-                if (value == null)
-                {
-                    //ViewModelLocator.Current.FreqCounterViewModel.ResetResultDisplay();
-                    return;
-                }
-                //testing onluy
-                value.Model.FrameRate = 30;
-                //testing onluy
-                _StoringMeasurementsService.DisplayMeasurementByModel(value.Model);
-
+                return;
             }
+            ViewModelLocator.Current.MainViewModel.IsDoingSomethingImportant = true;
+            await Task.Delay(1);
+            if (!value.IsVectorDataLoaded)
+            {
+                await _DataService.LoadVectorDataToModel(value.Model, value.FolderForMeasurement);
+                value.IsVectorDataLoaded = true;
+            }
+            if (isBasedOnViewModel)
+                await ViewModelLocator.Current.MainViewModel.FreqCounterViewModel.DisplayPlots(true);//this will count everything
+            else
+                await _StoringMeasurementsService.DisplayMeasurementByModelAsync(value.Model);
+
+            ViewModelLocator.Current.MainViewModel.IsDoingSomethingImportant = false;
         }
+
+
 
         internal void AddVms(List<MeasurementViewModel> vms)
         {
@@ -115,7 +110,7 @@ namespace TremAn3.ViewModels
             {
                 await _DataService.DeleteStoredViewModel(measurementViewModel);
                 MeasurementsVms.Remove(measurementViewModel);
-                SelectedMeasurementVm = null;
+                await SelectedMeasurementVmSet(null);
             }
         }
 
@@ -126,31 +121,42 @@ namespace TremAn3.ViewModels
             {
                 await _DataService.DeleteAllMeasurementsForCurrentVideoFile();
                 MeasurementsVms.Clear();
-                SelectedMeasurementVm = null;
+                await SelectedMeasurementVmSet(null);
+
             }
         }
 
 
+        //this is called when freqprogress step is changed -> new model is created..
+        public async Task SaveSelectedMeasurement()
+        {
+            if (SelectedMeasurementVm != null)
+         await       _StoringMeasurementsService.GetModelFromVmAndSaveItToFile(SelectedMeasurementVm);
+        }
 
-
-        internal void SelectAndDisplayLastInAny()
+        internal async Task SelectAndDisplayLastInAny()
         {
             var lastmea = MeasurementsVms.OrderBy(x => x.DateTime).LastOrDefault();
             if (lastmea != null)
-                SelectedMeasurementVm = lastmea;
+                await SelectedMeasurementVmSet(lastmea);
+
 
         }
 
-        internal void AddAndSelectVm(MeasurementViewModel vm)
+        internal async Task AddAndSelectVm(MeasurementViewModel vm)
         {
             MeasurementsVms.Add(vm);
             MeasurementsVms.Sort(x => x.DateTime);
-            SelectedMeasurementVm = vm;
+            await SelectedMeasurementVmSet(vm, true);
+
         }
     }
 
     public class MeasurementViewModel : ViewModelBase
     {
+
+
+        public bool IsVectorDataLoaded { get; set; }
 
         public MeasurementViewModel(MeasurementModel model)
         {
@@ -228,10 +234,9 @@ namespace TremAn3.ViewModels
             {
                 Name = newName;
                 this.Model.Name = newName;
-                await DataService.SaveMeasurementResults(Model,FolderForMeasurement);
+                await DataService.SaveMeasurementResults(Model, FolderForMeasurement,true);
             }
         }
-
 
     }
 

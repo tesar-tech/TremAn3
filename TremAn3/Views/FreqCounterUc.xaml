@@ -278,14 +278,14 @@
                             <Button.Flyout>
                                 <Flyout>
                                     <StackPanel Orientation="Vertical">
-                                        <ComboBox Header="fft length" SelectedValue="{x:Bind  ViewModel.FreqProgressViewModel.SegmnetSize,Mode=TwoWay}" Width="200">
+                                        <ComboBox Header="fft length" SelectionChanged="{x:Bind ViewModel.FreqProgressViewModel.FftLengthChanged}" SelectedValue="{x:Bind  ViewModel.FreqProgressViewModel.SegmnetSize,Mode=TwoWay}" Width="200">
                                             <x:Int32>64</x:Int32>
                                             <x:Int32>128</x:Int32>
                                             <x:Int32>256</x:Int32>
                                             <x:Int32>512</x:Int32>
                                             <x:Int32>1024</x:Int32>
                                         </ComboBox>
-                                        <mux:NumberBox Header="Step for progress computation:"  Minimum="1"
+                                        <mux:NumberBox Header="Step for progress computation:"  Minimum="1" ValueChanged="{x:Bind ViewModel.FreqProgressViewModel.StepChanged}"
                                          Value="{x:Bind ViewModel.FreqProgressViewModel.Step, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SpinButtonPlacementMode="Inline" SmallChange="1" LargeChange="10" />
                                     </StackPanel>
                                 </Flyout>

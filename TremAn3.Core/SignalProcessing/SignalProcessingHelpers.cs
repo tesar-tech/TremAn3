@@ -26,6 +26,7 @@ namespace TremAn3.Core.SignalProcessing
             => vector.Select(x => x.Magnitude).ToD();
         public static List<double> RemoveAverage(this List<double> array)
         {
+            if(array.Count<1) return array;
             var average = array.Average();
             var woutAvg = array.Select(x => x - average).ToList();
             return woutAvg;

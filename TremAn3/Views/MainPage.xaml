@@ -14,11 +14,12 @@
     Style="{StaticResource PageStyle}"
     Loaded="{x:Bind ViewModel.LoadedAsync}"
     mc:Ignorable="d"
+     xmlns:brushes="using:Microsoft.Toolkit.Uwp.UI.Media"
     xmlns:dd="using:TremAn3.Services.DragAndDrop"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     >
 
-
+ 
 
     <Grid    AllowDrop="True">
         <dd:DragDropService.Configuration>
@@ -91,5 +92,25 @@
         <controls:GridSplitter CursorBehavior="ChangeOnSplitterHover"   Grid.Column="1" />
 
         <views:FreqCounterUc IsEnabled="{x:Bind helpers:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay }"  Grid.Column="2" ViewModel="{x:Bind ViewModel.FreqCounterViewModel}"/>
+
+        <controls:Loading x:Name="LoadingControl" IsLoading="{x:Bind ViewModel.IsDoingSomethingImportant,Mode=OneWay}"   Grid.ColumnSpan="3" Canvas.ZIndex="10" >
+                <controls:Loading.Background>
+                <brushes:AcrylicBrush BackgroundSource="Backdrop"
+                              TintColor="Black"
+                              TintOpacity="0.15"
+                              BlurAmount="2.42"/>
+            </controls:Loading.Background>
+            <controls:Loading.Content>
+                <StackPanel Orientation="Horizontal" Padding="12">
+                    <Grid Margin="0,0,8,0">
+                        <ProgressRing IsActive="True" Foreground="{ThemeResource SystemAccentColor}" />
+                    </Grid>
+                    <TextBlock Text="Doing something important, wait for it!" Foreground="{ThemeResource SystemAccentColor}" VerticalAlignment="Center" />
+                </StackPanel>
+
+            </controls:Loading.Content>
+            </controls:Loading>
     </Grid>
+        <!-- Loading screen content -->
+  
 </Page>

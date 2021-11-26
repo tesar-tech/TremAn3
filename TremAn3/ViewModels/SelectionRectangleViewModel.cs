@@ -83,7 +83,9 @@ namespace TremAn3.ViewModels
         private void RoiChanged()
         {
             if (!(ComputationViewModel is null))
-                ComputationViewModel.IsRoiSameAsResult = false;
+                ComputationViewModel.IsRoiSameAsResultSet(false).Wait();//I think this is correct, since there is actually no async operation
+            //async operation that needs awaiting is loading the selected measurement vector data, but this causes selectedMeasuremtnVm to be null,
+            //thus no data are loaded
         }
 
         private double _Width;
@@ -267,7 +269,7 @@ namespace TremAn3.ViewModels
         public void DeleteMe()
         {
             if (ComputationViewModel != null)
-                ComputationViewModel.IsRoiSameAsResult = false;
+                ComputationViewModel.IsRoiSameAsResultSet(false).Wait();
             DeleteMeAction.Invoke(this);//it is subscribed in drawing rectangles
         }
     }

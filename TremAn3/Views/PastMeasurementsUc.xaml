@@ -83,8 +83,9 @@
             <!--<ToggleSwitch HorizontalAlignment="Right" OffContent="Don't save every measurement" OnContent="Save every measurement" IsOn="{x:Bind ViewModel.IsSaveMeasurement,Mode=TwoWay}" />-->
         </Grid>
 
-        <ListView Grid.Row="2" 
-            SelectedItem="{x:Bind ViewModel.SelectedMeasurementVm,Mode=TwoWay}"
+        <ListView Grid.Row="2"
+                  SelectionChanged="ListView_SelectionChanged"
+            SelectedItem="{x:Bind ViewModel.SelectedMeasurementVm,Mode=OneWay}"
      ItemsSource="{x:Bind ViewModel.MeasurementsVms, Mode=OneWay}"
     ItemTemplate="{StaticResource ContactListViewTemplate}"
     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"

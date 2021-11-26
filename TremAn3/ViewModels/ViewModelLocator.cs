@@ -24,7 +24,7 @@ namespace TremAn3.ViewModels
             SimpleIoc.Default.Register<FreqCounterViewModel>();
             SimpleIoc.Default.Register(() => new TeachingTipsViewModel());
             SimpleIoc.Default.Register(() => new DataService());
-            SimpleIoc.Default.Register(() => new StoringMeasurementsService());
+            SimpleIoc.Default.Register<MeasurementsService>();
             SimpleIoc.Default.Register(() => new ResultsViewModel());
             SimpleIoc.Default.Register<PastMeasurementsViewModel>();
             SimpleIoc.Default.Register<PlotModelsContainerViewModel>();

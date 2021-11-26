@@ -29,6 +29,10 @@ namespace TremAn3.Views
             this.InitializeComponent();
         }
 
-      
+        private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedMeasuremnt = (MeasurementViewModel)e.AddedItems.FirstOrDefault();
+            await ViewModel.SelectedMeasurementVmSet(selectedMeasuremnt);
+        }
     }
 }

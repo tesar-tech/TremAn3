@@ -31,7 +31,7 @@ namespace TremAn3.ViewModels
 {
     public partial class MainViewModel : ViewModelBase
     {
-        public MainViewModel(DataService dataService, StoringMeasurementsService sms)
+        public MainViewModel(DataService dataService, MeasurementsService sms)
         {
             _DataService = dataService;
             _StoringMeasurementsService = sms;
@@ -39,7 +39,7 @@ namespace TremAn3.ViewModels
         }
         //public event EventHandler NotificationHandler;
 
-        private StoringMeasurementsService _StoringMeasurementsService;
+        private MeasurementsService _StoringMeasurementsService;
 
         public async void LoadedAsync()
         {
@@ -52,9 +52,15 @@ namespace TremAn3.ViewModels
                 var videoFile = await _DataService.GetLastOpenedFile();
                 await OpenStorageFile(videoFile);
             }
-
         }
 
+        private bool _IsDoingSomethingImportant;
+
+        public bool IsDoingSomethingImportant
+        {
+            get => _IsDoingSomethingImportant;
+            set => Set(ref _IsDoingSomethingImportant, value);
+        }
 
 
         public async void OpenVideo_ButtonClickAsync()
@@ -85,7 +91,7 @@ namespace TremAn3.ViewModels
             var pastMeasurementsModels = await _DataService.GetPastMeasurements(MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
             PastMeasurementsViewModel.MeasurementsVms.Clear();
             PastMeasurementsViewModel.AddVms(pastMeasurementsModels);
-            PastMeasurementsViewModel.SelectAndDisplayLastInAny();
+            await PastMeasurementsViewModel.SelectAndDisplayLastInAny();
 
             //if (pastMeasurementsModels.Any())
             //{
@@ -108,7 +114,7 @@ namespace TremAn3.ViewModels
         CancellationTokenSource source;
 
         bool isNotInterrupt = true;
-        public async void CountFreqAsync()
+        public async Task CountFreqAsync()
         {
             if (FreqCounterViewModel.IsComputationInProgress)
             {
@@ -151,18 +157,19 @@ namespace TremAn3.ViewModels
             if (!source.IsCancellationRequested)
             {
                 Debug.WriteLine(sw.ElapsedMilliseconds);
-
-                MeasurementModel measurementModel = new MeasurementModel(comAlgs)
+                MeasurementModel measurementModel = new MeasurementModel(comAlgs)//comalgs are not computed
                 {
                     //Coherence = CurrentResultsViewModel.CoherenceResult,
                     Minrange = MediaPlayerViewModel.FreqCounterViewModel.Minrange,
                     Maxrange = MediaPlayerViewModel.FreqCounterViewModel.Maxrange,
-                    PositionSeconds = MediaPlayerViewModel.MediaControllingViewModel.PositionSeconds
-
+                    PositionSeconds = MediaPlayerViewModel.MediaControllingViewModel.PositionSeconds,
                 };
+
                 MeasurementViewModel vm = new MeasurementViewModel(measurementModel);
-                PastMeasurementsViewModel.AddAndSelectVm(vm);
-                vm.FolderForMeasurement =  await _DataService.SaveMeasurementResults(measurementModel, MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
+                vm.IsVectorDataLoaded = true;
+                await PastMeasurementsViewModel.AddAndSelectVm(vm);//this will display and compute plots
+                await _StoringMeasurementsService.GetModelFromVmAndSaveItToFile(vm);
+
             }
             else
             {
@@ -199,7 +206,7 @@ namespace TremAn3.ViewModels
                     comAlg.Frame2 = frame2;
 
                     comAlg.GetComFromCurrentARGBFrames();
-                    comAlg.Results.ResultsModel.FrameTimes.Add(grabber.TimeOfFrameOnCurrentIndex);
+                    comAlg.Results.FrameTimes.Add(grabber.TimeOfFrameOnCurrentIndex);
                 }
 
                 FreqCounterViewModel.ProgressPercentage = grabber.ProgressPercentage;
@@ -226,7 +233,7 @@ namespace TremAn3.ViewModels
 
             List<double> one_x = null;
             if (type == "comX" || type == "comY")
-                one_x = rois[0].ComputationViewModel.Algorithm.Results.ResultsModel.FrameTimes.Select(x => x.TotalSeconds).ToList();
+                one_x = rois[0].ComputationViewModel.Algorithm.Results.FrameTimes.Select(x => x.TotalSeconds).ToList();
             else if (type == "psd")
                 one_x = rois[0].ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.Psd].X;
 

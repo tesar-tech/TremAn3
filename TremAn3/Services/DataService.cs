@@ -81,20 +81,48 @@ namespace TremAn3.Services
         }
 
 
+
+      
+
+
         /// <summary>
         /// save measurement to folder which has the same name as file itself.
         /// </summary>
         /// <param name="measurementModel"></param>
         /// <param name="folderForMeasurement"></param>
         /// <returns></returns>
-        internal static async Task SaveMeasurementResults(MeasurementModel measurementModel, StorageFolder folderForMeasurement)
+        internal static async Task SaveMeasurementResults(MeasurementModel measurementModel, StorageFolder folderForMeasurement,bool saveOnlyTopLevelData = false)
         {
-            await JsonServices.WriteToJsonFile(folderForMeasurement, $"{folderForMeasurement.Name}.json", measurementModel);
+            await JsonServices.WriteToJsonFile(folderForMeasurement, GetMeasurementFileName(folderForMeasurement), measurementModel);//saves toplevel
+            //saves vector data to special folder
+            if(!saveOnlyTopLevelData)
+            await JsonServices.WriteToJsonFile(folderForMeasurement, GetMeasurementVectorDataFileName(folderForMeasurement), measurementModel.VectorsDataModel);
         }
+
+        private static string GetMeasurementFileName (StorageFolder continerFolder) => $"{continerFolder.Name}.json";
+        private static string GetMeasurementVectorDataFileName (StorageFolder continerFolder) => $"{continerFolder.Name}_vectorData.json";
 
         internal async Task DeleteAllMeasurementsForCurrentVideoFile()
         {
             await _measurementsFolderForVideo.DeleteAsync();
+        }
+
+
+        /// <summary>
+        /// called when measurement is selected to display. It loads all the (long) vectors. We don't want to load it in advance since it
+        /// may contain a lots of data
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="folderForMeasurement"></param>
+        /// <returns></returns>
+        /// <exception cref="FileNotFoundException"></exception>
+        internal async Task LoadVectorDataToModel(MeasurementModel model, StorageFolder folderForMeasurement)
+        {
+            StorageFile jsonFile;
+            jsonFile = await folderForMeasurement.GetFileAsync(GetMeasurementVectorDataFileName(folderForMeasurement));
+            if (jsonFile is null) throw new FileNotFoundException($"No vectorData file ({jsonFile}) in {folderForMeasurement.Name} folder");
+            var vectorsDataModels = await JsonServices.ReadFromJsonFile<VectorsDataModel>(jsonFile);
+            model.VectorsDataModel = vectorsDataModels;
         }
 
         private StorageFolder _measurementsFolderForVideo;
@@ -106,7 +134,7 @@ namespace TremAn3.Services
             var measurementsFolders = await _measurementsFolderForVideo.GetFoldersAsync();
             foreach (var mesFolder in measurementsFolders)
             {
-                var jsonFile = (await mesFolder.GetFilesAsync()).FirstOrDefault();
+                var jsonFile = await mesFolder.GetFileAsync(GetMeasurementFileName(mesFolder));
                 if (jsonFile is null) continue;
                 MeasurementModel measModel = await JsonServices.ReadFromJsonFile<MeasurementModel>(jsonFile);
                 MeasurementViewModel vm = new MeasurementViewModel(measModel);

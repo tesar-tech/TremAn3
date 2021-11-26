@@ -34,8 +34,8 @@ namespace TremAn3.Helpers
 
         public static bool InverseBool(bool val) => !val;
         public static Thickness IntToThickness(double val) => new Thickness(val);
-        public static Thickness DoubleToThicknessWDivisor(double val,double divisor = 1) => new Thickness(val/divisor);
-        public static Thickness DoubleToThicknessWDivisor(int val,double divisor = 1) => DoubleToThicknessWDivisor((double)val,divisor);
+        public static Thickness DoubleToThicknessWDivisor(double val,double divisor = 1.0) => new Thickness(val/divisor);
+        public static Thickness DoubleToThicknessWDivisor(int val,double divisor = 1.0) => DoubleToThicknessWDivisor((double)val,divisor);
 
 
 

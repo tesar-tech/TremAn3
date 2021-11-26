@@ -17,12 +17,28 @@ namespace TremAn3.ViewModels
         public int Step
         {
             get => _Step;
-            set
-            {
-                if (Set(ref _Step, value))
-                    FreqCounterViewModel.ReDrawFreqProgress(true);
-            }
+            set => Set(ref _Step, value);
         }
+
+
+        public async Task FftLengthChanged()
+        {
+            FreqCounterViewModel.ParentVm.IsDoingSomethingImportant = true;
+            await FreqCounterViewModel.DisplayPlots(true, Core.DataSeriesType.FreqProgress);
+            await FreqCounterViewModel.ParentVm.PastMeasurementsViewModel.SaveSelectedMeasurement();
+            FreqCounterViewModel.ParentVm.IsDoingSomethingImportant = false;
+
+        }
+
+        public async Task StepChanged()
+        {
+            await FftLengthChanged();//it is the same;
+        }
+
+        //public void SetSegmentSizeAndStepFromModelWithouUIUpdate(int step, int segmentSize)
+        //{
+        //    _Step = step;_SegmnetSize = segmentSize;
+        //}
 
         private int _SegmnetSize = 256;
 
@@ -31,8 +47,8 @@ namespace TremAn3.ViewModels
             get => _SegmnetSize;
             set
             {
-                if (Set(ref _SegmnetSize, value))
-                    FreqCounterViewModel.ReDrawFreqProgress(true);
+                Set(ref _SegmnetSize, value);
+                    //FreqCounterViewModel.DisplayPlots(true, Core.DataSeriesType.FreqProgress).Wait();
             }
         }
 
