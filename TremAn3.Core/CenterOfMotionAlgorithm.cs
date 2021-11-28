@@ -275,7 +275,7 @@ namespace TremAn3.Core
         public async Task ComputeOnly(DataSeriesType dataSeriesType)
         {
 
-                await Task.Run(async () => {
+                await Task.Run( () => {
                 if(dataSeriesType == DataSeriesType.FreqProgress)
                         Results.DataResultsDict[DataSeriesType.FreqProgress] =  GetFftDuringSignal(segmentSize, step);
                 });
