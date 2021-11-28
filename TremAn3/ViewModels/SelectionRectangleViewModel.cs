@@ -101,12 +101,14 @@ namespace TremAn3.ViewModels
                     value = MaxWidth - X;
                     if (value == _Width)//without this it would not update number in UI when set manualy from max to max+1
                         RaisePropertyChanged();
-                }
+                }else
                 if (value < MinSize && !IsInCreationProcess)//smaller than minsize
                 {
                     value = MinSize;
                     RaisePropertyChanged();//otherwise it willnot update the ui (prop is not changed here, but on ui is)
                 }
+
+                CornerSize = Math.Min(GetCornerSize(cornerSizeDefault), GetCornerSize((int)Math.Round(Math.Min(value, Height) / 3.01)));
 
                 if (Set(ref _Width, value))
                     RoiChanged();
@@ -127,15 +129,22 @@ namespace TremAn3.ViewModels
                     if (value == _height)//without this it would not update number in UI when set manualy from max to max+1
                         RaisePropertyChanged();
                 }
+                else
                 if (value < MinSize && !IsInCreationProcess)//smaller than minsize
                 {
                     value = MinSize;
                     RaisePropertyChanged();//otherwise it willnot update the ui (prop is not changed here, but on ui is)
                 }
+                //corner size will be default val if rois is bigg enough, otherwise it will scale up and down
+                //to be third of min size of roi
+                CornerSize = Math.Min(GetCornerSize(cornerSizeDefault),GetCornerSize((int)Math.Round(Math.Min(value,Width) / 3.01)));
+
                 if (Set(ref _height, value))
                     RoiChanged();
             }
         }
+
+        private int GetCornerSize(int expectedval) => (int)Math.Round(expectedval * ratio);
 
 
 
@@ -169,7 +178,8 @@ namespace TremAn3.ViewModels
             set => Set(ref _BorderThickness, value);
         }
 
-        private int _CornerSize = 30;
+        private const int cornerSizeDefault = 30;
+        private int _CornerSize = cornerSizeDefault;
 
         public int CornerSize
         {
@@ -215,14 +225,24 @@ namespace TremAn3.ViewModels
                 { //will fixes size after roi is created
 
                     isInCreationProcess = false;
-                    Width = Width;
-                    Height = Height;
-
+                    if (!_IsPointerMovedWhenCreatingRoi)//pointer didnt moved when creating roi -> just a simple click
+                    {
+                        Width = 40 * ratio;//setting not minimal size here
+                        Height = 40 * ratio;
+                    }
+                    else
+                    {
+                        Width = Width;
+                        Height = Height;
+                        _IsPointerMovedWhenCreatingRoi = false;
+                    }
                 }
                 else
                     isInCreationProcess = value;
             }
         }
+
+        public bool _IsPointerMovedWhenCreatingRoi;
 
         // video size is not same as pixels it takes to display
         // so moving roi by 1 pixel is not movin on video by 1 pixel
@@ -233,12 +253,13 @@ namespace TremAn3.ViewModels
 
         private void SetUiSizes()
         {
-            double ratio = MaxHeight / 300d;
+             ratio = MaxHeight / 300d;
             //this method also keeps default values 
-            CornerSize = (int)Math.Round(30d * ratio);
+            CornerSize = GetCornerSize(cornerSizeDefault);
             BorderThickness = 1.2 * ratio;
-            MinSize = ratio * 50;
+            MinSize = ratio * 15;
         }
+        private double ratio;
 
 
 
