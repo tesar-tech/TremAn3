@@ -117,6 +117,7 @@ namespace TremAn3.ViewModels
 
                 //continue;//freq progress has its own plotting logic. see regrawfreqProgress
 
+                if (!comps.Any()) return;
                 var firstDatares = comps.First().Algorithm.Results.DataResultsDict[pmwt.DataSeriesType];
                 if (firstDatares.IsOk)
                 {

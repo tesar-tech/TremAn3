@@ -88,11 +88,21 @@ namespace TremAn3.ViewModels
 
 
             if (!fileOpenSuccess) return;
-            var pastMeasurementsModels = await _DataService.GetPastMeasurements(MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
-            PastMeasurementsViewModel.MeasurementsVms.Clear();
-            PastMeasurementsViewModel.AddVms(pastMeasurementsModels);
-            await PastMeasurementsViewModel.SelectAndDisplayLastInAny();
 
+            try
+            {
+                var pastMeasurementsModels = await _DataService.GetPastMeasurements(MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
+                PastMeasurementsViewModel.MeasurementsVms.Clear();
+                PastMeasurementsViewModel.AddVms(pastMeasurementsModels);
+                await PastMeasurementsViewModel.SelectAndDisplayLastInAny();
+                ViewModelLocator.Current.DrawingRectanglesViewModel.RefreshSizeProportion();
+            }
+            catch (Exception ex)
+            {
+                ViewModelLocator.Current.NoificationViewModel.SimpleNotification($"Something went wrong opening measurement files {ex.Message}");
+
+            }
+            
             //if (pastMeasurementsModels.Any())
             //{
             //    var lastMeas = pastMeasurementsModels[0];
