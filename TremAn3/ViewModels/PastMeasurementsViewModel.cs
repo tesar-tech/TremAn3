@@ -134,13 +134,19 @@ namespace TremAn3.ViewModels
          await       _StoringMeasurementsService.GetModelFromVmAndSaveItToFile(SelectedMeasurementVm);
         }
 
-        internal async Task SelectAndDisplayLastInAny()
+        //internal async Task SelectAndDisplayLastInAny()
+        //{
+        //    var lastmea = MeasurementsVms.OrderBy(x => x.DateTime).LastOrDefault();
+        //    if (lastmea != null)
+        //        await SelectedMeasurementVmSet(lastmea);
+        //}
+
+        //video is identify by folder that contains measurements
+        internal async Task SelectAndDisplayLastForVideo(StorageFolder folder)
         {
-            var lastmea = MeasurementsVms.OrderBy(x => x.DateTime).LastOrDefault();
-            if (lastmea != null)
-                await SelectedMeasurementVmSet(lastmea);
-
-
+            var lastMea = MeasurementsVms.Where(x => x.FolderForMeasurement == folder).OrderBy(x => x.DateTime).LastOrDefault();
+            if (lastMea != null)
+                await SelectedMeasurementVmSet(lastMea);
         }
 
         internal async Task AddAndSelectVm(MeasurementViewModel vm)

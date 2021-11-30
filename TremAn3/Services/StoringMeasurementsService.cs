@@ -77,7 +77,7 @@ namespace TremAn3.Services
             vm.Model.FreqProgressSegmnetSize = mainVm.FreqCounterViewModel.FreqProgressViewModel.SegmnetSize;
             vm.Model.FreqProgressStep = mainVm.FreqCounterViewModel.FreqProgressViewModel.Step;
             if (vm.FolderForMeasurement == null)
-            vm.FolderForMeasurement = await _DataService.SaveMeasurementResults(vm.Model, mainVm.MediaPlayerViewModel.CurrentStorageFile, mainVm.MediaPlayerViewModel.CurrentMruToken);
+            vm.FolderForMeasurement = await _DataService.SaveMeasurementResults(vm.Model, mainVm.MediaPlayerViewModel.CurrentStorageFile, mainVm.MediaPlayerViewModel.CurrentFalToken);
             else
                 await DataService.SaveMeasurementResults(vm.Model, vm.FolderForMeasurement );
         }

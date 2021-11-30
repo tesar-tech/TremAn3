@@ -51,6 +51,8 @@ namespace TremAn3.ViewModels
             {
                 var videoFile = await _DataService.GetLastOpenedFile();
                 await OpenStorageFile(videoFile);
+                //get measurements for opened file
+                //get other measurements
             }
         }
 
@@ -78,7 +80,7 @@ namespace TremAn3.ViewModels
                 await MediaPlayerViewModel.ChangeSourceAsync(file);
                 FreqCounterViewModel.ResetFreqCounter();
                 IsFreqCounterOpen = true;
-                MediaPlayerViewModel.CurrentMruToken = _DataService.SaveOpenedFileToMru(file);
+                (MediaPlayerViewModel.CurrentMruToken, MediaPlayerViewModel.CurrentFalToken) = _DataService.SaveOpenedFileToMruAndFal(file);
                 fileOpenSuccess = true;
             }
             catch (Exception ex)
@@ -89,10 +91,21 @@ namespace TremAn3.ViewModels
 
             if (!fileOpenSuccess) return;
 
+
+            //file is opened
+            //try to retrieve measurements from measurement list
+            //if none,get measurement for file form dataservice
+
+            //if no measurement were loaded so far, load other measurements
+
             try
             {
                 var pastMeasurementsModels = await _DataService.GetPastMeasurements(MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
+
+
                 PastMeasurementsViewModel.MeasurementsVms.Clear();
+
+
                 PastMeasurementsViewModel.AddVms(pastMeasurementsModels);
                 await PastMeasurementsViewModel.SelectAndDisplayLastInAny();
                 ViewModelLocator.Current.DrawingRectanglesViewModel.RefreshSizeProportion();

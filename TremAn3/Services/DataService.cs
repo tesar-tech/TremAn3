@@ -61,19 +61,21 @@ namespace TremAn3.Services
         /// save file as last opened. Add to mru and add token to settings
         /// </summary>
         /// <param name="file"></param>
-        public string SaveOpenedFileToMru(StorageFile file)
+        public (string mru, string fal) SaveOpenedFileToMruAndFal(StorageFile file)
         {
             var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
+            var fal = Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList;
+            string falToken = fal.Add(file);
             string mruToken = mru.Add(file);
             LocalSettings.Write(mruToken, lastOpenedMruKey);
-            return mruToken;
+            return (mruToken, falToken);
         }
 
-        internal async Task<StorageFolder> SaveMeasurementResults(MeasurementModel measurementModel, StorageFile currentStorageVideoFile, string currentMruToken)
+        internal async Task<StorageFolder> SaveMeasurementResults(MeasurementModel measurementModel, StorageFile currentStorageVideoFile, string currentFalToken)
         {
             //resultsViewModel.Id = resultsViewModel.Id == Guid.Empty ? Guid.NewGuid(): resultsViewModel.Id;
             var allMeasurementsFolder = await GetFolder_AllMeasurements();
-            StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageVideoFile, currentMruToken);
+            StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageVideoFile, currentFalToken);
             string measurementFolderAndFIleName = $"m_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.ff}_{measurementModel.Id.ToString().Substring(0,8)}";
             StorageFolder folderForMeasurement = await measurementsFolderForVideo.CreateFolderAsync(measurementFolderAndFIleName, CreationCollisionOption.OpenIfExists);
             await SaveMeasurementResults(measurementModel, folderForMeasurement);//csvs will have similar structure of filename
@@ -157,7 +159,7 @@ namespace TremAn3.Services
         /// <returns></returns>
         private async Task<StorageFolder> GetFolderForVideo(StorageFolder measurementsFolder, StorageFile currentStorageFile, string currentMruToken)
         {
-            string videoFolderName = $"v_{GetPathToSourceForFileName(currentStorageFile)}_{currentMruToken.Substring(1,8)}";
+            string videoFolderName = $"v_{GetPathToSourceForFileName(currentStorageFile)}_{currentMruToken.Trim(new char[] {'{','}' })}";
             StorageFolder videoFolder = await measurementsFolder.CreateFolderAsync(videoFolderName, CreationCollisionOption.OpenIfExists);
             return videoFolder;
         }
@@ -181,7 +183,7 @@ namespace TremAn3.Services
         private string GetPathToSourceForFileName(StorageFile file)
         {
             var invalidChars = Path.GetInvalidFileNameChars();
-            var cleanFileName = new string(file.Name.Select(m => invalidChars.Contains(m) ? '_' : m).Take(30).ToArray());
+            var cleanFileName = new string(file.Name.Select(m => invalidChars.Contains(m) ? '_' : m).Take(20).ToArray());
             return cleanFileName;
         }
 
