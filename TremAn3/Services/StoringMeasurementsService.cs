@@ -64,7 +64,7 @@ namespace TremAn3.Services
 
         }
         /// <summary>
-        /// new measurement is done, it is written isnide vm and this method will added to model. Also returns folder for future work (for example renaming)
+        /// new measurement is done, it is written inside vm and this method will add it to the model. Also returns folder for future work (for example renaming)
         /// Model is created elswere since it is more convinient..
         /// </summary>
         /// <param name="vm"></param>
@@ -77,7 +77,7 @@ namespace TremAn3.Services
             vm.Model.FreqProgressSegmnetSize = mainVm.FreqCounterViewModel.FreqProgressViewModel.SegmnetSize;
             vm.Model.FreqProgressStep = mainVm.FreqCounterViewModel.FreqProgressViewModel.Step;
             if (vm.FolderForMeasurement == null)
-            vm.FolderForMeasurement = await _DataService.SaveMeasurementResults(vm.Model, mainVm.MediaPlayerViewModel.CurrentStorageFile, mainVm.MediaPlayerViewModel.CurrentFalToken);
+            vm.FolderForMeasurement = await _DataService.SaveMeasurementResults(vm.Model, mainVm.MediaPlayerViewModel.VideoFileModel);
             else
                 await DataService.SaveMeasurementResults(vm.Model, vm.FolderForMeasurement );
         }

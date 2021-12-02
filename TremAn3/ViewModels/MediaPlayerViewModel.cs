@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
-
+using TremAn3.Services;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
@@ -33,6 +33,9 @@ namespace TremAn3.ViewModels
         public string CurrentMruToken { get; set; }
         public string CurrentFalToken { get; set; }
 
+        VideoFileModel _videoFileModel;
+        public VideoFileModel VideoFileModel { get => _videoFileModel ?? new VideoFileModel(VideoPropsViewModel, CurrentFalToken); }
+
         public VideoPropsViewModel VideoPropsViewModel { get; set; } = new VideoPropsViewModel();
 
         public StorageFile CurrentStorageFile { get; private set; }
@@ -45,6 +48,7 @@ namespace TremAn3.ViewModels
                 MediaControllingViewModel.ChangeMediaPlayerSource(Source);
                 CurrentStorageFile = file;
                 await VideoPropsViewModel.UpdateVideoPropsByStorageFile(file);
+                _videoFileModel = null;//reset videofilemodel, it will load everything when needed
                 ParentVm.RefreshTitle();
                 ViewModelLocator.Current.TeachingTipsViewModel.StartIfAppropriate(3);
             }

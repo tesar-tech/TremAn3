@@ -71,11 +71,11 @@ namespace TremAn3.Services
             return (mruToken, falToken);
         }
 
-        internal async Task<StorageFolder> SaveMeasurementResults(MeasurementModel measurementModel, StorageFile currentStorageVideoFile, string currentFalToken)
+        internal async Task<StorageFolder> SaveMeasurementResults(MeasurementModel measurementModel, VideoFileModel vfm)
         {
             //resultsViewModel.Id = resultsViewModel.Id == Guid.Empty ? Guid.NewGuid(): resultsViewModel.Id;
             var allMeasurementsFolder = await GetFolder_AllMeasurements();
-            StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageVideoFile, currentFalToken);
+            StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, vfm);
             string measurementFolderAndFIleName = $"m_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.ff}_{measurementModel.Id.ToString().Substring(0,8)}";
             StorageFolder folderForMeasurement = await measurementsFolderForVideo.CreateFolderAsync(measurementFolderAndFIleName, CreationCollisionOption.OpenIfExists);
             await SaveMeasurementResults(measurementModel, folderForMeasurement);//csvs will have similar structure of filename
@@ -102,6 +102,7 @@ namespace TremAn3.Services
         }
 
         private static string GetMeasurementFileName (StorageFolder continerFolder) => $"{continerFolder.Name}.json";
+        private static string GetVideoModelFileName (StorageFolder videoFolder) => $"{videoFolder.Name}.json";
         private static string GetMeasurementVectorDataFileName (StorageFolder continerFolder) => $"{continerFolder.Name}_vectorData.json";
 
         internal async Task DeleteAllMeasurementsForCurrentVideoFile()
@@ -128,39 +129,74 @@ namespace TremAn3.Services
         }
 
         private StorageFolder _measurementsFolderForVideo;
-        public async Task<List<MeasurementViewModel>> GetPastMeasurements(StorageFile currentStorageFile, string currentMruToken)
+        //public async Task<List<MeasurementViewModel>> GetPastMeasurementsForVideo(StorageFile currentStorageFile, VideoFileModel videoFileModel)
+        //{
+        //    var measurementsViewModels = new List<MeasurementViewModel>();
+        //    var allMeasurementsFolder = await GetFolder_AllMeasurements();
+        //     _measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageFile, videoFileModel);
+        //    var measurementsFolders = await _measurementsFolderForVideo.GetFoldersAsync();
+        //    foreach (var mesFolder in measurementsFolders)
+        //    {
+        //        var jsonFile = await mesFolder.GetFileAsync(GetMeasurementFileName(mesFolder));
+        //        if (jsonFile is null) continue;
+        //        MeasurementModel measModel = await JsonServices.ReadFromJsonFile<MeasurementModel>(jsonFile);
+        //        MeasurementViewModel vm = new MeasurementViewModel(measModel);
+        //        measurementsViewModels.Add(vm);
+        //        vm.FolderForMeasurement = mesFolder;
+        //    }
+
+        //    return measurementsViewModels;
+        //}
+
+        public async Task<List<MeasurementViewModel>> GetAllPastMeasurements()
         {
             var measurementsViewModels = new List<MeasurementViewModel>();
             var allMeasurementsFolder = await GetFolder_AllMeasurements();
-             _measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageFile, currentMruToken);
-            var measurementsFolders = await _measurementsFolderForVideo.GetFoldersAsync();
-            foreach (var mesFolder in measurementsFolders)
-            {
-                var jsonFile = await mesFolder.GetFileAsync(GetMeasurementFileName(mesFolder));
-                if (jsonFile is null) continue;
-                MeasurementModel measModel = await JsonServices.ReadFromJsonFile<MeasurementModel>(jsonFile);
-                MeasurementViewModel vm = new MeasurementViewModel(measModel);
-                measurementsViewModels.Add(vm);
-                vm.FolderForMeasurement = mesFolder;
-            }
+           var videoFolders =await   allMeasurementsFolder.GetFoldersAsync();
 
+            foreach (var videoFolder in videoFolders)
+            {
+                var measurementsFolders = await videoFolder.GetFoldersAsync();
+                var jsonFileVideoFileModel = await videoFolder.GetFileAsync(GetVideoModelFileName(videoFolder));
+                VideoFileModel vfm = await JsonServices.ReadFromJsonFile<VideoFileModel>(jsonFileVideoFileModel);
+
+
+                foreach (var mesFolder in measurementsFolders)
+                {
+                    var jsonFile = await mesFolder.GetFileAsync(GetMeasurementFileName(mesFolder));
+                    if (jsonFile is null) continue;
+                    MeasurementModel measModel = await JsonServices.ReadFromJsonFile<MeasurementModel>(jsonFile);
+                    MeasurementViewModel vm = new MeasurementViewModel(measModel,vfm);
+                    measurementsViewModels.Add(vm);
+                    vm.FolderForMeasurement = mesFolder;
+                }
+
+            }
             return measurementsViewModels;
         }
 
-        
+
+
+
 
 
         /// <summary>
         /// Folder inside AllMeasurementsFolder. This folder is for one video and multiple measurements
         /// </summary>
-        /// <param name="measurementsFolder"></param>
-        /// <param name="currentStorageFile"></param>
-        /// <param name="currentMruToken"></param>
-        /// <returns></returns>
-        private async Task<StorageFolder> GetFolderForVideo(StorageFolder measurementsFolder, StorageFile currentStorageFile, string currentMruToken)
+        private async Task<StorageFolder> GetFolderForVideo(StorageFolder measurementsFolder, VideoFileModel videoFileModel)
         {
-            string videoFolderName = $"v_{GetPathToSourceForFileName(currentStorageFile)}_{currentMruToken.Trim(new char[] {'{','}' })}";
+            string videoFolderName = $"v_{GetPathToSourceForFileName(videoFileModel.Name)}_{videoFileModel.FalToken.ToString().Trim(new char[] {'{','}' })}";
             StorageFolder videoFolder = await measurementsFolder.CreateFolderAsync(videoFolderName, CreationCollisionOption.OpenIfExists);
+
+            //when getting folder, also check for video file. This file is used for loading basic video properties
+            //withour reaching the video file itself. Also stores fal token (future access list), so we can retrieve the video file
+            var videoFile = await videoFolder.TryGetItemAsync(GetVideoModelFileName(videoFolder));
+            if (videoFile is null)//do nothing when already created
+            {
+               var vf = await videoFolder.CreateFileAsync(GetVideoModelFileName(videoFolder), CreationCollisionOption.FailIfExists);
+                await JsonServices.WriteToJsonFile(vf, videoFileModel);
+            }
+
             return videoFolder;
         }
         /// <summary>
@@ -180,10 +216,10 @@ namespace TremAn3.Services
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        private string GetPathToSourceForFileName(StorageFile file)
+        private string GetPathToSourceForFileName(string fileName)
         {
             var invalidChars = Path.GetInvalidFileNameChars();
-            var cleanFileName = new string(file.Name.Select(m => invalidChars.Contains(m) ? '_' : m).Take(20).ToArray());
+            var cleanFileName = new string(fileName.Select(m => invalidChars.Contains(m) ? '_' : m).Take(20).ToArray());
             return cleanFileName;
         }
 
@@ -193,6 +229,25 @@ namespace TremAn3.Services
         }
 
       
+
+    }
+
+    public class VideoFileModel
+    {
+
+        public VideoFileModel() { }//for json
+        public VideoFileModel(VideoPropsViewModel videoPropsViewModel, string currentFalToken)
+        {
+            Path = videoPropsViewModel.FilePath;
+            Name = videoPropsViewModel.Name;
+            Duration = videoPropsViewModel.Duration.TotalSeconds;
+            FalToken = currentFalToken;
+        }
+
+        public string Path { get; set; }
+        public string Name { get; set; }
+        public double Duration { get; set; }
+        public string FalToken { get; set; }
 
     }
 }

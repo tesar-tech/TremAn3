@@ -53,6 +53,8 @@ namespace TremAn3.ViewModels
                 await OpenStorageFile(videoFile);
                 //get measurements for opened file
                 //get other measurements
+                ViewModelLocator.Current.DrawingRectanglesViewModel.RefreshSizeProportion();
+
             }
         }
 
@@ -89,33 +91,47 @@ namespace TremAn3.ViewModels
             }
 
 
-            if (!fileOpenSuccess) return;
+            //if (!fileOpenSuccess) return;
 
 
             //file is opened
             //try to retrieve measurements from measurement list
+
+            if (!PastMeasurementsViewModel.IsAllMeasurementsLoaded)
+            {
+               var allPastMeasurements =  await _DataService.GetAllPastMeasurements();
+                PastMeasurementsViewModel.AddVms(allPastMeasurements);
+                PastMeasurementsViewModel.IsAllMeasurementsLoaded = true ;
+
+            }
+            await PastMeasurementsViewModel.SelectAndDisplayLastForVideo(MediaPlayerViewModel.CurrentFalToken);
+
+            //VideoFileModel vfm = new VideoFileModel
+            //{
+            //    FalToken = MediaPlayerViewModel.CurrentFalToken,
+            //    Path = MediaPlayerViewModel.CurrentStorageFile.Path,
+            //    Name = MediaPlayerViewModel.CurrentStorageFile.Name,
+            //    Duration = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds
+            //};
+
+            //var pastMeasurementsModels = await _DataService.GetPastMeasurementsForVideo(MediaPlayerViewModel.CurrentStorageFile, vfm);
+
+
+
             //if none,get measurement for file form dataservice
 
             //if no measurement were loaded so far, load other measurements
 
-            try
-            {
-                var pastMeasurementsModels = await _DataService.GetPastMeasurements(MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.CurrentMruToken);
+            //try
+            //{
 
+            //}
+            //catch (Exception ex)
+            //{
+            //    ViewModelLocator.Current.NoificationViewModel.SimpleNotification($"Something went wrong opening measurement files {ex.Message}");
 
-                PastMeasurementsViewModel.MeasurementsVms.Clear();
+            //}
 
-
-                PastMeasurementsViewModel.AddVms(pastMeasurementsModels);
-                await PastMeasurementsViewModel.SelectAndDisplayLastInAny();
-                ViewModelLocator.Current.DrawingRectanglesViewModel.RefreshSizeProportion();
-            }
-            catch (Exception ex)
-            {
-                ViewModelLocator.Current.NoificationViewModel.SimpleNotification($"Something went wrong opening measurement files {ex.Message}");
-
-            }
-            
             //if (pastMeasurementsModels.Any())
             //{
             //    var lastMeas = pastMeasurementsModels[0];
@@ -188,7 +204,8 @@ namespace TremAn3.ViewModels
                     PositionSeconds = MediaPlayerViewModel.MediaControllingViewModel.PositionSeconds,
                 };
 
-                MeasurementViewModel vm = new MeasurementViewModel(measurementModel);
+                VideoFileModel vfm = new VideoFileModel(MediaPlayerViewModel.VideoPropsViewModel,MediaPlayerViewModel.CurrentFalToken);
+                MeasurementViewModel vm = new MeasurementViewModel(measurementModel,vfm);
                 vm.IsVectorDataLoaded = true;
                 await PastMeasurementsViewModel.AddAndSelectVm(vm);//this will display and compute plots
                 await _StoringMeasurementsService.GetModelFromVmAndSaveItToFile(vm);

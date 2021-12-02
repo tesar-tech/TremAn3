@@ -24,7 +24,7 @@ namespace TremAn3.ViewModels
 
         private MeasurementsService _StoringMeasurementsService;
         private DataService _DataService;
-
+        public bool IsAllMeasurementsLoaded { get; set; }
 
 
         private bool _IsPastMeasurementsOpen;
@@ -141,10 +141,10 @@ namespace TremAn3.ViewModels
         //        await SelectedMeasurementVmSet(lastmea);
         //}
 
-        //video is identify by folder that contains measurements
-        internal async Task SelectAndDisplayLastForVideo(StorageFolder folder)
+        
+        internal async Task SelectAndDisplayLastForVideo(string  falToken)
         {
-            var lastMea = MeasurementsVms.Where(x => x.FolderForMeasurement == folder).OrderBy(x => x.DateTime).LastOrDefault();
+            var lastMea = MeasurementsVms.Where(x => x.VideoFileModel.FalToken == falToken).OrderBy(x => x.DateTime).LastOrDefault();
             if (lastMea != null)
                 await SelectedMeasurementVmSet(lastMea);
         }
@@ -162,14 +162,18 @@ namespace TremAn3.ViewModels
     {
 
 
+        //public string FalTokenOfVideo { get; set; }
+
+        public VideoFileModel VideoFileModel { get; set; }
         public bool IsVectorDataLoaded { get; set; }
 
-        public MeasurementViewModel(MeasurementModel model)
+        public MeasurementViewModel(MeasurementModel model,VideoFileModel vfm)
         {
             DateTime = model.DateTime;
             Id = model.Id;
             Model = model;
             Name = model.Name;
+            VideoFileModel = vfm;   
             //_dataservice = ds;
         }
         //private DataService _dataservice;
