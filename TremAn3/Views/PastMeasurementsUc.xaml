@@ -94,14 +94,17 @@
             <!--<ToggleSwitch HorizontalAlignment="Right" OffContent="Don't save every measurement" OnContent="Save every measurement" IsOn="{x:Bind ViewModel.IsSaveMeasurement,Mode=TwoWay}" />-->
         </Grid>
 
-        <ListView Grid.Row="2"
+        <local:ListViewWithScrollUp Grid.Row="2"
+                  x:Name="ListView_Measurements"
                   SelectionChanged="ListView_SelectionChanged"
                   SelectionMode="Single"
             SelectedItem="{x:Bind ViewModel.SelectedMeasurementVm,Mode=OneWay}"
      ItemsSource="{x:Bind ViewModel.MeasurementsVms, Mode=OneWay}"
     ItemTemplate="{StaticResource MeasurementListViewTemplate}"
     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
-    HorizontalAlignment="Stretch"/>
+    HorizontalAlignment="Stretch" >
+       
+        </local:ListViewWithScrollUp>
 
     </Grid>
 </UserControl>

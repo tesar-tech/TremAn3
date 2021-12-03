@@ -92,7 +92,8 @@ public class PastMeasurementsViewModel : ViewModelBase
 
 
         if (value == null) return;
-        MainVm.IsDoingSomethingImportant = true;
+       ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.Generic;
+
         await Task.Delay(1);
         if (!value.IsVectorDataLoaded)
         {
@@ -104,7 +105,8 @@ public class PastMeasurementsViewModel : ViewModelBase
         else
             await _StoringMeasurementsService.DisplayMeasurementByModelAsync(value.Model);
 
-        MainVm.IsDoingSomethingImportant = false;
+        ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.Off;
+
         //it is different video fila -> change it.
         if (MainVm.MediaPlayerViewModel.VideoFileModel.FalToken != value.VideoFileModel.FalToken)
         {

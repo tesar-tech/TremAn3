@@ -85,8 +85,6 @@ namespace TremAn3.ViewModels
         }
 
 
-
-
         private void RefreshPlots()
         {
             PlotModelsContainerViewModel.InvalidateAllPlots(true);
@@ -99,6 +97,7 @@ namespace TremAn3.ViewModels
 
         public async Task DisplayPlots(bool doComputation, DataSeriesType? dataSeriesType = null)
         {
+
             var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
 
             //this basically compute the psd, amps spec, etc...
@@ -107,6 +106,8 @@ namespace TremAn3.ViewModels
                 tasks = comps.Select(x => x.PrepareForDisplay(FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize, doComputation));
             else
                 tasks = comps.Select(x => x.PrepareForDisplay((DataSeriesType)dataSeriesType, FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize));
+            if(doComputation)
+                ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.ComputingVectorData;
             await Task.WhenAll(tasks);
             timeAnotations.Clear();//discard current anotations (new will be added)
             var plotModels = dataSeriesType == null ? PlotModelsContainerViewModel.PlotModels :
@@ -129,8 +130,11 @@ namespace TremAn3.ViewModels
                     }
 
                     if (pmwt.DataSeriesType == DataSeriesType.FreqProgress)
+                    {
+                        var maxYOfFreqProgress = comps.Max(comp => comp.Algorithm.Results.DataResultsDict[pmwt.DataSeriesType].Y.Max());//set some offset to max
+                        pmwt.PlotModel.Axes.Add(new LinearAxis() { Maximum = maxYOfFreqProgress * 1.1, Minimum = 0, MajorTickSize = 2, MinorTickSize = 0.5, Position = AxisPosition.Left, Key = "Vertical" });
                         FreqProgressViewModel.StatusMessage = $"Frequency resolution: {comps.First().Algorithm.frameRate / FreqProgressViewModel.SegmnetSize:F2} Hz. Number of segments computed: {firstDatares.X.Count} ";
-
+                    }
                 }
                 else
                     pmwt.PlotModel = new PlotModel { Title = firstDatares.ErrorMessage };
@@ -144,14 +148,20 @@ namespace TremAn3.ViewModels
             }
 
 
+
             if (dataSeriesType == null)//we currently use dataseries type only for freq progress In case of using single dataseries type for scoped
-                //it has to be changed..
+                                       //it has to be changed..
             {
                 //global scoped results
                 if (doComputation)
-                    CurrentGlobalScopedResultsViewModel.ComputeAllResults(ParentVm.MediaPlayerViewModel.VideoPropsViewModel.FrameRate,
+                {
+                    ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.ComputingGlobalVectorData;
+                    await Task.Delay(3000);
+
+                    await CurrentGlobalScopedResultsViewModel.ComputeAllResults(ParentVm.MediaPlayerViewModel.VideoPropsViewModel.FrameRate,
                         comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList(),
                         comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComY].Y).ToList());
+                }
 
                 foreach (var pwmt in PlotModelsContainerViewModel.PlotModelsGlobalScope)
                 {
@@ -172,9 +182,10 @@ namespace TremAn3.ViewModels
 
             }
 
-
             RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
             IsAllResultsNotObsolete = true;
+            ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.Off;
+
         }
 
         /// <summary>
@@ -331,7 +342,15 @@ namespace TremAn3.ViewModels
         public bool IsComputationInProgress
         {
             get => _IsComputationInProgress;
-            set => Set(ref _IsComputationInProgress, value);
+            set
+            {
+                if (Set(ref _IsComputationInProgress, value))
+                    if (value)
+                        ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.ComputationInProgress;
+                    else
+                        ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.Off;
+
+            }
         }
 
         private double _percentageOfResolution = 100;//aka SizeReductionFactor

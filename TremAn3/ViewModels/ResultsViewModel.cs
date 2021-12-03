@@ -19,12 +19,14 @@ namespace TremAn3.ViewModels
         /// <param name="frameRate"></param>
         /// <param name="comXAllRois"></param>
         /// <param name="comYAllRois"></param>
-        public void ComputeAllResults(double frameRate, List<List<double>> comXAllRois, List<List<double>> comYAllRois)
+        public async Task ComputeAllResults(double frameRate, List<List<double>> comXAllRois, List<List<double>> comYAllRois)
         {
-            Coherence coherence = new Coherence((int)frameRate, comXAllRois, comYAllRois);
-            DataResultsDict.Clear();
-            DataResultsDict.Add(DataSeriesType.Coherence, coherence.Compute());
-
+            await Task.Run(() =>
+            {
+                Coherence coherence = new Coherence((int)frameRate, comXAllRois, comYAllRois);
+                DataResultsDict.Clear();
+                DataResultsDict.Add(DataSeriesType.Coherence, coherence.Compute());
+            });
         }
 
         public Dictionary<DataSeriesType, DataResult> DataResultsDict { get; set; } = new Dictionary<DataSeriesType, DataResult>();

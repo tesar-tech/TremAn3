@@ -35,5 +35,17 @@ public sealed partial class PastMeasurementsUc : UserControl
         ViewModel.IsSelectedMeasurementChangeCommingFromUi = true;
         await ViewModel.SelectedMeasurementVmSet(selectedMeasuremnt);
         ViewModel.IsSelectedMeasurementChangeCommingFromUi = false;
+        //ListView_Measurements.ScrollIntoView(e.AddedItems[0]);
+    }
+}
+
+public class ListViewWithScrollUp : ListView
+{
+    //this forces listview to scroll up when new item appears (new measurement is done).
+    //https://stackoverflow.com/a/43793412/1154773
+    protected override void OnItemsChanged(object e)
+    {
+        base.OnItemsChanged(e);
+        if (Items.Count > 0) ScrollIntoView(Items.First());
     }
 }

@@ -8,7 +8,7 @@
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:oxyplot="using:OxyPlot.Windows"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:helpers="using:TremAn3.Helpers"
+    xmlns:h="using:TremAn3.Helpers"
     xmlns:views="using:TremAn3.Views"
     xmlns:winui="using:Microsoft.UI.Xaml"
     Style="{StaticResource PageStyle}"
@@ -37,7 +37,7 @@
                         <Setter Target="FreqCounterContainer.Width" Value="0"/>
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
-                        <StateTrigger   IsActive="{x:Bind  helpers:StaticConverters.InverseBool(ViewModel.IsFreqCounterOpen),Mode=OneWay}" ></StateTrigger>
+                        <StateTrigger   IsActive="{x:Bind  h:StaticConverters.InverseBool(ViewModel.IsFreqCounterOpen),Mode=OneWay}" ></StateTrigger>
                     </VisualState.StateTriggers>
                 </VisualState>
                 <VisualState x:Name="Open"/>
@@ -52,7 +52,7 @@
                         <Setter Target="MediaPlayback.DrawingRectangle.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
-                        <StateTrigger  IsActive="{x:Bind  helpers:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay}" />
+                        <StateTrigger  IsActive="{x:Bind  h:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay}" />
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
@@ -75,14 +75,14 @@
                     </StackPanel>
                 </HyperlinkButton>
             </StackPanel>
-            <TextBlock Margin="3"  Text="{x:Bind helpers:Helpers.VersionOfApp}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+            <TextBlock Margin="3"  Text="{x:Bind h:Helpers.VersionOfApp}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
         </Grid>
 
 
         <Grid x:Name="GridMediPlaybackAndPastMeasurements" Visibility="Visible">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="{x:Bind helpers:StaticConverters.HeightOfMeasurementsInMainPage(ViewModel.PastMeasurementsViewModel.IsPastMeasurementsOpen), Mode=OneWay}"/>
+                <RowDefinition Height="{x:Bind h:StaticConverters.HeightOfMeasurementsInMainPage(ViewModel.PastMeasurementsViewModel.IsPastMeasurementsOpen), Mode=OneWay}"/>
             </Grid.RowDefinitions>
             <views:MediaPlaybackUc IsEnabled="{x:Bind ViewModel.IsVideoFileLoaded,Mode=OneWay}" x:Name="MediaPlayback" Visibility="Collapsed"/>
             <views:PastMeasurementsUc Grid.Row="1"/>
@@ -91,25 +91,9 @@
 
         <controls:GridSplitter CursorBehavior="ChangeOnSplitterHover"   Grid.Column="1" />
 
-        <views:FreqCounterUc IsEnabled="{x:Bind helpers:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay }"  Grid.Column="2" ViewModel="{x:Bind ViewModel.FreqCounterViewModel}"/>
-
-        <controls:Loading x:Name="LoadingControl" IsLoading="{x:Bind ViewModel.IsDoingSomethingImportant,Mode=OneWay}"   Grid.ColumnSpan="3" Canvas.ZIndex="10" >
-                <controls:Loading.Background>
-                <brushes:AcrylicBrush BackgroundSource="Backdrop"
-                              TintColor="Black"
-                              TintOpacity="0.15"
-                              BlurAmount="2.42"/>
-            </controls:Loading.Background>
-            <controls:Loading.Content>
-                <StackPanel Orientation="Horizontal" Padding="12">
-                    <Grid Margin="0,0,8,0">
-                        <ProgressRing IsActive="True" Foreground="{ThemeResource SystemAccentColor}" />
-                    </Grid>
-                    <TextBlock Text="Doing something important, wait for it!" Foreground="{ThemeResource SystemAccentColor}" VerticalAlignment="Center" />
-                </StackPanel>
-
-            </controls:Loading.Content>
-            </controls:Loading>
+        <views:FreqCounterUc IsEnabled="{x:Bind h:StaticConverters.NullToBool(ViewModel.MediaPlayerViewModel.Source), Mode=OneWay }"  Grid.Column="2" ViewModel="{x:Bind ViewModel.FreqCounterViewModel}"/>
+        
+        <views:LoadingContentUc Grid.ColumnSpan="3" Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ViewModel.LoadingContentViewModel.IsDoingSomething),Mode=OneWay}" />
     </Grid>
         <!-- Loading screen content -->
   

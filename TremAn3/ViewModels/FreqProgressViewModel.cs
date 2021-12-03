@@ -23,11 +23,10 @@ namespace TremAn3.ViewModels
 
         public async Task FftLengthChanged()
         {
-            FreqCounterViewModel.ParentVm.IsDoingSomethingImportant = true;
+            ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.Generic;
             await FreqCounterViewModel.DisplayPlots(true, Core.DataSeriesType.FreqProgress);
             await FreqCounterViewModel.ParentVm.PastMeasurementsViewModel.SaveSelectedMeasurement();
-            FreqCounterViewModel.ParentVm.IsDoingSomethingImportant = false;
-
+            ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.Off;
         }
 
         public async Task StepChanged()
@@ -35,10 +34,6 @@ namespace TremAn3.ViewModels
             await FftLengthChanged();//it is the same;
         }
 
-        //public void SetSegmentSizeAndStepFromModelWithouUIUpdate(int step, int segmentSize)
-        //{
-        //    _Step = step;_SegmnetSize = segmentSize;
-        //}
 
         private int _SegmnetSize = 256;
 

@@ -55,13 +55,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    private bool _IsDoingSomethingImportant;
-
-    public bool IsDoingSomethingImportant
-    {
-        get => _IsDoingSomethingImportant;
-        set => Set(ref _IsDoingSomethingImportant, value);
-    }
+    public LoadingContentViewModel LoadingContentViewModel => ViewModelLocator.Current.LoadingContentViewModel;
 
     private bool _IsVideoFileLoaded;
 
@@ -92,7 +86,6 @@ public partial class MainViewModel : ViewModelBase
 
     private async Task OpenStorageFile(StorageFile file, bool isMeasurementAlreadyDisplayed = false)
     {
-        bool fileOpenSuccess = false;
         try
         {
             if (file == null) return;
@@ -103,7 +96,6 @@ public partial class MainViewModel : ViewModelBase
                 IsFreqCounterOpen = true;
             }
             (MediaPlayerViewModel.CurrentMruToken, MediaPlayerViewModel.CurrentFalToken) = _DataService.SaveOpenedFileToMruAndFal(file);
-            fileOpenSuccess = true;
         }
         catch (Exception ex)
         {
@@ -128,7 +120,6 @@ public partial class MainViewModel : ViewModelBase
     private DataService _DataService;
     CancellationTokenSource source;
 
-    bool isNotInterrupt = true;
     public async Task CountFreqAsync()
     {
         if (FreqCounterViewModel.IsComputationInProgress)
@@ -165,14 +156,11 @@ public partial class MainViewModel : ViewModelBase
                                                     //Coherence coherenceBetween2Windows = new Coherence();
 
 
-        //CurrentResultsViewModel = new ResultsViewModel(comAlgs);
-        //CurrentResultsViewModel.CoherenceResult = coherenceBetween2Windows.Compute();
-
 
         if (!source.IsCancellationRequested)
         {
             Debug.WriteLine(sw.ElapsedMilliseconds);
-            MeasurementModel measurementModel = new MeasurementModel(comAlgs)//comalgs are not computed
+            MeasurementModel measurementModel = new (comAlgs)//comalgs are not computed
             {
                 //Coherence = CurrentResultsViewModel.CoherenceResult,
                 Minrange = MediaPlayerViewModel.FreqCounterViewModel.Minrange,
@@ -182,8 +170,8 @@ public partial class MainViewModel : ViewModelBase
                 FreqProgressStep = FreqCounterViewModel.FreqProgressViewModel.Step,
             };
 
-            VideoFileModel vfm = new VideoFileModel(MediaPlayerViewModel.VideoPropsViewModel, MediaPlayerViewModel.CurrentFalToken);
-            MeasurementViewModel vm = new MeasurementViewModel(measurementModel, vfm);
+            VideoFileModel vfm = new (MediaPlayerViewModel.VideoPropsViewModel, MediaPlayerViewModel.CurrentFalToken);
+            MeasurementViewModel vm = new (measurementModel, vfm);
             vm.IsVectorDataLoaded = true;
             await PastMeasurementsViewModel.AddAndSelectVm(vm);//this will display and compute plots
             await _StoringMeasurementsService.GetModelFromVmAndSaveItToFile(vm);
@@ -194,9 +182,6 @@ public partial class MainViewModel : ViewModelBase
             FreqCounterViewModel.ProgressPercentage = 0;
         }
         FreqCounterViewModel.IsComputationInProgress = false;
-
-
-
     }
 
     private async Task Computation(FramesGrabber grabber, IEnumerable<CenterOfMotionAlgorithm> comAlgs, CancellationTokenSource source)
