@@ -30,9 +30,10 @@ public sealed partial class PastMeasurementsUc : UserControl
 
     private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-            var selectedMeasuremnt = (MeasurementViewModel)e.AddedItems.FirstOrDefault();
-            ViewModel.IsSelectedMeasurementChangeCommingFromUi = true;
-            await ViewModel.SelectedMeasurementVmSet(selectedMeasuremnt);
-            ViewModel.IsSelectedMeasurementChangeCommingFromUi = false;
+        if (ViewModel.IsSelectedMeasurementChangeCommingFromSetMethod) return;
+        var selectedMeasuremnt = (MeasurementViewModel)e.AddedItems.FirstOrDefault();
+        ViewModel.IsSelectedMeasurementChangeCommingFromUi = true;
+        await ViewModel.SelectedMeasurementVmSet(selectedMeasuremnt);
+        ViewModel.IsSelectedMeasurementChangeCommingFromUi = false;
     }
 }

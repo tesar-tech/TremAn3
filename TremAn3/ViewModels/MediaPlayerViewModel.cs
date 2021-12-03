@@ -51,13 +51,17 @@ namespace TremAn3.ViewModels
                 _videoFileModel = null;//reset videofilemodel, it will load everything when needed
                 ParentVm.RefreshTitle();
                 ViewModelLocator.Current.TeachingTipsViewModel.StartIfAppropriate(3);
+                ParentVm.IsVideoFileLoaded = true;
             }
         }
 
-        public async Task ChangeSourceToNothing()
+        public void ChangeSourceToNothing()
         {
-
-
+            ParentVm.IsVideoFileLoaded = false;
+            ParentVm.RefreshTitle("No video to playback");
+            MediaControllingViewModel.ChangeMediaPlayerSource(null);
+             VideoPropsViewModel.SetToNothing();
+            _videoFileModel = null;
         }
 
         internal async Task SetDefaultSourceAsync()

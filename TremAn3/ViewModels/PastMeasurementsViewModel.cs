@@ -76,11 +76,19 @@ public class PastMeasurementsViewModel : ViewModelBase
     /// when changing selected measurement from (for example) MainVm, it will update ui, and ui will update back here.. To not circle around..
     /// </summary>
     public bool IsSelectedMeasurementChangeCommingFromUi { get; set; }
+    public bool IsSelectedMeasurementChangeCommingFromSetMethod { get; set; }
 
     public async Task SelectedMeasurementVmSet(MeasurementViewModel value, bool isBasedOnViewModel = false)
     {
+        IsSelectedMeasurementChangeCommingFromSetMethod = true;
         if (!IsSelectedMeasurementChangeCommingFromUi)
-            if (!Set(ref _SelectedMeasurementVm, value, nameof(SelectedMeasurementVm))) return;
+            if (!Set(ref _SelectedMeasurementVm, value, nameof(SelectedMeasurementVm)))
+            {
+                IsSelectedMeasurementChangeCommingFromSetMethod = false;
+                return;
+            }
+        IsSelectedMeasurementChangeCommingFromSetMethod = false;
+
 
 
         if (value == null) return;

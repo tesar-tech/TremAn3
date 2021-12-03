@@ -84,7 +84,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="{x:Bind helpers:StaticConverters.HeightOfMeasurementsInMainPage(ViewModel.PastMeasurementsViewModel.IsPastMeasurementsOpen), Mode=OneWay}"/>
             </Grid.RowDefinitions>
-            <views:MediaPlaybackUc x:Name="MediaPlayback" Visibility="Collapsed"/>
+            <views:MediaPlaybackUc IsEnabled="{x:Bind ViewModel.IsVideoFileLoaded,Mode=OneWay}" x:Name="MediaPlayback" Visibility="Collapsed"/>
             <views:PastMeasurementsUc Grid.Row="1"/>
         </Grid>
 

@@ -59,10 +59,11 @@ namespace TremAn3.Services
             var fal = Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList;
             try
             {
-            var retrievedFile = await fal.GetFileAsync(falToken);
+                if (!fal.ContainsItem(falToken)) return null;
+                var retrievedFile = await fal.GetFileAsync(falToken);
                 return retrievedFile;
             }
-            catch (FileNotFoundException)
+            catch (Exception ex)
             {
                 fal.Remove(falToken);
                 return null;

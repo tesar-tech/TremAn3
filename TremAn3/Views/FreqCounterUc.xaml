@@ -134,11 +134,15 @@
 
             <StackPanel   Orientation="Vertical"   Padding="5" >
 
-                <Button  x:Name="FreqCounterButton"  BorderThickness="4" Content="Count freq" Margin="5"   Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000" >
+                <Button  x:Name="FreqCounterButton" Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ViewModel.ParentVm.IsVideoFileLoaded),Mode=OneWay}"  BorderThickness="4" Content="Compute" Margin="5"   Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000" >
                     <Button.KeyboardAccelerators>
                         <KeyboardAccelerator x:Name="CancelComputationKeyBoardAccelerator" Key="Escape" IsEnabled="False"/>
                     </Button.KeyboardAccelerators>
                 </Button>
+                <TextBlock Foreground="{ThemeResource SystemAccentColor}" TextWrapping="Wrap" Visibility="{x:Bind h:StaticConverters.BoolToVisiblityInverse(ViewModel.ParentVm.IsVideoFileLoaded),Mode=OneWay}">
+                    Video file is no longer available. It has probably been deleted or moved.<LineBreak/>
+                    <Run FontWeight="Bold">You can still review the measurement.</Run>
+                </TextBlock>
                 <ListView x:Name="ListViewWithChbxsPlots"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="vm:SelectionRectangleViewModel">

@@ -50,8 +50,6 @@ public partial class MainViewModel : ViewModelBase
         {
             var videoFile = await _DataService.GetLastOpenedFile();
             await OpenStorageFile(videoFile);
-            //get measurements for opened file
-            //get other measurements
             ViewModelLocator.Current.DrawingRectanglesViewModel.RefreshSizeProportion();
 
         }
@@ -63,6 +61,17 @@ public partial class MainViewModel : ViewModelBase
     {
         get => _IsDoingSomethingImportant;
         set => Set(ref _IsDoingSomethingImportant, value);
+    }
+
+    private bool _IsVideoFileLoaded;
+
+    /// <summary>
+    /// when the video file is not presented, but measurement are. This hides video controls and computation button
+    /// </summary>
+    public bool IsVideoFileLoaded
+    {
+        get => _IsVideoFileLoaded;
+        set => Set(ref _IsVideoFileLoaded, value);
     }
 
 
@@ -78,7 +87,7 @@ public partial class MainViewModel : ViewModelBase
         if (videoFile != null)
             await OpenStorageFile(videoFile, isMeasurementAlreadyDisplayed);
         else if (isMeasurementAlreadyDisplayed)
-            await MediaPlayerViewModel.ChangeSourceToNothing();
+             MediaPlayerViewModel.ChangeSourceToNothing();
     }
 
     private async Task OpenStorageFile(StorageFile file, bool isMeasurementAlreadyDisplayed = false)
@@ -102,12 +111,6 @@ public partial class MainViewModel : ViewModelBase
         }
 
 
-        //if (!fileOpenSuccess) return;
-
-
-        //file is opened
-        //try to retrieve measurements from measurement list
-
         if (!PastMeasurementsViewModel.IsAllMeasurementsLoaded)
         {
             var allPastMeasurements = await _DataService.GetAllPastMeasurements();
@@ -117,45 +120,6 @@ public partial class MainViewModel : ViewModelBase
         }
         if (!isMeasurementAlreadyDisplayed)
             await PastMeasurementsViewModel.SelectAndDisplayLastForVideo(MediaPlayerViewModel.CurrentFalToken);
-
-        //VideoFileModel vfm = new VideoFileModel
-        //{
-        //    FalToken = MediaPlayerViewModel.CurrentFalToken,
-        //    Path = MediaPlayerViewModel.CurrentStorageFile.Path,
-        //    Name = MediaPlayerViewModel.CurrentStorageFile.Name,
-        //    Duration = MediaPlayerViewModel.VideoPropsViewModel.Duration.TotalSeconds
-        //};
-
-        //var pastMeasurementsModels = await _DataService.GetPastMeasurementsForVideo(MediaPlayerViewModel.CurrentStorageFile, vfm);
-
-
-
-        //if none,get measurement for file form dataservice
-
-        //if no measurement were loaded so far, load other measurements
-
-        //try
-        //{
-
-        //}
-        //catch (Exception ex)
-        //{
-        //    ViewModelLocator.Current.NoificationViewModel.SimpleNotification($"Something went wrong opening measurement files {ex.Message}");
-
-        //}
-
-        //if (pastMeasurementsModels.Any())
-        //{
-        //    var lastMeas = pastMeasurementsModels[0];
-        //    ///JUST FOR TESTING
-        //    lastMeas.Model.FrameRate = 30.0;//just fo testing
-        //    ///
-        //    //_StoringMeasurementsService.DisplayMeasurementByModel(lastMeas.Model);
-
-        //}
-
-
-
     }
     public PastMeasurementsViewModel PastMeasurementsViewModel => ViewModelLocator.Current.PastMeasurementsViewModel;
 
@@ -214,6 +178,8 @@ public partial class MainViewModel : ViewModelBase
                 Minrange = MediaPlayerViewModel.FreqCounterViewModel.Minrange,
                 Maxrange = MediaPlayerViewModel.FreqCounterViewModel.Maxrange,
                 PositionSeconds = MediaPlayerViewModel.MediaControllingViewModel.PositionSeconds,
+                FreqProgressSegmnetSize = FreqCounterViewModel.FreqProgressViewModel.SegmnetSize,
+                FreqProgressStep = FreqCounterViewModel.FreqProgressViewModel.Step,
             };
 
             VideoFileModel vfm = new VideoFileModel(MediaPlayerViewModel.VideoPropsViewModel, MediaPlayerViewModel.CurrentFalToken);
@@ -340,7 +306,12 @@ public partial class MainViewModel : ViewModelBase
         set { if (Set(ref _Title, value)) SetTitle?.Invoke(value); }
     }
     public Action<string> SetTitle;
-    public void RefreshTitle() => Title = MediaPlayerViewModel.VideoPropsViewModel.ToString();
+    public void RefreshTitle(string newTitle = "")
+    {
+        if (newTitle == "")
+            Title = MediaPlayerViewModel.VideoPropsViewModel.ToString();
+        else Title = newTitle;
+    }
 
     public FreqCounterViewModel FreqCounterViewModel { get => ViewModelLocator.Current.FreqCounterViewModel; }
 
