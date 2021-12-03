@@ -17,22 +17,22 @@ using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace TremAn3.Views
+namespace TremAn3.Views;
+public sealed partial class PastMeasurementsUc : UserControl
 {
-    public sealed partial class PastMeasurementsUc : UserControl
+
+    private PastMeasurementsViewModel ViewModel => ViewModelLocator.Current.PastMeasurementsViewModel;
+
+    public PastMeasurementsUc()
     {
+        this.InitializeComponent();
+    }
 
-        private PastMeasurementsViewModel ViewModel => ViewModelLocator.Current.PastMeasurementsViewModel;
-
-        public PastMeasurementsUc()
-        {
-            this.InitializeComponent();
-        }
-
-        private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+    private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
             var selectedMeasuremnt = (MeasurementViewModel)e.AddedItems.FirstOrDefault();
+            ViewModel.IsSelectedMeasurementChangeCommingFromUi = true;
             await ViewModel.SelectedMeasurementVmSet(selectedMeasuremnt);
-        }
+            ViewModel.IsSelectedMeasurementChangeCommingFromUi = false;
     }
 }

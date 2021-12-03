@@ -53,6 +53,24 @@ namespace TremAn3.Services
                 return null;
             }
         }
+
+        internal async Task<StorageFile> GetFileByFalToken(string falToken)
+        {
+            var fal = Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList;
+            try
+            {
+            var retrievedFile = await fal.GetFileAsync(falToken);
+                return retrievedFile;
+            }
+            catch (FileNotFoundException)
+            {
+                fal.Remove(falToken);
+                return null;
+            }
+
+        }
+
+
         /// <summary>
         /// key for local settings
         /// </summary>
@@ -70,6 +88,8 @@ namespace TremAn3.Services
             LocalSettings.Write(mruToken, lastOpenedMruKey);
             return (mruToken, falToken);
         }
+
+     
 
         internal async Task<StorageFolder> SaveMeasurementResults(MeasurementModel measurementModel, VideoFileModel vfm)
         {

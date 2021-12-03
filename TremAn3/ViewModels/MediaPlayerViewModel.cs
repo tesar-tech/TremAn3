@@ -54,6 +54,12 @@ namespace TremAn3.ViewModels
             }
         }
 
+        public async Task ChangeSourceToNothing()
+        {
+
+
+        }
+
         internal async Task SetDefaultSourceAsync()
         {
             var defaultStorageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/beru.wmv"));
