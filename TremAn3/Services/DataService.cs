@@ -126,9 +126,9 @@ namespace TremAn3.Services
         private static string GetVideoModelFileName (StorageFolder videoFolder) => $"{videoFolder.Name}.json";
         private static string GetMeasurementVectorDataFileName (StorageFolder continerFolder) => $"{continerFolder.Name}_vectorData.json";
 
-        internal async Task DeleteAllMeasurementsForCurrentVideoFile()
+        internal async Task DeleteAllMeasurements()
         {
-            await _measurementsFolderForVideo.DeleteAsync();
+          await  (await GetFolder_AllMeasurements()).DeleteAsync();
         }
 
 

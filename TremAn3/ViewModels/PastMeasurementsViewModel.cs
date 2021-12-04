@@ -135,9 +135,9 @@ public class PastMeasurementsViewModel : ViewModelBase
     public async Task DeleteAllMeasurements()
     {
 
-        if (await DialogService.DeleteMeasurementDialog("Delete All Measurements?"))
+        if (await DialogService.DeleteMeasurementDialog("Delete All Measurements? Cannot be undone!!!"))
         {
-            await _DataService.DeleteAllMeasurementsForCurrentVideoFile();
+            await _DataService.DeleteAllMeasurements();
             MeasurementsVms.Clear();
             await SelectedMeasurementVmSet(null);
 

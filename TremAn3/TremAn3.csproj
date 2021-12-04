@@ -259,9 +259,6 @@
     <Compile Include="Views\ShellPage.xaml.cs">
       <DependentUpon>ShellPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SpecInfoDialog.xaml.cs">
-      <DependentUpon>SpecInfoDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\VideoInfoPage.xaml.cs">
       <DependentUpon>VideoInfoPage.xaml</DependentUpon>
     </Compile>
@@ -362,10 +359,6 @@
     <Page Include="Views\ShellPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\SpecInfoDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\VideoInfoPage.xaml">
       <SubType>Designer</SubType>

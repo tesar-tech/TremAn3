@@ -156,7 +156,6 @@ namespace TremAn3.ViewModels
                 if (doComputation)
                 {
                     ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.ComputingGlobalVectorData;
-                    await Task.Delay(3000);
 
                     await CurrentGlobalScopedResultsViewModel.ComputeAllResults(ParentVm.MediaPlayerViewModel.VideoPropsViewModel.FrameRate,
                         comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList(),

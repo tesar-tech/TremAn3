@@ -47,8 +47,7 @@
                 <VisualState x:Name="NotVisibleMainButtonVisibleMpe">
                     <VisualState.Setters>
                         <Setter Target="LandingGrid.Visibility" Value="Collapsed"/>
-                        <Setter Target="MediaPlayback.Visibility" Value="Visible"/>
-                        <!--<Setter Target="GridMediPlaybackAndPastMeasurements" Value="Visible"/>-->
+                        <Setter Target="GridMediPlaybackAndPastMeasurements.Visibility" Value="Visible"/>
                         <Setter Target="MediaPlayback.DrawingRectangle.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
@@ -79,12 +78,12 @@
         </Grid>
 
 
-        <Grid x:Name="GridMediPlaybackAndPastMeasurements" Visibility="Visible">
+        <Grid x:Name="GridMediPlaybackAndPastMeasurements" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="{x:Bind h:StaticConverters.HeightOfMeasurementsInMainPage(ViewModel.PastMeasurementsViewModel.IsPastMeasurementsOpen), Mode=OneWay}"/>
             </Grid.RowDefinitions>
-            <views:MediaPlaybackUc IsEnabled="{x:Bind ViewModel.IsVideoFileLoaded,Mode=OneWay}" x:Name="MediaPlayback" Visibility="Collapsed"/>
+            <views:MediaPlaybackUc IsEnabled="{x:Bind ViewModel.IsVideoFileLoaded,Mode=OneWay}" x:Name="MediaPlayback" />
             <views:PastMeasurementsUc Grid.Row="1"/>
         </Grid>
 
