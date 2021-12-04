@@ -3,7 +3,7 @@ trigger:
 pr: none #don't run build on pull requests
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2022'
 
 variables:
   solution: '**/*.sln'
