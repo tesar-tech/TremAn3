@@ -28,7 +28,21 @@ namespace TremAn3.ViewModels
             FrameRate = frameRateX1000 / 1000d;
         }
 
-        public override string ToString() => $"{Name} | {Width}x{Height} | {FrameRate} FPS | {Size} MB";
+        public void SetToNothing()
+        {
+            CurrentFile = null;
+            CurrentVideoFileProps = null;
+            CurrentVideoFileBasicProps = null;
+            Height = 0;
+            Width = 0;
+            Size = 0;
+            Duration = TimeSpan.Zero;
+            DisplayName = "";
+            FilePath = "";
+            FrameRate = 0;
+        }
+
+        public override string ToString() => $"{Name} | {Width}x{Height} | {FrameRate} FPS | {Size} MB | {Math.Floor(Duration.TotalMinutes)}:{Duration.Seconds:D2} min";
 
         private StorageFile CurrentFile;
         private VideoProperties CurrentVideoFileProps { get; set; }

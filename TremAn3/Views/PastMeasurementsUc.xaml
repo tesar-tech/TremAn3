@@ -12,21 +12,30 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
     <UserControl.Resources>
-        <DataTemplate x:Key="ContactListViewTemplate" x:DataType="vms:MeasurementViewModel">
+        <DataTemplate x:Key="MeasurementListViewTemplate" x:DataType="vms:MeasurementViewModel">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock HorizontalAlignment="Left" Text="{x:Bind NameToDisplay, Mode=OneWay}" x:Phase="1" Margin="0,5,0,5"/>
+                <Grid HorizontalAlignment="Left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock HorizontalAlignment="Left" Text="{x:Bind NameToDisplay, Mode=OneWay}" x:Phase="1" Margin="0,0,0,0"/>
+                    <TextBlock Grid.Row="1" HorizontalAlignment="Left" FontSize="12" Foreground="{ThemeResource SystemChromeGrayColor}" Text="{x:Bind VideoFileModel.Name, Mode=OneWay}" x:Phase="2" Margin="0,0,0,0"/>
+                </Grid>    
+                
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button  Background="#00000000" BorderThickness="0" >
                         <FontIcon Glyph="&#xE946;" />
                         <Button.Flyout>
                             <Flyout>
-                                <StackPanel>
+                                <ScrollViewer>
                                     <Grid>
                                         <Grid.RowDefinitions>
+                                            <RowDefinition/>
                                             <RowDefinition/>
                                             <RowDefinition/>
                                             <RowDefinition/>
@@ -41,8 +50,10 @@
                                         <TextBlock Grid.Row="1" Grid.Column="2" Text="{x:Bind h:StaticConverters.ToWellDateTimeString(DateTime)}"/>
                                         <TextBlock Grid.Row="2" Text="Id"/>
                                         <TextBlock Grid.Row="2" Grid.Column="2" Text="{x:Bind Id}"/>
+                                        <TextBlock Grid.Row="3" Text="Path to video"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="2" Text="{x:Bind VideoFileModel.Path}"/>
                                     </Grid>
-                                </StackPanel>
+                                </ScrollViewer>
                             </Flyout>
                         </Button.Flyout>
                     </Button>
@@ -83,12 +94,17 @@
             <!--<ToggleSwitch HorizontalAlignment="Right" OffContent="Don't save every measurement" OnContent="Save every measurement" IsOn="{x:Bind ViewModel.IsSaveMeasurement,Mode=TwoWay}" />-->
         </Grid>
 
-        <ListView Grid.Row="2" 
-            SelectedItem="{x:Bind ViewModel.SelectedMeasurementVm,Mode=TwoWay}"
+        <local:ListViewWithScrollUp Grid.Row="2"
+                  x:Name="ListView_Measurements"
+                  SelectionChanged="ListView_SelectionChanged"
+                  SelectionMode="Single"
+            SelectedItem="{x:Bind ViewModel.SelectedMeasurementVm,Mode=OneWay}"
      ItemsSource="{x:Bind ViewModel.MeasurementsVms, Mode=OneWay}"
-    ItemTemplate="{StaticResource ContactListViewTemplate}"
+    ItemTemplate="{StaticResource MeasurementListViewTemplate}"
     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
-    HorizontalAlignment="Stretch"/>
+    HorizontalAlignment="Stretch" >
+       
+        </local:ListViewWithScrollUp>
 
     </Grid>
 </UserControl>

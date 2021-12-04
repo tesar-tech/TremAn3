@@ -12,10 +12,28 @@ namespace TremAn3.Core
     public class Results
     {
 
-        public List<double> FreqProgress { get; set; } = new List<double>();
-        public List<double> FreqProgressTime { get; set; }
+        //public List<double> FreqProgress { get; set; } = new List<double>();
+        //public List<double> FreqProgressTime { get; set; }
 
-        public ResultsModel ResultsModel { get;  set; } = new ResultsModel();
+        public void SetComXAndFrameTimes(List<double> comx, List<double> frametimes)
+        { 
+            ComX = comx;
+            FrameTimes = frametimes.Select(x => TimeSpan.FromSeconds(x)).ToList();
+        }
+
+        public void SetComY(List<double> comy)
+        {
+            ComY = comy;
+
+        }
+
+
+        public List<TimeSpan> FrameTimes { get; private set; } = new List<TimeSpan>();
+
+        public List<double> ComX { get; private set; } = new List<double>();
+        public List<double> ComY { get; private set; } = new List<double>();
+
+        //public ResultsModel ResultsModel { get;  set; } = new ResultsModel();
 
         public Dictionary<DataSeriesType, DataResult> DataResultsDict { get; set; } = new Dictionary<DataSeriesType, DataResult>();
 

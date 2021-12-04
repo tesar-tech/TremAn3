@@ -65,12 +65,18 @@ namespace TremAn3.ViewModels
         }
 
 
+        //this is called when rois are added after proportion was changed. On the beginning size is changed first. After that rois appears, thus this needs to be called.
+        internal void RefreshSizeProportion()
+        {
+            foreach (var roi in SelectionRectanglesViewModels)
+                roi.SizeProportion = currentSizeProportion;
+        }
+
         private double currentSizeProportion;
         public void ChangeSizeProportion(double viewBoxWidth)
         {
             currentSizeProportion = MaxWidth / viewBoxWidth;
-            foreach (var roi in SelectionRectanglesViewModels)
-                roi.SizeProportion = currentSizeProportion;
+            RefreshSizeProportion();
         }
 
         /// <summary>
@@ -82,5 +88,7 @@ namespace TremAn3.ViewModels
             maxRoi.Height = maxRoi.MaxHeight;
             maxRoi.Width = maxRoi.MaxWidth;
         }
+
+      
     }
 }

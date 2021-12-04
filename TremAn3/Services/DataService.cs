@@ -53,6 +53,25 @@ namespace TremAn3.Services
                 return null;
             }
         }
+
+        internal async Task<StorageFile> GetFileByFalToken(string falToken)
+        {
+            var fal = Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList;
+            try
+            {
+                if (!fal.ContainsItem(falToken)) return null;
+                var retrievedFile = await fal.GetFileAsync(falToken);
+                return retrievedFile;
+            }
+            catch (Exception ex)
+            {
+                fal.Remove(falToken);
+                return null;
+            }
+
+        }
+
+
         /// <summary>
         /// key for local settings
         /// </summary>
@@ -61,24 +80,32 @@ namespace TremAn3.Services
         /// save file as last opened. Add to mru and add token to settings
         /// </summary>
         /// <param name="file"></param>
-        public string SaveOpenedFileToMru(StorageFile file)
+        public (string mru, string fal) SaveOpenedFileToMruAndFal(StorageFile file)
         {
             var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList;
+            var fal = Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList;
+            string falToken = fal.Add(file);
             string mruToken = mru.Add(file);
             LocalSettings.Write(mruToken, lastOpenedMruKey);
-            return mruToken;
+            return (mruToken, falToken);
         }
 
-        internal async Task<StorageFolder> SaveMeasurementResults(MeasurementModel measurementModel, StorageFile currentStorageVideoFile, string currentMruToken)
+     
+
+        internal async Task<StorageFolder> SaveMeasurementResults(MeasurementModel measurementModel, VideoFileModel vfm)
         {
             //resultsViewModel.Id = resultsViewModel.Id == Guid.Empty ? Guid.NewGuid(): resultsViewModel.Id;
             var allMeasurementsFolder = await GetFolder_AllMeasurements();
-            StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageVideoFile, currentMruToken);
-            string measurementFolderAndFIleName = $"measurement_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.ff}_{measurementModel.Id}";
+            StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, vfm);
+            string measurementFolderAndFIleName = $"m_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.ff}_{measurementModel.Id.ToString().Substring(0,8)}";
             StorageFolder folderForMeasurement = await measurementsFolderForVideo.CreateFolderAsync(measurementFolderAndFIleName, CreationCollisionOption.OpenIfExists);
             await SaveMeasurementResults(measurementModel, folderForMeasurement);//csvs will have similar structure of filename
             return folderForMeasurement;                                                                                 
         }
+
+
+
+      
 
 
         /// <summary>
@@ -87,50 +114,110 @@ namespace TremAn3.Services
         /// <param name="measurementModel"></param>
         /// <param name="folderForMeasurement"></param>
         /// <returns></returns>
-        internal static async Task SaveMeasurementResults(MeasurementModel measurementModel, StorageFolder folderForMeasurement)
+        internal static async Task SaveMeasurementResults(MeasurementModel measurementModel, StorageFolder folderForMeasurement,bool saveOnlyTopLevelData = false)
         {
-            await JsonServices.WriteToJsonFile(folderForMeasurement, $"{folderForMeasurement.Name}.json", measurementModel);
+            await JsonServices.WriteToJsonFile(folderForMeasurement, GetMeasurementFileName(folderForMeasurement), measurementModel);//saves toplevel
+            //saves vector data to special folder
+            if(!saveOnlyTopLevelData)
+            await JsonServices.WriteToJsonFile(folderForMeasurement, GetMeasurementVectorDataFileName(folderForMeasurement), measurementModel.VectorsDataModel);
         }
 
-        internal async Task DeleteAllMeasurementsForCurrentVideoFile()
+        private static string GetMeasurementFileName (StorageFolder continerFolder) => $"{continerFolder.Name}.json";
+        private static string GetVideoModelFileName (StorageFolder videoFolder) => $"{videoFolder.Name}.json";
+        private static string GetMeasurementVectorDataFileName (StorageFolder continerFolder) => $"{continerFolder.Name}_vectorData.json";
+
+        internal async Task DeleteAllMeasurements()
         {
-            await _measurementsFolderForVideo.DeleteAsync();
+          await  (await GetFolder_AllMeasurements()).DeleteAsync();
+        }
+
+
+        /// <summary>
+        /// called when measurement is selected to display. It loads all the (long) vectors. We don't want to load it in advance since it
+        /// may contain a lots of data
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="folderForMeasurement"></param>
+        /// <returns></returns>
+        /// <exception cref="FileNotFoundException"></exception>
+        internal async Task LoadVectorDataToModel(MeasurementModel model, StorageFolder folderForMeasurement)
+        {
+            StorageFile jsonFile;
+            jsonFile = await folderForMeasurement.GetFileAsync(GetMeasurementVectorDataFileName(folderForMeasurement));
+            if (jsonFile is null) throw new FileNotFoundException($"No vectorData file ({jsonFile}) in {folderForMeasurement.Name} folder");
+            var vectorsDataModels = await JsonServices.ReadFromJsonFile<VectorsDataModel>(jsonFile);
+            model.VectorsDataModel = vectorsDataModels;
         }
 
         private StorageFolder _measurementsFolderForVideo;
-        public async Task<List<MeasurementViewModel>> GetPastMeasurements(StorageFile currentStorageFile, string currentMruToken)
+        //public async Task<List<MeasurementViewModel>> GetPastMeasurementsForVideo(StorageFile currentStorageFile, VideoFileModel videoFileModel)
+        //{
+        //    var measurementsViewModels = new List<MeasurementViewModel>();
+        //    var allMeasurementsFolder = await GetFolder_AllMeasurements();
+        //     _measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageFile, videoFileModel);
+        //    var measurementsFolders = await _measurementsFolderForVideo.GetFoldersAsync();
+        //    foreach (var mesFolder in measurementsFolders)
+        //    {
+        //        var jsonFile = await mesFolder.GetFileAsync(GetMeasurementFileName(mesFolder));
+        //        if (jsonFile is null) continue;
+        //        MeasurementModel measModel = await JsonServices.ReadFromJsonFile<MeasurementModel>(jsonFile);
+        //        MeasurementViewModel vm = new MeasurementViewModel(measModel);
+        //        measurementsViewModels.Add(vm);
+        //        vm.FolderForMeasurement = mesFolder;
+        //    }
+
+        //    return measurementsViewModels;
+        //}
+
+        public async Task<List<MeasurementViewModel>> GetAllPastMeasurements()
         {
             var measurementsViewModels = new List<MeasurementViewModel>();
             var allMeasurementsFolder = await GetFolder_AllMeasurements();
-             _measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, currentStorageFile, currentMruToken);
-            var measurementsFolders = await _measurementsFolderForVideo.GetFoldersAsync();
-            foreach (var mesFolder in measurementsFolders)
-            {
-                var jsonFile = (await mesFolder.GetFilesAsync()).FirstOrDefault();
-                if (jsonFile is null) continue;
-                MeasurementModel measModel = await JsonServices.ReadFromJsonFile<MeasurementModel>(jsonFile);
-                MeasurementViewModel vm = new MeasurementViewModel(measModel);
-                measurementsViewModels.Add(vm);
-                vm.FolderForMeasurement = mesFolder;
-            }
+           var videoFolders =await   allMeasurementsFolder.GetFoldersAsync();
 
+            foreach (var videoFolder in videoFolders)
+            {
+                var measurementsFolders = await videoFolder.GetFoldersAsync();
+                var jsonFileVideoFileModel = await videoFolder.GetFileAsync(GetVideoModelFileName(videoFolder));
+                VideoFileModel vfm = await JsonServices.ReadFromJsonFile<VideoFileModel>(jsonFileVideoFileModel);
+
+
+                foreach (var mesFolder in measurementsFolders)
+                {
+                    var jsonFile = await mesFolder.GetFileAsync(GetMeasurementFileName(mesFolder));
+                    if (jsonFile is null) continue;
+                    MeasurementModel measModel = await JsonServices.ReadFromJsonFile<MeasurementModel>(jsonFile);
+                    MeasurementViewModel vm = new MeasurementViewModel(measModel,vfm);
+                    measurementsViewModels.Add(vm);
+                    vm.FolderForMeasurement = mesFolder;
+                }
+
+            }
             return measurementsViewModels;
         }
 
-        
+
+
+
 
 
         /// <summary>
         /// Folder inside AllMeasurementsFolder. This folder is for one video and multiple measurements
         /// </summary>
-        /// <param name="measurementsFolder"></param>
-        /// <param name="currentStorageFile"></param>
-        /// <param name="currentMruToken"></param>
-        /// <returns></returns>
-        private async Task<StorageFolder> GetFolderForVideo(StorageFolder measurementsFolder, StorageFile currentStorageFile, string currentMruToken)
+        private async Task<StorageFolder> GetFolderForVideo(StorageFolder measurementsFolder, VideoFileModel videoFileModel)
         {
-            string videoFolderName = $"video_{GetPathToSourceForFileName(currentStorageFile)}_{currentMruToken}";
+            string videoFolderName = $"v_{GetPathToSourceForFileName(videoFileModel.Name)}_{videoFileModel.FalToken.ToString().Trim(new char[] {'{','}' })}";
             StorageFolder videoFolder = await measurementsFolder.CreateFolderAsync(videoFolderName, CreationCollisionOption.OpenIfExists);
+
+            //when getting folder, also check for video file. This file is used for loading basic video properties
+            //withour reaching the video file itself. Also stores fal token (future access list), so we can retrieve the video file
+            var videoFile = await videoFolder.TryGetItemAsync(GetVideoModelFileName(videoFolder));
+            if (videoFile is null)//do nothing when already created
+            {
+               var vf = await videoFolder.CreateFileAsync(GetVideoModelFileName(videoFolder), CreationCollisionOption.FailIfExists);
+                await JsonServices.WriteToJsonFile(vf, videoFileModel);
+            }
+
             return videoFolder;
         }
         /// <summary>
@@ -150,10 +237,10 @@ namespace TremAn3.Services
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        private string GetPathToSourceForFileName(StorageFile file)
+        private string GetPathToSourceForFileName(string fileName)
         {
             var invalidChars = Path.GetInvalidFileNameChars();
-            var cleanFileName = new string(file.Name.Select(m => invalidChars.Contains(m) ? '_' : m).ToArray());
+            var cleanFileName = new string(fileName.Select(m => invalidChars.Contains(m) ? '_' : m).Take(20).ToArray());
             return cleanFileName;
         }
 
@@ -163,6 +250,25 @@ namespace TremAn3.Services
         }
 
       
+
+    }
+
+    public class VideoFileModel
+    {
+
+        public VideoFileModel() { }//for json
+        public VideoFileModel(VideoPropsViewModel videoPropsViewModel, string currentFalToken)
+        {
+            Path = videoPropsViewModel.FilePath;
+            Name = videoPropsViewModel.Name;
+            Duration = videoPropsViewModel.Duration.TotalSeconds;
+            FalToken = currentFalToken;
+        }
+
+        public string Path { get; set; }
+        public string Name { get; set; }
+        public double Duration { get; set; }
+        public string FalToken { get; set; }
 
     }
 }

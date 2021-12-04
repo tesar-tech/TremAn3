@@ -57,7 +57,7 @@ namespace TremAn3.Views
 
             var w = Math.Max(pos.X, startPoint.X) - x;
             var h = Math.Max(pos.Y, startPoint.Y) - y;
-
+            ViewModel.CurrentRoiInCreationProcess._IsPointerMovedWhenCreatingRoi = true;//need this when distinguish from single click (ROI will be bigger than miszize)
             ViewModel.CurrentRoiInCreationProcess.SetValues(x, y, w, h);
         }
 

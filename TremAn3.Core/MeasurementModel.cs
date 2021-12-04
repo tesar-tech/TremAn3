@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -18,24 +19,59 @@ namespace TremAn3.Core
             Id = Guid.NewGuid();
             FrameRate = comAlgs.First().frameRate;//it is same for all the algs
             DateTime = DateTime.Now;
-            foreach (var alg in comAlgs)
-            {
-                RoiResultModel alm = new RoiResultModel(alg.Results,alg.Rect);
-                RoiResultModels.Add(alm);
-            }
+           
         }
 
         public string Name { get; set; }
         public Guid Id { get; set; }
         public DateTime DateTime { get; set; }
         //public double Coherence { get; set; }
-        public List<RoiResultModel> RoiResultModels { get; set; } = new List<RoiResultModel>();
+        [JsonIgnore]
+        public VectorsDataModel VectorsDataModel { get; set; } 
+
+
+
         public double FrameRate { get; set; }
         public double Maxrange { get; set; }
         public double Minrange { get; set; }
         public double PositionSeconds { get; set; }
+        public int FreqProgressSegmnetSize { get; set; }
+        public int FreqProgressStep { get; set; }
+
+        public void GetResults(IEnumerable<CenterOfMotionAlgorithm> algs, Dictionary<DataSeriesType, DataResult> dataResultsDict)
+        {
+            VectorsDataModel = new VectorsDataModel(algs,dataResultsDict);
+        }
 
         //public int FftSegmentSize { get; set; }
+    }
+
+    public class VectorsDataModel
+    {
+        public VectorsDataModel() { }//for json
+        public VectorsDataModel(IEnumerable<CenterOfMotionAlgorithm> comAlgs, Dictionary<DataSeriesType, DataResult> dataResultsDict)
+        {
+            foreach (var alg in comAlgs)
+            {
+                RoiResultModel alm = new RoiResultModel(alg.Results, alg.Rect);
+                RoiResultModels.Add(alm);
+            }
+
+            foreach (var dr in dataResultsDict)
+            {
+                DataResultModel drm = new DataResultModel
+                {
+                    X = dr.Value.X, Y = dr.Value.Y, DataSeriesType = dr.Key, ErrorMessage = dr.Value.ErrorMessage
+                };
+                GlobalScopedDataResultsModels.Add(drm);
+            }
+        }
+
+        public List<RoiResultModel> RoiResultModels { get; set; } = new List<RoiResultModel>();
+
+        public List<DataResultModel> GlobalScopedDataResultsModels { get; set; } = new List<DataResultModel>();
+
+
     }
 
     public class RoiResultModel
@@ -48,11 +84,18 @@ namespace TremAn3.Core
         public RoiResultModel(Results results, SelectionRectangle rect)
         {
             RoiModel = rect.RoiModel;
-            ResultsModel = results.ResultsModel;
+
+            foreach (var res in results.DataResultsDict)
+            {
+                DataResultModel r = new DataResultModel { X = res.Value.X, Y = res.Value.Y, DataSeriesType = res.Key, ErrorMessage = res.Value.ErrorMessage};
+                DataResultsModels.Add(r);
+            }
         }
 
         public RoiModel RoiModel { get; set; } = new RoiModel();
-        public ResultsModel ResultsModel  { get; set; }
+        //public ResultsModel ResultsModel  { get; set; }
+
+        public List<DataResultModel> DataResultsModels { get; set; } = new List<DataResultModel>();
 
 
 
@@ -68,6 +111,14 @@ namespace TremAn3.Core
         
     }
 
+    public class DataResultModel
+    {
+        public List<double> X { get; set; }
+        public List<double> Y { get; set; }
+        public string  ErrorMessage { get; set; }
+
+        public DataSeriesType DataSeriesType { get; set; }
+    }
 
     /// <summary>
     /// PSD is not saved here, cause it is computed from comx and comy...

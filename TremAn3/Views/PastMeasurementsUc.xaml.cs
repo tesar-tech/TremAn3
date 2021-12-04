@@ -17,18 +17,35 @@ using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace TremAn3.Views
+namespace TremAn3.Views;
+public sealed partial class PastMeasurementsUc : UserControl
 {
-    public sealed partial class PastMeasurementsUc : UserControl
+
+    private PastMeasurementsViewModel ViewModel => ViewModelLocator.Current.PastMeasurementsViewModel;
+
+    public PastMeasurementsUc()
     {
+        this.InitializeComponent();
+    }
 
-        private PastMeasurementsViewModel ViewModel => ViewModelLocator.Current.PastMeasurementsViewModel;
+    private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (ViewModel.IsSelectedMeasurementChangeCommingFromSetMethod) return;
+        var selectedMeasuremnt = (MeasurementViewModel)e.AddedItems.FirstOrDefault();
+        ViewModel.IsSelectedMeasurementChangeCommingFromUi = true;
+        await ViewModel.SelectedMeasurementVmSet(selectedMeasuremnt);
+        ViewModel.IsSelectedMeasurementChangeCommingFromUi = false;
+        //ListView_Measurements.ScrollIntoView(e.AddedItems[0]);
+    }
+}
 
-        public PastMeasurementsUc()
-        {
-            this.InitializeComponent();
-        }
-
-      
+public class ListViewWithScrollUp : ListView
+{
+    //this forces listview to scroll up when new item appears (new measurement is done).
+    //https://stackoverflow.com/a/43793412/1154773
+    protected override void OnItemsChanged(object e)
+    {
+        base.OnItemsChanged(e);
+        if (Items.Count > 0) ScrollIntoView(Items.First());
     }
 }
