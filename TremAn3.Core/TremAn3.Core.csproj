@@ -11,7 +11,7 @@
 
    <ItemGroup>
      <PackageReference Include="MathNet.Numerics" Version="4.15.0" ExcludeAssets="All" />
-     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
    </ItemGroup>
 
 	<ItemGroup>
