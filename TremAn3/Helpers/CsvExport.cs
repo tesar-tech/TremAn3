@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace TremAn3.Helpers
 {
+    using System.IO.Compression;
+
     public static class CsvExport
     {
         public enum CsvExportStatus
@@ -24,6 +26,7 @@ namespace TremAn3.Helpers
             savePicker.FileTypeChoices.Add("CSV", new List<string>() { ".csv" , ".txt" });
             // Default file name if the user does not type one in or select a file to replace
             savePicker.SuggestedFileName = suggestedName;
+
 
             Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
             if (file != null)

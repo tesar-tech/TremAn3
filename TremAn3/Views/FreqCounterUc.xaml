@@ -12,7 +12,7 @@
     xmlns:mux="using:Microsoft.UI.Xaml.Controls"
     xmlns:vm="using:TremAn3.ViewModels"
     xmlns:core="using:TremAn3.Core"
-    
+
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -160,7 +160,7 @@
                         <Style BasedOn="{StaticResource ListViewWrapPanelStyle}" TargetType="ListViewItem" />
                     </ListView.ItemContainerStyle>
                 </ListView>
-           
+
                 <Line/>
 
                 <Grid>
@@ -189,7 +189,7 @@
                 <Run Text="{x:Bind ViewModel.VideoMainFreq , Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:F2} Hz' }"/>
                 </TextBlock>-->
 
-                
+
 
                 <Line Margin="5,10,5,0"/>
 
@@ -236,7 +236,7 @@
                         </mux:TabViewItem>
 
                         <mux:TabViewItem  Header="Coherence" IsClosable="False">
-                            <oxyplot:PlotView 
+                            <oxyplot:PlotView
                                      Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
                                   Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetGlobalScopedPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Coherence ), Mode=OneWay}"/>
                         </mux:TabViewItem>
@@ -313,9 +313,8 @@
                     <Slider Maximum="100" Minimum="10" Value="{x:Bind ViewModel.PercentageOfResolution, Mode=TwoWay}" StepFrequency="1" Grid.Row="1" />
                 </Grid>
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="10.0" Click="{x:Bind ViewModel.ParentVm.ExportComXAsync}" Content="Export CoM X" />
-                    <Button Margin="0,0,10,0" Click="{x:Bind ViewModel.ParentVm.ExportComYAsync}" Content="Export CoM Y" />
-                    <Button Click="{x:Bind ViewModel.ParentVm.ExportPsdAsync}" Content="Export PSD" />
+                    <Button Margin="10.0" Click="{x:Bind ViewModel.ParentVm.ExportService.ExportComValuesAsync}" Content="Export CoM Values" />
+                    <Button Margin="0,0,10,0" Click="{x:Bind ViewModel.ParentVm.ExportService.ExportFreqAnalysisToCsvAsync}" Content="Export Freq Analysis" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

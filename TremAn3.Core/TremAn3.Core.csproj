@@ -10,8 +10,8 @@
   </ItemGroup>
 
    <ItemGroup>
-     <PackageReference Include="MathNet.Numerics" Version="4.15.0" ExcludeAssets="All" />
-     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+     <PackageReference Include="MathNet.Numerics" Version="5.0.0" ExcludeAssets="All" />
+     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
    </ItemGroup>
 
 	<ItemGroup>
