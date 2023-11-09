@@ -22,7 +22,6 @@ variables:
   nameOfApp: 'TremAn3'
   folderOfUWPproj: '$(nameOfApp)'
   nameOfUWPproj: '$(nameOfApp)'
-  certThumbPrint: 'BEB622613F451497DAA22C165A2DB53B07B0444E'
   azureSub: 'DreamsparkJoten'
 
 steps:
@@ -65,7 +64,6 @@ steps:
                  /p:AppInstallerUpdateFrequency=1 
                  /p:AppInstallerCheckForUpdateFrequency=OnApplicationRun
                  /p:AppxPackageSigningEnabled=true
-                 /p:PackageCertificateThumbprint="$(certThumbPrint)" 
                  /p:PackageCertificateKeyFile="$(signingCert.secureFilePath)"'
 
 - task: CopyFiles@2
