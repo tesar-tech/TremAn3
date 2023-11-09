@@ -20,7 +20,7 @@ TremaAn app measures frequency of tremor (e.g. Parkinsonian tremor) from video.
 - Displays plot with frquency progress
 - Displays plot with power spectral density
 - Displays plot with CoM values
-- Export values to .csv format
+- Export values to .csv format (CoM values and frequency analysis)
 - Set time range for computation
 - Controlled by touch, keyboard, mouse or pen
 - Basic info about video in the title of window

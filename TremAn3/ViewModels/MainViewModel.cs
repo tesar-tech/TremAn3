@@ -28,12 +28,14 @@ using GalaSoft.MvvmLight.Command;
 using TremAn3.Models;
 
 namespace TremAn3.ViewModels;
+
 public partial class MainViewModel : ViewModelBase
 {
     public MainViewModel(DataService dataService, MeasurementsService sms)
     {
         _DataService = dataService;
         _StoringMeasurementsService = sms;
+        ExportService = new ExportService();
         //FreqCounterViewModel = new FreqCounterViewModel(this);
     }
     //public event EventHandler NotificationHandler;
@@ -81,7 +83,7 @@ public partial class MainViewModel : ViewModelBase
         if (videoFile != null)
             await OpenStorageFile(videoFile, isMeasurementAlreadyDisplayed);
         else if (isMeasurementAlreadyDisplayed)
-             MediaPlayerViewModel.ChangeSourceToNothing();
+            MediaPlayerViewModel.ChangeSourceToNothing();
     }
 
     private async Task OpenStorageFile(StorageFile file, bool isMeasurementAlreadyDisplayed = false)
@@ -136,7 +138,7 @@ public partial class MainViewModel : ViewModelBase
         FreqCounterViewModel.ResetResultDisplay();
 
         FramesGrabber grabber = await FramesGrabber.CtorAsync(MediaPlayerViewModel.CurrentStorageFile, MediaPlayerViewModel.VideoPropsViewModel,
-                FreqCounterViewModel.PercentageOfResolution, TimeSpan.FromSeconds(FreqCounterViewModel.Minrange), TimeSpan.FromSeconds(FreqCounterViewModel.Maxrange));
+        FreqCounterViewModel.PercentageOfResolution, TimeSpan.FromSeconds(FreqCounterViewModel.Minrange), TimeSpan.FromSeconds(FreqCounterViewModel.Maxrange));
         var frameRate = MediaPlayerViewModel.VideoPropsViewModel.FrameRate;
 
         var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels;
@@ -144,7 +146,7 @@ public partial class MainViewModel : ViewModelBase
             ViewModelLocator.Current.DrawingRectanglesViewModel.AddMaxRoi();
 
         rois.ToList().ForEach(
-            x => x.InitializeCoM(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate, FreqCounterViewModel.PercentageOfResolution, x.Color));
+        x => x.InitializeCoM(grabber.DecodedPixelWidth, grabber.DecodedPixelHeight, frameRate, FreqCounterViewModel.PercentageOfResolution, x.Color));
         var comAlgs = rois.Select(x => x.ComputationViewModel.Algorithm);
 
         Stopwatch sw = new Stopwatch();
@@ -153,14 +155,14 @@ public partial class MainViewModel : ViewModelBase
 
         source = new CancellationTokenSource();
         await Computation(grabber, comAlgs, source);//this modifies comAlgs that are part of FreqCounterVm
-                                                    //Coherence coherenceBetween2Windows = new Coherence();
+        //Coherence coherenceBetween2Windows = new Coherence();
 
 
 
         if (!source.IsCancellationRequested)
         {
             Debug.WriteLine(sw.ElapsedMilliseconds);
-            MeasurementModel measurementModel = new (comAlgs)//comalgs are not computed
+            MeasurementModel measurementModel = new(comAlgs)//comalgs are not computed
             {
                 //Coherence = CurrentResultsViewModel.CoherenceResult,
                 Minrange = MediaPlayerViewModel.FreqCounterViewModel.Minrange,
@@ -170,8 +172,8 @@ public partial class MainViewModel : ViewModelBase
                 FreqProgressStep = FreqCounterViewModel.FreqProgressViewModel.Step,
             };
 
-            VideoFileModel vfm = new (MediaPlayerViewModel.VideoPropsViewModel, MediaPlayerViewModel.CurrentFalToken);
-            MeasurementViewModel vm = new (measurementModel, vfm);
+            VideoFileModel vfm = new(MediaPlayerViewModel.VideoPropsViewModel, MediaPlayerViewModel.CurrentFalToken);
+            MeasurementViewModel vm = new(measurementModel, vfm);
             vm.IsVectorDataLoaded = true;
             await PastMeasurementsViewModel.AddAndSelectVm(vm);//this will display and compute plots
             await _StoringMeasurementsService.GetModelFromVmAndSaveItToFile(vm);
@@ -193,7 +195,7 @@ public partial class MainViewModel : ViewModelBase
             if (source.IsCancellationRequested)
                 return;
 
-            if (frame1 == null)//on the beginning 
+            if (frame1 == null)//on the beginning
                 frame1 = new List<byte>((await grabber.GrabARGBFrameInCurrentIndexAsync()).data);
             else
                 frame1 = frame2;//because of diff
@@ -201,7 +203,7 @@ public partial class MainViewModel : ViewModelBase
             var (data, isData) = await grabber.GrabARGBFrameInCurrentIndexAsync();
             if (isData)
                 frame2 = new List<byte>(data);
-            else //creating new list every time, probably not best for performance
+            else//creating new list every time, probably not best for performance
                 break;
             foreach (var comAlg in comAlgs)
             {
@@ -219,50 +221,8 @@ public partial class MainViewModel : ViewModelBase
 
 
 
-    public async void ExportComXAsync() => await ExportToCsvAsync("comX");
-    public async void ExportComYAsync() => await ExportToCsvAsync("comY");
-    public async void ExportPsdAsync() => await ExportToCsvAsync("psd");
 
-    public async Task ExportToCsvAsync(string type)
-    {
-        var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels.Where(x => x.IsShowInPlot && x.ComputationViewModel.HasResult).ToList();
-        if (rois.Count == 0)
-        {
-            ViewModelLocator.Current.NoificationViewModel.SimpleNotification("Nothing to export");
-            return;
-        }
-
-        var separators = (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator);
-
-        List<double> one_x = null;
-        if (type == "comX" || type == "comY")
-            one_x = rois[0].ComputationViewModel.Algorithm.Results.FrameTimes.Select(x => x.TotalSeconds).ToList();
-        else if (type == "psd")
-            one_x = rois[0].ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.Psd].X;
-
-
-        List<List<double>> multiple_ys = null;
-
-        if (type == "comX")
-            multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList();
-        else if (type == "comY")
-            multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.ComY].Y).ToList();
-        else if (type == "psd")
-            multiple_ys = rois.Select(x => x.ComputationViewModel.Algorithm.Results.DataResultsDict[DataSeriesType.Psd].Y).ToList();
-
-        string xHeader = type == "psd" ? "freq [Hz]" : "time[s]";
-        string yHeader = type == "psd" ? "PSD" : type == "comX" ? "CoMX" : "CoMY";
-
-        var str = CsvBuilder.GetCvsFromOneX_MultipleY(xs: one_x, multiple_ys: multiple_ys, separators, headers: rois.Select(x => $"{yHeader}__{x.ToString()}").Prepend(xHeader));
-
-        //var str = CsvBuilder.GetCsvFromTwoLists(comAlg.ListComXNoAvg, comAlg.ListComYNoAvg, separators, "frame", "CoMX", "CoMY");
-        var name = $"{MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_{type}";
-        var (status, newName) = await CsvExport.ExportStringAsCsvAsync(str, name);
-        NotifBasedOnStatus(status, newName);
-    }
-
-
-    private void NotifBasedOnStatus(CsvExport.CsvExportStatus status, string filename)
+    public void NotifyBasedOnStatus(CsvExport.CsvExportStatus status, string filename)
     {
         switch (status)
         {
@@ -288,7 +248,9 @@ public partial class MainViewModel : ViewModelBase
     public string Title
     {
         get => _Title;
-        set { if (Set(ref _Title, value)) SetTitle?.Invoke(value); }
+        set {
+            if (Set(ref _Title, value)) SetTitle?.Invoke(value);
+        }
     }
     public Action<string> SetTitle;
     public void RefreshTitle(string newTitle = "")
@@ -302,6 +264,7 @@ public partial class MainViewModel : ViewModelBase
 
     private ICommand _getStorageItemsCommand;
     public ICommand GetStorageItemsCommand => _getStorageItemsCommand ?? (_getStorageItemsCommand = new RelayCommand<IReadOnlyList<IStorageItem>>(OnGetStorageItemAsync));
+    public ExportService ExportService;
 
     public async void OnGetStorageItemAsync(IReadOnlyList<IStorageItem> items)
     {
@@ -317,7 +280,4 @@ public partial class MainViewModel : ViewModelBase
         ViewModelLocator.Current.NoificationViewModel.SimpleNotification("File type isn't supported");
 
     }
-
-
-
 }
