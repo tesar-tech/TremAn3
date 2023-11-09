@@ -22,7 +22,7 @@ variables:
   nameOfApp: 'TremAn3'
   folderOfUWPproj: '$(nameOfApp)'
   nameOfUWPproj: '$(nameOfApp)'
-  azureSub: 'DreamsparkJoten'
+  azureSub: 'DreamsparkJoten2'
 
 steps:
 - task: NuGetToolInstaller@1
