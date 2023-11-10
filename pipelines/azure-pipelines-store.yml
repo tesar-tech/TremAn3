@@ -47,6 +47,8 @@ steps:
         '"App version is: $(versionOfApp)"'
     
 - task: store-publish@0
+  env:
+    NODE_TLS_REJECT_UNAUTHORIZED: 0 # https://github.com/microsoft/windows-dev-center-vsts-extension/issues/104
   inputs:
     serviceEndpoint: 'NaWinDevCenter'
     appId: '9NL11TZLSFDP'

@@ -24,6 +24,11 @@ Usual issues when updating TremAn app after longer period of time.
   - Pipelines->Library->Secure files
   - change the file
 - Then grant access to the file in the pipeline (pipeline will prompt you to do so when arriving to the task)
-- Change the certification thumbprint in csproj `<PackageCertificateThumbprint>NewThumbPrint</PackageCertificateThumbprint>`
-  - Not sure how to obtain in, other than the pipeline will fail with proper error message: `Certificate does not match supplied signing thumbprint`
 
+
+## App secrete expired
+
+- Go to https://partner.microsoft.com/en-us/dashboard/account/v3/usermanagement
+- Micorosoft Entra application
+- Click on the item, genereate new secret
+- Paste the secrete into Client Secret and password on Project settings-> Service connections -> NaWinDevCenter
