@@ -15,13 +15,13 @@
 
         <Grid  x:Name="GridRoi" Width="{x:Bind  ViewModel.Width,Mode=TwoWay}" Height="{x:Bind  ViewModel.Height,Mode=TwoWay}"  ManipulationMode="TranslateY,TranslateX"  >
         <Border  Background="#1e70ff00" BorderThickness="{x:Bind helpers:StaticConverters.IntToThickness( ViewModel.BorderThickness), Mode=OneWay}" BorderBrush="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}" />
-            <Rectangle Tag="lt" HorizontalAlignment="Left" VerticalAlignment="Top" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
-            <Rectangle Tag="rt" HorizontalAlignment="Right" VerticalAlignment="Top" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
-            <Rectangle Tag="rb" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
-            <Rectangle Tag="lb" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
+            <Rectangle Opacity="{x:Bind SettingsViewModel.RoiCornersOpacity}" Tag="lt" HorizontalAlignment="Left" VerticalAlignment="Top" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
+            <Rectangle Opacity="{x:Bind SettingsViewModel.RoiCornersOpacity}" Tag="rt" HorizontalAlignment="Right" VerticalAlignment="Top" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
+            <Rectangle Opacity="{x:Bind SettingsViewModel.RoiCornersOpacity}" Tag="rb" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
+            <Rectangle Opacity="{x:Bind SettingsViewModel.RoiCornersOpacity}" Tag="lb" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Fill="#328f00ff" ManipulationMode="TranslateY,TranslateX" ManipulationDelta="CornerRectangle_ManipulationDelta"    />
 
-           
-        <Button  Padding="{x:Bind helpers:StaticConverters.DoubleToThicknessWDivisor( ViewModel.CornerSize,4), Mode=OneWay}" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Top">
+
+        <Button Opacity="{x:Bind SettingsViewModel.RoiButtonsOpacity}"  Padding="{x:Bind helpers:StaticConverters.DoubleToThicknessWDivisor( ViewModel.CornerSize,4), Mode=OneWay}" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Top">
             <Viewbox >
                 <SymbolIcon  Symbol="Edit" Foreground="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}"/>
             </Viewbox>
@@ -46,11 +46,11 @@
             </Button.Flyout>
 
         </Button>
-        <Button  Click="{x:Bind  ViewModel.DeleteMe }" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Padding="{x:Bind helpers:StaticConverters.DoubleToThicknessWDivisor(ViewModel.CornerSize,5), Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+        <Button Opacity="{x:Bind SettingsViewModel.RoiButtonsOpacity}"  Click="{x:Bind  ViewModel.DeleteMe }" Height="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Width="{x:Bind  ViewModel.CornerSize,Mode=OneWay}" Padding="{x:Bind helpers:StaticConverters.DoubleToThicknessWDivisor(ViewModel.CornerSize,5), Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Bottom">
             <Viewbox >
                 <SymbolIcon    Symbol="Cancel" Foreground="{x:Bind helpers:StaticConverters.ColorToBrush(ViewModel.Color), Mode=OneWay}"/>
             </Viewbox>
         </Button>
-        
+
     </Grid>
 </UserControl>

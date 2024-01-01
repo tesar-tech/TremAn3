@@ -16,6 +16,8 @@ namespace TremAn3.ViewModels
         public PlotModel PlotModel { get; set; }
 
         public DataSeriesType DataSeriesType { get; set; }
+
+        public DataPoint? CurrentDataPoint { get; set; }
     }
 
     //public static class PlotModelCollectionExtensions

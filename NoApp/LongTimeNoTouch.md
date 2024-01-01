@@ -32,3 +32,10 @@ Usual issues when updating TremAn app after longer period of time.
 - Micorosoft Entra application
 - Click on the item, genereate new secret
 - Paste the secrete into Client Secret and password on Project settings-> Service connections -> NaWinDevCenter
+
+## The package "apppxbundle" is taking a long time to process.
+
+- In dashboard under submission, under packages with error. 
+- Dont understand it, but when I "refresh" the store association on the app it works:
+  https://stackoverflow.com/a/62310133/1154773
+

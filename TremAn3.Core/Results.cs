@@ -11,12 +11,11 @@ namespace TremAn3.Core
     /// </summary>
     public class Results
     {
-
         //public List<double> FreqProgress { get; set; } = new List<double>();
         //public List<double> FreqProgressTime { get; set; }
 
         public void SetComXAndFrameTimes(List<double> comx, List<double> frametimes)
-        { 
+        {
             ComX = comx;
             FrameTimes = frametimes.Select(x => TimeSpan.FromSeconds(x)).ToList();
         }
@@ -36,7 +35,6 @@ namespace TremAn3.Core
         //public ResultsModel ResultsModel { get;  set; } = new ResultsModel();
 
         public Dictionary<DataSeriesType, DataResult> DataResultsDict { get; set; } = new Dictionary<DataSeriesType, DataResult>();
-
     }
 
     public class DataResult
@@ -50,7 +48,6 @@ namespace TremAn3.Core
     }
     public enum DataSeriesType
     {
-        Psd, ComX, ComY, AmpSpec, FreqProgress, Coherence,Welch
+        Psd = 0, ComX = 1, ComY = 2, AmpSpec = 3, FreqProgress = 4, Coherence = 5, Welch = 6
     }
-
 }

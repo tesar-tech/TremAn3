@@ -7,9 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using ViewModels;
 
-public  class ExportService
+public class ExportService
 {
-    public  async void ExportComValuesAsync()
+    public async void ExportComValuesAsync()
     {
         var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels.Where(x => x.IsShowInPlot && x.ComputationViewModel.HasResult).ToList();
         if (rois.Count == 0)
@@ -43,11 +43,12 @@ public  class ExportService
         headers: yHeaders.Prepend("time[s]"));
 
         var mainViewModel = ViewModelLocator.Current.MainViewModel;
-        var name = $"{mainViewModel.MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_CoM_Values";
+        var name = $"{mainViewModel.MediaPlayerViewModel.VideoPropsViewModel.DisplayName}_" +
+            $"{ViewModelLocator.Current.PastMeasurementsViewModel.SelectedMeasurementVm.DateTime:yyyy-MM-dd_HH-mm-ss}_CoM_Values";
         var (status, newName) = await CsvExport.ExportStringAsCsvAsync(str, name);
         mainViewModel.NotifyBasedOnStatus(status, newName);
     }
-    public  async Task ExportFreqAnalysisToCsvAsync()
+    public async Task ExportFreqAnalysisToCsvAsync()
     {
         var rois = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels.Where(x => x.IsShowInPlot && x.ComputationViewModel.HasResult).ToList();
 
@@ -57,29 +58,34 @@ public  class ExportService
             return;
         }
 
-        List<List<double>> values = new();
-        List<string> headers = new();
+        List<List<double>> values = [];
+        List<string> headers = [];
 
-        foreach (var dataSeriesType in new List<DataSeriesType>
+        List<DataSeriesType> toExportDataSeries = [DataSeriesType.Psd, DataSeriesType.AmpSpec, DataSeriesType.Welch, DataSeriesType.FreqProgress];
+        foreach (var dataSeriesType in toExportDataSeries)
         {
-            DataSeriesType.Psd, DataSeriesType.AmpSpec, DataSeriesType.Welch, DataSeriesType.FreqProgress
-        })
-        {
-            var xValues = rois[0].ComputationViewModel.Algorithm.Results.DataResultsDict[dataSeriesType].X;
-            values.Add(xValues);
+            var roi0DataResult = rois[0].ComputationViewModel.Algorithm.Results.DataResultsDict[dataSeriesType];
+            if(!roi0DataResult.IsOk) continue;
+            values.Add(roi0DataResult.X);
             headers.Add($"freq[Hz]_{dataSeriesType}");
             foreach (var roi in rois)
             {
-                var yValues = roi.ComputationViewModel.Algorithm.Results.DataResultsDict[dataSeriesType].Y;
+                List<double> yValues = roi.ComputationViewModel.Algorithm.Results.DataResultsDict[dataSeriesType].Y;
                 values.Add(yValues);
                 headers.Add($"{dataSeriesType}__{roi}");
             }
         }
         var roi1Roi2Coherence = ViewModelLocator.Current.MainViewModel.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.DataResultsDict[DataSeriesType.Coherence];
-        values.Add(roi1Roi2Coherence.X);
-        headers.Add("freq[Hz]_coherence_roi1_roi2");
-        values.Add(roi1Roi2Coherence.Y);
-        headers.Add("coherence_roi1_roi2");
+        if (roi1Roi2Coherence.IsOk)
+        {
+            values.Add(roi1Roi2Coherence.X);
+            headers.Add("freq[Hz]_coherence_roi1_roi2");
+            values.Add(roi1Roi2Coherence.Y);
+            headers.Add("coherence_roi1_roi2");
+            values.Add([ViewModelLocator.Current.MainViewModel.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.CoherenceAverage]);
+            headers.Add("coherence_roi1_roi2_average");
+
+        }
 
         var str = CsvBuilder.GetCsvFromListOfLists(values: values,
         (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator), headers: headers);

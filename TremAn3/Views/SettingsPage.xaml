@@ -44,6 +44,14 @@
                     <TextBlock TextWrapping="Wrap" Width="300" x:Uid="settings_loadvideoOnstartuponcontent" Text="Load recent opened video on app startup" />
                 </ToggleSwitch.OnContent>
             </ToggleSwitch>
+
+            <TextBlock Style="{ThemeResource TitleTextBlockStyle}" Text="Others"></TextBlock>
+
+            <TextBlock VerticalAlignment="Center" Text="Roi Buttons Opacity:"/>
+            <Slider Value="{x:Bind ViewModel.RoiButtonsOpacity, Mode=TwoWay}" Minimum="0" Maximum="1" StepFrequency="0.1" Width="100"/>
+            <TextBlock VerticalAlignment="Center" Text="Roi Corners Opacity:"/>
+            <Slider Value="{x:Bind ViewModel.RoiCornersOpacity, Mode=TwoWay}" Minimum="0" Maximum="1" StepFrequency="0.1" Width="100"/>
+
             <TextBlock
                 x:Uid="Settings_Personalization"
                 Style="{ThemeResource SubtitleTextBlockStyle}" />

@@ -18,17 +18,20 @@ using Windows.UI.Xaml.Navigation;
 
 namespace TremAn3.Views
 {
+    using OxyPlot.Windows;
+    using Windows.System;
+
     public sealed partial class FreqCounterUc : UserControl
     {
 
         private TeachingTipsViewModel TeachingTipsViewModel => ViewModelLocator.Current.TeachingTipsViewModel;
 
         public FreqCounterViewModel ViewModel{ get; set; }
+
+        public SettingsViewModel SettingsViewModel => ViewModelLocator.Current.SettingsViewModel;
         public FreqCounterUc()
         {
             this.InitializeComponent();
         }
-
-      
     }
 }

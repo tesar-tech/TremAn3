@@ -31,7 +31,7 @@ namespace TremAn3.ViewModels
         private bool _IsRoiSameAsResult;
 
         //if roi is moved, result doesnt meet the roi, so result is deleted
-        //setting to false will delete plots 
+        //setting to false will delete plots
         public bool IsRoiSameAsResult
         {
             get => _IsRoiSameAsResult;
@@ -108,6 +108,7 @@ namespace TremAn3.ViewModels
         {
             ItemsSource = itemSource,
             Color = color,
+            TrackerFormatString = "{0}\n{1}: {2:0.000}\n{3}: {4:0.000}",
             StrokeThickness = parent.IsShowInPlot ? defaultStrokeThickness : notShownStrokeThickness
         };
 
