@@ -30,13 +30,13 @@ namespace TremAn3.Services
             mainVm.MediaPlayerViewModel.MediaControllingViewModel.PositionSeconds = measurementModel.PositionSeconds;
             mainVm.MediaPlayerViewModel.FreqCounterViewModel.Maxrange = measurementModel.Maxrange;
             mainVm.MediaPlayerViewModel.FreqCounterViewModel.Minrange = measurementModel.Minrange;
-         
+
             mainVm.MediaPlayerViewModel.FreqCounterViewModel.FreqProgressViewModel.SegmnetSize = measurementModel.FreqProgressSegmnetSize;
 
             ViewModelLocator.Current.DrawingRectanglesViewModel.RemoveRois();
             foreach (var roiRes in measurementModel.VectorsDataModel.RoiResultModels)
             {
-                
+
                 //this creates roi on video
                 var selvm = ViewModelLocator.Current.DrawingRectanglesViewModel.CreateROIFromModel(roiRes);
 
@@ -47,17 +47,17 @@ namespace TremAn3.Services
 
             foreach (var gsdm in measurementModel.VectorsDataModel.GlobalScopedDataResultsModels)
             {
-                DataResult dr = new DataResult
+                DataResult dr = new()
                 {
                     Y = gsdm.Y,
                     X = gsdm.X,
                     ErrorMessage = gsdm.ErrorMessage
                 };
-                rvm.DataResultsDict.Add(gsdm.DataSeriesType, dr);
+                 rvm.DataResultsDict.Add(gsdm.DataSeriesType, dr);
             }
 
             mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel = rvm;
-
+            await mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.ComputeAdditionalResults();
 
 
             await mainVm.FreqCounterViewModel.DisplayPlots(false);

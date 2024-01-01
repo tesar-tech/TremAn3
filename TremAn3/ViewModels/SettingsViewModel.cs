@@ -17,7 +17,7 @@ namespace TremAn3.ViewModels
     public class SettingsViewModel : ViewModelBase
     {
 
-    
+
 
         private string _DecimalSeparator = LocalSettings.Read(".", nameof(DecimalSeparator));
 
@@ -32,7 +32,7 @@ namespace TremAn3.ViewModels
                     _DecimalSeparator = value;
                     LocalSettings.Write(value);
                 }
-               
+
                 RaisePropertyChanged();
             }
         }
@@ -104,6 +104,41 @@ namespace TremAn3.ViewModels
             set
             {
                 if (!Set(ref _IsLoadRecentVideoOnAppStart, value)) return;
+                LocalSettings.Write(value);
+            }
+        }
+
+        private double _RoiButtonsOpacity = LocalSettings.Read(1.0, nameof(RoiButtonsOpacity));
+
+        public double RoiButtonsOpacity
+        {
+            get => _RoiButtonsOpacity;
+            set
+            {
+                if (!Set(ref _RoiButtonsOpacity, value)) return;
+                LocalSettings.Write(value);
+            }
+        }
+
+        private int _SpectralAnalysisSelectedIndex = LocalSettings.Read(0, nameof(SpectralAnalysisSelectedIndex));
+
+        public int SpectralAnalysisSelectedIndex
+        {
+            get => _SpectralAnalysisSelectedIndex;
+            set
+            {
+                if (!Set(ref _SpectralAnalysisSelectedIndex, value)) return;
+                LocalSettings.Write(value, nameof(SpectralAnalysisSelectedIndex));
+            }
+        }
+        private double _RoiCornersOpacity = LocalSettings.Read(1.0, nameof(RoiCornersOpacity));
+
+        public double RoiCornersOpacity
+        {
+            get => _RoiCornersOpacity;
+            set
+            {
+                if (!Set(ref _RoiCornersOpacity, value)) return;
                 LocalSettings.Write(value);
             }
         }

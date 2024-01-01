@@ -63,7 +63,9 @@ namespace TremAn3.Helpers
         }
 
         public static string DoubleDoubleToStringPercent(double val) => $"{val:00.00} % ";
-       
+
+        public static string DoubleFormatter(double val) => $"{val:0.00}";
+
 
 
 

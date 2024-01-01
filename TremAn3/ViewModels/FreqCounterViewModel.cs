@@ -70,10 +70,7 @@ namespace TremAn3.ViewModels
         }
 
 
-        public DrawingRectanglesViewModel DrawingRectanglesViewModel
-        {
-            get { return ViewModelLocator.Current.DrawingRectanglesViewModel; }
-        }
+        public DrawingRectanglesViewModel DrawingRectanglesViewModel => ViewModelLocator.Current.DrawingRectanglesViewModel;
 
 
         private double _ProgressPercentage;
@@ -90,9 +87,17 @@ namespace TremAn3.ViewModels
             PlotModelsContainerViewModel.InvalidateAllPlots(true);
         }
 
-        public FreqProgressViewModel FreqProgressViewModel { get; set; } = new FreqProgressViewModel();
+        public FreqProgressViewModel FreqProgressViewModel { get; set; } = new();
 
-        public ResultsViewModel CurrentGlobalScopedResultsViewModel { get; set; } = new ResultsViewModel();
+
+        private ResultsViewModel _CurrentGlobalScopedResultsViewModel = new();
+
+        public ResultsViewModel CurrentGlobalScopedResultsViewModel
+        {
+            get => _CurrentGlobalScopedResultsViewModel;
+            set => Set(ref _CurrentGlobalScopedResultsViewModel, value);
+        }
+
 
 
         public async Task DisplayPlots(bool doComputation, DataSeriesType? dataSeriesType = null)
@@ -172,6 +177,8 @@ namespace TremAn3.ViewModels
                         s.ItemsSource = (res.X.Zip(res.Y, (x, y) => new DataPoint(x, y)));
                         pwmt.PlotModel.Series.Add(s);
                         s.Color = OxyColors.Black;
+                        s.TrackerFormatString = "{0}\n{1}: {2:0.000}\n{3}: {4:0.000}";
+
                     }
                     else
                     {
@@ -216,7 +223,7 @@ namespace TremAn3.ViewModels
         //        }
 
         //        freqProgressPlotModel.Series.Add(comp.LineSeriesDict[DataSeriesType.FreqProgress]);
-        //        //get maximum to better view 
+        //        //get maximum to better view
         //        //maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max() ? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
         //    }
 

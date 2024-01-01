@@ -19,46 +19,60 @@
 
     <UserControl.Resources>
         <Style TargetType="Line" BasedOn="{StaticResource LineSeparatorStyle }">
-            <Setter Property="X1" Value="0"/>
-            <Setter Property="X2" Value="1"/>
-            <Setter Property="Stretch" Value="Fill"/>
-            <Setter Property="Stroke" Value="{ThemeResource MenuFlyoutSeparatorThemeBrush}"/>
-            <Setter Property="Margin" Value="5,10"/>
-            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="X1" Value="0" />
+            <Setter Property="X2" Value="1" />
+            <Setter Property="Stretch" Value="Fill" />
+            <Setter Property="Stroke" Value="{ThemeResource MenuFlyoutSeparatorThemeBrush}" />
+            <Setter Property="Margin" Value="5,10" />
+            <Setter Property="StrokeThickness" Value="1" />
         </Style>
-        <Style x:Key="ListViewWrapPanelStyle"  TargetType="ListViewItem" >
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="MinWidth" Value="0"/>
+        <Style x:Key="ListViewWrapPanelStyle" TargetType="ListViewItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="MinWidth" Value="0" />
         </Style>
         <toolkitConverters:StringFormatConverter x:Key="StringFormatConverter"></toolkitConverters:StringFormatConverter>
 
         <mux:TeachingTip x:Name="TtCountFreq"
-            Target="{x:Bind FreqCounterButton}"
-            IsOpen="{x:Bind TeachingTipsViewModel.IsCountFreqTtipOpened, Mode=TwoWay}"
-            PreferredPlacement="Bottom"
-            CloseButtonClick="{x:Bind TeachingTipsViewModel.TtCountFreqClosed}"
-            CloseButtonContent="Next"
-            Title="Start computation here">
+                         Target="{x:Bind FreqCounterButton}"
+                         IsOpen="{x:Bind TeachingTipsViewModel.IsCountFreqTtipOpened, Mode=TwoWay}"
+                         PreferredPlacement="Bottom"
+                         CloseButtonClick="{x:Bind TeachingTipsViewModel.TtCountFreqClosed}"
+                         CloseButtonContent="Next"
+                         Title="Start computation here">
         </mux:TeachingTip>
+        <ControlTemplate x:Key="TrackerTemplate">
+            <oxyplot:TrackerControl
+                                    Position="{Binding Position}" LineExtents="{Binding PlotModel.PlotArea}">
+                <oxyplot:TrackerControl.Background>
+                    <SolidColorBrush Color="#55aaaa00" />
+                </oxyplot:TrackerControl.Background>
+                <oxyplot:TrackerControl.Content>
+                    <TextBlock Opacity="0.8" FontSize="12" Text="{Binding}" Margin="3" />
+                </oxyplot:TrackerControl.Content>
+            </oxyplot:TrackerControl>
+        </ControlTemplate>
+
     </UserControl.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="ButtonObsoleteResultVisialStates">
                 <VisualState x:Name="NotObsoleteResult" />
                 <VisualState x:Name="AtLeastOneResultIsObsolete">
-                    <Storyboard x:Name="FreqCOunterButtonBlinking" RepeatBehavior="Forever" >
-                        <ColorAnimationUsingKeyFrames   Storyboard.TargetName="FreqCounterButton" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)">
-                            <EasingColorKeyFrame KeyTime="00:00:00" Value="#01999999"/>
+                    <Storyboard x:Name="FreqCOunterButtonBlinking" RepeatBehavior="Forever">
+                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="FreqCounterButton"
+                                                      Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)">
+                            <EasingColorKeyFrame KeyTime="00:00:00" Value="#01999999" />
                             <!--Color can't be fully transparent. It will not run the storyboard secon time.. Dont know why, some wierd bug..??-->
-                            <EasingColorKeyFrame KeyTime="00:00:01" Value="#FF887700"/>
+                            <EasingColorKeyFrame KeyTime="00:00:01" Value="#FF887700" />
                             <!--something between for dark and light theme-->
-                            <EasingColorKeyFrame KeyTime="00:00:01.7" Value="#00999999"/>
+                            <EasingColorKeyFrame KeyTime="00:00:01.7" Value="#00999999" />
                         </ColorAnimationUsingKeyFrames>
                     </Storyboard>
                     <VisualState.StateTriggers>
-                        <StateTrigger  IsActive="{x:Bind  h:StaticConverters.InverseBool (ViewModel.IsAllResultsNotObsolete), Mode=OneWay}" />
+                        <StateTrigger
+                            IsActive="{x:Bind  h:StaticConverters.InverseBool (ViewModel.IsAllResultsNotObsolete), Mode=OneWay}" />
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
@@ -66,10 +80,11 @@
                 <VisualState x:Name="XcomNotBigger" />
                 <VisualState x:Name="XcomBigger">
                     <VisualState.Setters>
-                        <Setter  Target="XComPlotView.Height" Value="222"/>
+                        <Setter Target="XComPlotView.Height" Value="222" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
-                        <StateTrigger  IsActive="{x:Bind  h:StaticConverters.NullBoolToBool( XComToggleBigger.IsChecked), Mode=OneWay}" />
+                        <StateTrigger
+                            IsActive="{x:Bind  h:StaticConverters.NullBoolToBool( XComToggleBigger.IsChecked), Mode=OneWay}" />
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
@@ -77,10 +92,11 @@
                 <VisualState x:Name="YcomNotBigger" />
                 <VisualState x:Name="YcomBigger">
                     <VisualState.Setters>
-                        <Setter  Target="YComPlotView.Height" Value="222"/>
+                        <Setter Target="YComPlotView.Height" Value="222" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
-                        <StateTrigger  IsActive="{x:Bind  h:StaticConverters.NullBoolToBool( YComToggleBigger.IsChecked), Mode=OneWay}" />
+                        <StateTrigger
+                            IsActive="{x:Bind  h:StaticConverters.NullBoolToBool( YComToggleBigger.IsChecked), Mode=OneWay}" />
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
@@ -88,10 +104,11 @@
                 <VisualState x:Name="FreqProgressNotBigger" />
                 <VisualState x:Name="FreqProgressBigger">
                     <VisualState.Setters>
-                        <Setter  Target="FreqProgressPlotView.Height" Value="222"/>
+                        <Setter Target="FreqProgressPlotView.Height" Value="222" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
-                        <StateTrigger  IsActive="{x:Bind  h:StaticConverters.NullBoolToBool( FreqProgressToggleBigger.IsChecked), Mode=OneWay}" />
+                        <StateTrigger
+                            IsActive="{x:Bind  h:StaticConverters.NullBoolToBool( FreqProgressToggleBigger.IsChecked), Mode=OneWay}" />
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
@@ -120,34 +137,44 @@
                 <VisualState x:Name="FreqProgressIsOkVState" />
                 <VisualState x:Name="FreqProgressNotOkVstate">
                     <VisualState.Setters>
-                        <Setter  Target="FreqProgressStatusMessageTxbl.Foreground" Value="Red"/>
+                        <Setter Target="FreqProgressStatusMessageTxbl.Foreground" Value="Red" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
-                        <StateTrigger   IsActive="{x:Bind h:StaticConverters.InverseBool( ViewModel.FreqProgressViewModel.IsFreqProgressParametersOk), Mode=OneWay}" />
+                        <StateTrigger
+                            IsActive="{x:Bind h:StaticConverters.InverseBool( ViewModel.FreqProgressViewModel.IsFreqProgressParametersOk), Mode=OneWay}" />
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <ScrollViewer >
+        <ScrollViewer>
 
-            <StackPanel   Orientation="Vertical"   Padding="5" >
+            <StackPanel Orientation="Vertical" Padding="5">
 
-                <Button  x:Name="FreqCounterButton" Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ViewModel.ParentVm.IsVideoFileLoaded),Mode=OneWay}"  BorderThickness="4" Content="Compute" Margin="5"   Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True" BorderBrush="#00000000" >
+                <Button x:Name="FreqCounterButton"
+                        Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ViewModel.ParentVm.IsVideoFileLoaded),Mode=OneWay}"
+                        BorderThickness="4" Content="Compute" Margin="5"
+                        Click="{x:Bind ViewModel.ParentVm.CountFreqAsync}" AllowFocusWhenDisabled="True"
+                        BorderBrush="#00000000">
                     <Button.KeyboardAccelerators>
-                        <KeyboardAccelerator x:Name="CancelComputationKeyBoardAccelerator" Key="Escape" IsEnabled="False"/>
+                        <KeyboardAccelerator x:Name="CancelComputationKeyBoardAccelerator" Key="Escape"
+                                             IsEnabled="False" />
                     </Button.KeyboardAccelerators>
                 </Button>
-                <TextBlock Foreground="{ThemeResource SystemAccentColor}" TextWrapping="Wrap" Visibility="{x:Bind h:StaticConverters.BoolToVisiblityInverse(ViewModel.ParentVm.IsVideoFileLoaded),Mode=OneWay}">
-                    Video file is no longer available. It has probably been deleted or moved.<LineBreak/>
+                <TextBlock Foreground="{ThemeResource SystemAccentColor}" TextWrapping="Wrap"
+                           Visibility="{x:Bind h:StaticConverters.BoolToVisiblityInverse(ViewModel.ParentVm.IsVideoFileLoaded),Mode=OneWay}">
+                    Video file is no longer available. It has probably been deleted or moved.<LineBreak />
                     <Run FontWeight="Bold">You can still review the measurement.</Run>
                 </TextBlock>
-                <ListView x:Name="ListViewWithChbxsPlots"  IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2" ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}"  >
+                <ListView x:Name="ListViewWithChbxsPlots" IsItemClickEnabled="False" SelectionMode="None" Grid.Row="2"
+                          ItemsSource="{x:Bind ViewModel.DrawingRectanglesViewModel.SelectionRectanglesViewModels, Mode=OneWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="vm:SelectionRectangleViewModel">
                             <!--<Button Content="{x:Bind ChannelMark,Mode=OneWay,  Converter={StaticResource IntToChannelMarkConverter}}" HorizontalAlignment="Stretch"  Click="{x:Bind RestoreMe.Invoke}"/>-->
-                            <Border Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ComputationViewModel.HasResult),Mode=OneWay}" Background="{x:Bind h:StaticConverters.ColorToBrush(Color)}" Padding="7,0,0,0">
-                                <CheckBox MinWidth="0" IsChecked="{x:Bind IsShowInPlot, Mode=TwoWay}"/>
+                            <Border
+                                Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ComputationViewModel.HasResult),Mode=OneWay}"
+                                Background="{x:Bind h:StaticConverters.ColorToBrush(Color)}" Padding="7,0,0,0">
+                                <CheckBox MinWidth="0" IsChecked="{x:Bind IsShowInPlot, Mode=TwoWay}" />
                             </Border>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -161,27 +188,32 @@
                     </ListView.ItemContainerStyle>
                 </ListView>
 
-                <Line/>
+                <Line />
 
                 <Grid>
-                    <TextBlock Text="CoM X movement:" HorizontalAlignment="Left"/>
-                    <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="XComToggleBigger" Content="Bigger" />
+                    <TextBlock Text="CoM X movement:" HorizontalAlignment="Left" />
+                    <ToggleButton Style="{StaticResource BiggerButtonStule}" x:Name="XComToggleBigger" Content="Bigger" />
 
                 </Grid>
-                <oxyplot:PlotView x:Name="XComPlotView"  Height="100"
-                Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.ComX ), Mode=OneWay}"/>
+                <oxyplot:PlotView x:Name="XComPlotView" Height="100" DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.ComX ), Mode=OneWay}"/>
 
-                <Slider Margin="15,0,3,0" IsEnabled="True" StepFrequency="0.05"  Minimum="{x:Bind ViewModel.Minrange, Mode=OneWay}" Maximum="{x:Bind ViewModel.Maxrange, Mode=OneWay}" Value="{x:Bind ViewModel.SliderPlotValue, Mode=TwoWay}"  >
+                <!-- <TextBlock Text="{x:Bind ViewModel.PlotModelsContainerViewModel.CurrentDataPointString, Mode=OneWay}" /> -->
+
+                <Slider Margin="15,0,3,0" IsEnabled="True" StepFrequency="0.05"
+                        Minimum="{x:Bind ViewModel.Minrange, Mode=OneWay}"
+                        Maximum="{x:Bind ViewModel.Maxrange, Mode=OneWay}"
+                        Value="{x:Bind ViewModel.SliderPlotValue, Mode=TwoWay}">
 
                 </Slider>
-                <Line/>
+                <Line />
 
                 <Grid>
-                    <TextBlock Text="CoM Y movement:"/>
+                    <TextBlock Text="CoM Y movement:" />
                     <ToggleButton Style="{StaticResource BiggerButtonStule}" x:Name="YComToggleBigger" Content="Bigger" />
                 </Grid>
-                <oxyplot:PlotView  x:Name="YComPlotView"  Height="100"
-                Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.ComY ), Mode=OneWay}"/>
+                <oxyplot:PlotView x:Name="YComPlotView" Height="100" DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.ComY ), Mode=OneWay}" />
 
 
                 <!--<TextBlock Grid.Row="1" Visibility="{x:Bind h:StaticConverters.FreqDoubleToVisibility(ViewModel.VideoMainFreq), Mode=OneWay}">
@@ -190,55 +222,69 @@
                 </TextBlock>-->
 
 
+                <Line Margin="5,10,5,0" />
 
-                <Line Margin="5,10,5,0"/>
-
-                <mux:TabView x:Name="SpectralAnalysisTabView" SelectedIndex="0"  TabWidthMode="SizeToContent"    IsAddTabButtonVisible="False" >
+                <mux:TabView x:Name="SpectralAnalysisTabView" SelectedIndex="{x:Bind SettingsViewModel.SpectralAnalysisSelectedIndex, Mode=TwoWay}" TabWidthMode="SizeToContent"
+                             IsAddTabButtonVisible="False">
                     <mux:TabView.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.ThemeDictionaries>
                                 <ResourceDictionary x:Key="Default">
-                                    <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{ThemeResource SystemAccentColor}" />
+                                    <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected"
+                                                     Color="{ThemeResource SystemAccentColor}" />
                                 </ResourceDictionary>
                                 <ResourceDictionary x:Key="Dark">
-                                    <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{ThemeResource SystemAccentColor}" />
+                                    <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected"
+                                                     Color="{ThemeResource SystemAccentColor}" />
                                 </ResourceDictionary>
                                 <ResourceDictionary x:Key="Light">
-                                    <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{ThemeResource SystemAccentColor}" />
+                                    <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected"
+                                                     Color="{ThemeResource SystemAccentColor}" />
                                 </ResourceDictionary>
                             </ResourceDictionary.ThemeDictionaries>
                         </ResourceDictionary>
                     </mux:TabView.Resources>
                     <mux:TabView.TabStripHeader>
                         <StackPanel Orientation="Horizontal">
-                            <Button Click="{x:Bind ViewModel.DisplaySpectralAnalysisInfo}"   Background="#00000000"  Padding="0" BorderThickness="0" Margin="4,6"  VerticalAlignment="Bottom">
+                            <Button Click="{x:Bind ViewModel.DisplaySpectralAnalysisInfo}" Background="#00000000"
+                                    Padding="0" BorderThickness="0" Margin="4,6" VerticalAlignment="Bottom">
                                 <FontIcon Glyph="&#xF167;" />
                             </Button>
-                            <TextBlock Text="Spectral Analysis:" VerticalAlignment="Bottom" Margin="4,6" Style="{ThemeResource BaseTextBlockStyle}" />
+                            <TextBlock Text="Spectral Analysis:" VerticalAlignment="Bottom" Margin="4,6"
+                                       Style="{ThemeResource BaseTextBlockStyle}" />
                         </StackPanel>
                     </mux:TabView.TabStripHeader>
                     <mux:TabView.TabItems>
 
-                        <mux:TabViewItem  Header="PSD" IsClosable="False">
-                            <oxyplot:PlotView x:Name="PsdPlotView" Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
-                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Psd ), Mode=OneWay}"/>
+                        <mux:TabViewItem Header="PSD" IsClosable="False">
+                            <oxyplot:PlotView x:Name="PsdPlotView" DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                                              Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
+                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Psd ), Mode=OneWay}" />
                         </mux:TabViewItem>
 
                         <mux:TabViewItem Header="Welch" IsClosable="False">
-                            <oxyplot:PlotView  Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
-                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Welch ), Mode=OneWay}"/>
+                            <oxyplot:PlotView DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                                              Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
+                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Welch ), Mode=OneWay}" />
                         </mux:TabViewItem>
 
-                        <mux:TabViewItem  Header="Amp Spectrum" IsClosable="False">
-                            <oxyplot:PlotView x:Name="AmpSpecPlotView"
-                                     Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
-                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.AmpSpec ), Mode=OneWay}"/>
+                        <mux:TabViewItem Header="Amp Spectrum" IsClosable="False">
+                            <oxyplot:PlotView x:Name="AmpSpecPlotView" DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                                              Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
+                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.AmpSpec ), Mode=OneWay}" />
                         </mux:TabViewItem>
 
-                        <mux:TabViewItem  Header="Coherence" IsClosable="False">
-                            <oxyplot:PlotView
-                                     Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
-                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetGlobalScopedPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Coherence ), Mode=OneWay}"/>
+                        <mux:TabViewItem Header="Coherence" IsClosable="False">
+                            <StackPanel Orientation="Vertical">
+
+                            <oxyplot:PlotView DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                                              Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
+                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetGlobalScopedPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Coherence ), Mode=OneWay}" />
+                            <TextBlock >
+                                <Run Text="Average:"/>
+                                <Run Text="{x:Bind h:StaticConverters.DoubleFormatter(ViewModel.CurrentGlobalScopedResultsViewModel.CoherenceAverage), Mode=OneWay}"/>
+                            </TextBlock>
+                            </StackPanel>
                         </mux:TabViewItem>
 
                         <!--Model="{x:Bind  ViewModel.PlotModelsContainerViewModel.PlotModels[core:DataSeriesType.AmpSpec] , Mode=OneWay}"/>-->
@@ -247,74 +293,93 @@
                     </mux:TabView.TabItems>
 
                     <mux:TabView.TabStripFooter>
-                        <ToggleButton Style="{StaticResource BiggerButtonStule}"   x:Name="SpectralAnalysisToggleBigger" Content="Bigger" />
+                        <ToggleButton Style="{StaticResource BiggerButtonStule}" x:Name="SpectralAnalysisToggleBigger"
+                                      Content="Bigger" />
                     </mux:TabView.TabStripFooter>
                 </mux:TabView>
 
-                <Line/>
+                <Line />
 
 
                 <Grid Margin="0,5,0,0">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Bottom" Text="Main Frequency Progress"/>
-                        <Button VerticalAlignment="Bottom"  x:Name="FreqProgressSettingButton" Padding="1">
-                            <Viewbox  Height="14" Width="14">
-                                <SymbolIcon  Symbol="Setting"/>
+                        <TextBlock VerticalAlignment="Bottom" Text="Main Frequency Progress" />
+                        <Button VerticalAlignment="Bottom" x:Name="FreqProgressSettingButton" Padding="1">
+                            <Viewbox Height="14" Width="14">
+                                <SymbolIcon Symbol="Setting" />
                             </Viewbox>
                             <Button.Flyout>
                                 <Flyout>
                                     <StackPanel Orientation="Vertical">
-                                        <ComboBox Header="fft length" SelectionChanged="{x:Bind ViewModel.FreqProgressViewModel.FftLengthChanged}" SelectedValue="{x:Bind  ViewModel.FreqProgressViewModel.SegmnetSize,Mode=TwoWay}" Width="200">
+                                        <ComboBox Header="fft length"
+                                                  SelectionChanged="{x:Bind ViewModel.FreqProgressViewModel.FftLengthChanged}"
+                                                  SelectedValue="{x:Bind  ViewModel.FreqProgressViewModel.SegmnetSize,Mode=TwoWay}"
+                                                  Width="200">
                                             <x:Int32>64</x:Int32>
                                             <x:Int32>128</x:Int32>
                                             <x:Int32>256</x:Int32>
                                             <x:Int32>512</x:Int32>
                                             <x:Int32>1024</x:Int32>
                                         </ComboBox>
-                                        <mux:NumberBox Header="Step for progress computation:"  Minimum="1" ValueChanged="{x:Bind ViewModel.FreqProgressViewModel.StepChanged}"
-                                         Value="{x:Bind ViewModel.FreqProgressViewModel.Step, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SpinButtonPlacementMode="Inline" SmallChange="1" LargeChange="10" />
+                                        <mux:NumberBox Header="Step for progress computation:" Minimum="1"
+                                                       ValueChanged="{x:Bind ViewModel.FreqProgressViewModel.StepChanged}"
+                                                       Value="{x:Bind ViewModel.FreqProgressViewModel.Step, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       SpinButtonPlacementMode="Inline" SmallChange="1"
+                                                       LargeChange="10" />
                                     </StackPanel>
                                 </Flyout>
                             </Button.Flyout>
                         </Button>
                     </StackPanel>
-                    <ToggleButton Style="{StaticResource BiggerButtonStule}"  x:Name="FreqProgressToggleBigger" Content="Bigger" />
+                    <ToggleButton Style="{StaticResource BiggerButtonStule}" x:Name="FreqProgressToggleBigger"
+                                  Content="Bigger" />
                 </Grid>
-                <TextBlock Margin="5,0,0,0" FontSize="10" TextWrapping="WrapWholeWords"  x:Name="FreqProgressStatusMessageTxbl" Text="{x:Bind ViewModel.FreqProgressViewModel.StatusMessage, Mode=OneWay}" ></TextBlock>
-                <oxyplot:PlotView x:Name="FreqProgressPlotView"   Height="100"
-                Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.FreqProgress ), Mode=OneWay}"/>
+                <TextBlock Margin="5,0,0,0" FontSize="10" TextWrapping="WrapWholeWords"
+                           x:Name="FreqProgressStatusMessageTxbl"
+                           Text="{x:Bind ViewModel.FreqProgressViewModel.StatusMessage, Mode=OneWay}">
+                </TextBlock>
+                <oxyplot:PlotView x:Name="FreqProgressPlotView" Height="100" DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.FreqProgress ), Mode=OneWay}" />
 
                 <!--oxyplot bug numero dont know: it cannot be in grid or cannot be without height?? so it is separated from nodata-->
                 <!--<TextBlock Canvas.ZIndex="1" Grid.Row="3" Margin="0,-200,0,0" Text="No data" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Style="{StaticResource TitleTextBlockStyle}" Visibility="{x:Bind  helpers:StaticConverters.BoolToVisiblityInverse(ViewModel.FreqCounterViewModel.IsDataAvailableForPlot), Mode=OneWay}"/>-->
                 <Grid Grid.Row="4">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <!--<TextBlock Text="Time range:" Style="{StaticResource SubtitleTextBlockStyle}" />-->
 
-                    <TextBlock Grid.Row="2" HorizontalAlignment="Left" Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Minrange), Mode=OneWay}"/>
-                    <TextBlock Grid.Row="2" HorizontalAlignment="Right" Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Maxrange), Mode=OneWay}"/>
+                    <TextBlock Grid.Row="2" HorizontalAlignment="Left"
+                               Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Minrange), Mode=OneWay}" />
+                    <TextBlock Grid.Row="2" HorizontalAlignment="Right"
+                               Text="{x:Bind h:StaticConverters.DoubleToTimeConverter(ViewModel.Maxrange), Mode=OneWay}" />
                 </Grid>
 
                 <Grid Grid.Row="4">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock  ToolTipService.ToolTip="Lower => faster; Higher => more accurate " Style="{StaticResource SubtitleTextBlockStyle}" >
-                    <Run Text="Percentage of Resolution ("/><Run Text="{x:Bind ViewModel.PercentageOfResolution.ToString(), Mode=OneWay}" />
-                    <Run Text="%)"/>
+                    <TextBlock ToolTipService.ToolTip="Lower => faster; Higher => more accurate "
+                               Style="{StaticResource SubtitleTextBlockStyle}">
+                        <Run Text="Percentage of Resolution (" />
+                        <Run Text="{x:Bind ViewModel.PercentageOfResolution.ToString(), Mode=OneWay}" />
+                        <Run Text="%)" />
                     </TextBlock>
-                    <Slider Maximum="100" Minimum="10" Value="{x:Bind ViewModel.PercentageOfResolution, Mode=TwoWay}" StepFrequency="1" Grid.Row="1" />
+                    <Slider Maximum="100" Minimum="10" Value="{x:Bind ViewModel.PercentageOfResolution, Mode=TwoWay}"
+                            StepFrequency="1" Grid.Row="1" />
                 </Grid>
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="10.0" Click="{x:Bind ViewModel.ParentVm.ExportService.ExportComValuesAsync}" Content="Export CoM Values" />
-                    <Button Margin="0,0,10,0" Click="{x:Bind ViewModel.ParentVm.ExportService.ExportFreqAnalysisToCsvAsync}" Content="Export Freq Analysis" />
+                    <Button Margin="10.0" Click="{x:Bind ViewModel.ParentVm.ExportService.ExportComValuesAsync}"
+                            Content="Export CoM Values" />
+                    <Button Margin="0,0,10,0"
+                            Click="{x:Bind ViewModel.ParentVm.ExportService.ExportFreqAnalysisToCsvAsync}"
+                            Content="Export Freq Analysis" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

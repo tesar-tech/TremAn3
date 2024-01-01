@@ -24,7 +24,9 @@ namespace TremAn3.Views
     {
 
         public SelectionRectangleViewModel ViewModel { get; set; }
-  
+
+        public SettingsViewModel SettingsViewModel => ViewModelLocator.Current.SettingsViewModel;
+
         public SelectionRectangleUc()
         {
             this.InitializeComponent();
