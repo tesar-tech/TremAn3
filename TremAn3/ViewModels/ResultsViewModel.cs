@@ -46,9 +46,10 @@ public class ResultsViewModel : ViewModelBase
 
     public async Task ComputeAdditionalResults()
     {
-        await WindowManagerService.Current.MainDispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-        {
-            CoherenceAverage = DataResultsDict[DataSeriesType.Coherence].Y.Average();
+
+        await WindowManagerService.Current.MainDispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+            if (DataResultsDict.ContainsKey(DataSeriesType.Coherence) && DataResultsDict[DataSeriesType.Coherence].Y != null)
+                CoherenceAverage = DataResultsDict[DataSeriesType.Coherence].Y.Average();
         });
     }
 
