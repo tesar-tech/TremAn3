@@ -27,9 +27,7 @@ public class PlotModelsContainerViewModel : ViewModelBase
     public void InvalidateTimePlots(bool updateData)
     {
         PlotModels.Where(x =>
-                x.DataSeriesType == DataSeriesType.FreqProgress ||
-                x.DataSeriesType == DataSeriesType.ComX ||
-                x.DataSeriesType == DataSeriesType.ComY)
+                x.DataSeriesType is DataSeriesType.FreqProgress or DataSeriesType.ComX or DataSeriesType.ComY)
             .ToList().ForEach(x=>x.PlotModel.InvalidatePlot(updateData));
     }
     public void InvalidateAllPlots(bool updateData)

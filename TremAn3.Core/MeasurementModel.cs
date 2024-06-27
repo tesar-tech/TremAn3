@@ -30,6 +30,8 @@ namespace TremAn3.Core
         public VectorsDataModel VectorsDataModel { get; set; } 
 
 
+        [JsonIgnore]
+        public AdditionalResultsModel AdditionalResultsModel { get; set; } = new AdditionalResultsModel();
 
         public double FrameRate { get; set; }
         public double Maxrange { get; set; }
@@ -38,10 +40,14 @@ namespace TremAn3.Core
         public int FreqProgressSegmnetSize { get; set; }
         public int FreqProgressStep { get; set; }
 
-        public void GetResults(IEnumerable<CenterOfMotionAlgorithm> algs, Dictionary<DataSeriesType, DataResult> dataResultsDict)
+        public void GetResults(IEnumerable<CenterOfMotionAlgorithm> algs, Dictionary<DataSeriesType, DataResult> dataResultsDict, AdditionalResultsModel additionalResultsModel)
         {
             VectorsDataModel = new VectorsDataModel(algs,dataResultsDict);
+            AdditionalResultsModel = AdditionalResultsModel;
         }
+
+
+
 
         //public int FftSegmentSize { get; set; }
     }
@@ -129,6 +135,24 @@ namespace TremAn3.Core
 
         public List<double> ComX { get; private set; } = new List<double>();
         public List<double> ComY { get; private set; } = new List<double>();
+
+    }
+
+
+    public class AdditionalResultsModel
+    {
+
+        public List<CoherenceAverageResultModel> CoherenceAverageResults { get; set; } = new List<CoherenceAverageResultModel>();
+
+    }
+
+    public class CoherenceAverageResultModel
+    {
+        public double MinHz { get; set; }
+        public double MaxHz { get; set; }
+
+        public double Average { get; set; }
+
 
     }
 }

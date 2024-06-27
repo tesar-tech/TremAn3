@@ -90,6 +90,7 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
+            await ViewModelLocator.Current.MainViewModel.PastMeasurementsViewModel.SelectedMeasurementVmSet(null);
             if (file == null) return;
             await MediaPlayerViewModel.ChangeSourceAsync(file);
             if (!isMeasurementAlreadyDisplayed)
