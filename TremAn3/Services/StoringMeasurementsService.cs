@@ -19,6 +19,7 @@ namespace TremAn3.Services
         DataService _DataService;
         /// <summary>
         /// this is called when model is loaded from file and we want display rresults from model.
+        /// here the data gets from model to vm
         /// </summary>
         /// <param name="measurementModel"></param>
         /// <returns></returns>
@@ -44,6 +45,7 @@ namespace TremAn3.Services
                 selvm.ComputationViewModel.Algorithm = new CenterOfMotionAlgorithm(roiRes, measurementModel.FrameRate);
             }
             ResultsViewModel rvm = new ResultsViewModel();
+            rvm.AddedToCollection = mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.AddedToCollection;
 
             foreach (var gsdm in measurementModel.VectorsDataModel.GlobalScopedDataResultsModels)
             {
@@ -53,11 +55,29 @@ namespace TremAn3.Services
                     X = gsdm.X,
                     ErrorMessage = gsdm.ErrorMessage
                 };
-                 rvm.DataResultsDict.Add(gsdm.DataSeriesType, dr);
+                rvm.DataResultsDict.Add(gsdm.DataSeriesType, dr);
+            }
+            rvm.CoherenceMeasurementResults.Clear();
+            foreach (var item in measurementModel.AdditionalResultsModel.CoherenceAverageResults)
+                rvm.CoherenceMeasurementResults.Add(new CoherenceMeasurementResults() { Average = item.Average, MaxHz = item.MaxHz, MinHz = item.MinHz });
+
+            
+            if (rvm.CoherenceMeasurementResults.Any())
+            {
+                rvm.CoherenceMinHz = rvm.CoherenceMeasurementResults.Last().MinHz;
+                rvm.CoherenceMaxHz = rvm.CoherenceMeasurementResults.Last().MaxHz;
+            }
+            else
+            {
+                rvm.CoherenceMinHz = 0;
+                rvm.CoherenceMaxHz = mainVm.MediaPlayerViewModel.VideoPropsViewModel.FrameRate / 2;
             }
 
+
             mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel = rvm;
-            await mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.ComputeAdditionalResults();
+            rvm.SetIsCoherenceOk();
+            rvm.IsComputationPaused = false;
+            //await mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.ComputeAdditionalResults();
 
 
             await mainVm.FreqCounterViewModel.DisplayPlots(false);
@@ -69,17 +89,20 @@ namespace TremAn3.Services
         /// </summary>
         /// <param name="vm"></param>
         /// <returns></returns>
-        public  async Task GetModelFromVmAndSaveItToFile(MeasurementViewModel vm)
+        public async Task GetModelFromVmAndSaveItToFile(MeasurementViewModel vm)
         {
             var mainVm = ViewModelLocator.Current.MainViewModel;
             var algs = ViewModelLocator.Current.DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel.Algorithm);
-            vm.Model.GetResults(algs,mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.DataResultsDict);
+
+
+            var currentGlobalResults = mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel;
+            vm.Model.GetResults(algs, currentGlobalResults.DataResultsDict, currentGlobalResults.GetAdditionalResultsModel());
             vm.Model.FreqProgressSegmnetSize = mainVm.FreqCounterViewModel.FreqProgressViewModel.SegmnetSize;
             vm.Model.FreqProgressStep = mainVm.FreqCounterViewModel.FreqProgressViewModel.Step;
             if (vm.FolderForMeasurement == null)
-            vm.FolderForMeasurement = await _DataService.SaveMeasurementResults(vm.Model, mainVm.MediaPlayerViewModel.VideoFileModel);
+                vm.FolderForMeasurement = await _DataService.SaveMeasurementResults(vm.Model, mainVm.MediaPlayerViewModel.VideoFileModel);
             else
-                await DataService.SaveMeasurementResults(vm.Model, vm.FolderForMeasurement );
+                await DataService.SaveMeasurementResults(vm.Model, vm.FolderForMeasurement);
         }
 
 

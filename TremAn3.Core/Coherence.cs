@@ -22,8 +22,8 @@ namespace TremAn3.Core
 
         }
         double frameRate;
-        private List<List<double>> ComXAllRois { get; set; } = new List<List<double>>();
-        private List<List<double>> ComYAllRois { get; set; } = new List<List<double>>();
+        private List<List<double>> ComXAllRois { get; set; }
+        private List<List<double>> ComYAllRois { get; set; }
 
         public DataResult Compute()
         {

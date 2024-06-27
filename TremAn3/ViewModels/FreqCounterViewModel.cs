@@ -107,16 +107,16 @@ namespace TremAn3.ViewModels
 
             //this basically compute the psd, amps spec, etc...
             IEnumerable<Task> tasks = null;
-            if (dataSeriesType == null) //do it for all
+            if (dataSeriesType == null)//do it for all
                 tasks = comps.Select(x => x.PrepareForDisplay(FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize, doComputation));
             else
                 tasks = comps.Select(x => x.PrepareForDisplay((DataSeriesType)dataSeriesType, FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize));
-            if(doComputation)
+            if (doComputation)
                 ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.ComputingVectorData;
             await Task.WhenAll(tasks);
             timeAnotations.Clear();//discard current anotations (new will be added)
             var plotModels = dataSeriesType == null ? PlotModelsContainerViewModel.PlotModels :
-                     PlotModelsContainerViewModel.PlotModels.Where(x => x.DataSeriesType == (DataSeriesType)dataSeriesType);
+                PlotModelsContainerViewModel.PlotModels.Where(x => x.DataSeriesType == (DataSeriesType)dataSeriesType);
 
             foreach (var pmwt in plotModels)
             {
@@ -144,7 +144,7 @@ namespace TremAn3.ViewModels
                 else
                     pmwt.PlotModel = new PlotModel { Title = firstDatares.ErrorMessage };
                 //for com x and com y add anotation
-                if (pmwt.DataSeriesType == DataSeriesType.ComX || pmwt.DataSeriesType == DataSeriesType.ComY)
+                if (pmwt.DataSeriesType is DataSeriesType.ComX or DataSeriesType.ComY)
                 {
                     var newAno = RecreateAnnotation();
                     timeAnotations.Add(newAno);
@@ -155,7 +155,7 @@ namespace TremAn3.ViewModels
 
 
             if (dataSeriesType == null)//we currently use dataseries type only for freq progress In case of using single dataseries type for scoped
-                                       //it has to be changed..
+                //it has to be changed..
             {
                 //global scoped results
                 if (doComputation)
@@ -163,8 +163,8 @@ namespace TremAn3.ViewModels
                     ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.ComputingGlobalVectorData;
 
                     await CurrentGlobalScopedResultsViewModel.ComputeAllResults(ParentVm.MediaPlayerViewModel.VideoPropsViewModel.FrameRate,
-                        comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList(),
-                        comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComY].Y).ToList());
+                    comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComX].Y).ToList(),
+                    comps.Select(x => x.Algorithm.Results.DataResultsDict[DataSeriesType.ComY].Y).ToList());
                 }
 
                 foreach (var pwmt in PlotModelsContainerViewModel.PlotModelsGlobalScope)
@@ -184,6 +184,16 @@ namespace TremAn3.ViewModels
                     {
                         pwmt.PlotModel = new PlotModel { Title = res.ErrorMessage };
                     }
+
+                    if (pwmt.DataSeriesType != DataSeriesType.Coherence)
+                        continue;
+                    var xAxis = new LinearAxis
+                    {
+                        Position = AxisPosition.Bottom,
+                        Minimum = CurrentGlobalScopedResultsViewModel.CoherenceMinHz,
+                        Maximum = CurrentGlobalScopedResultsViewModel.CoherenceMaxHz,
+                    };
+                    pwmt.PlotModel.Axes.Add(xAxis);
                 }
 
             }
@@ -194,54 +204,7 @@ namespace TremAn3.ViewModels
 
         }
 
-        /// <summary>
-        /// Freq progress has its own logic how to rewrite plots. It is mainly bcs of different segements sizes for fft. Some of
-        /// them does not produce result. And this method is called when segment size is changed
-        /// solo caller -> if only freq progress redraw is call, raise prop change, otherwise do it somewhere else
-        /// </summary>
-        //public void ReDrawFreqProgress(bool isSoloCaller = false)
-        //{
-        //    var freqProgressPlotModel = new PlotModel();
-        //    var comps = DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList();
-        //    if (comps.Count < 1)
-        //        return;
-        //    //double maxYOfFreqProgress = 0;
-        //    foreach (var comp in comps)
-        //    {
-        //        try
-        //        {
-        //            //comp.PrepareForDisplayFreqProgress(FreqProgressViewModel.Step, FreqProgressViewModel.SegmnetSize);
-        //        }
-        //        catch (FftSettingsException e)
-        //        {//when there is an error (i.e. window is longer than signal)
-        //            FreqProgressViewModel.StatusMessage = e.Message;
-        //            FreqProgressViewModel.IsFreqProgressParametersOk = false;
-        //            PlotModelsContainerViewModel.SetFreqProgressToNoData();//display No data (also exception and err message is handled in prepare)
-        //            if (isSoloCaller)
-        //                RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
-        //            return;
-        //        }
-
-        //        freqProgressPlotModel.Series.Add(comp.LineSeriesDict[DataSeriesType.FreqProgress]);
-        //        //get maximum to better view
-        //        //maxYOfFreqProgress = maxYOfFreqProgress < comp.Algorithm.Results.FreqProgress.Max() ? comp.Algorithm.Results.FreqProgress.Max() : maxYOfFreqProgress;
-        //    }
-
-
-        //    FreqProgressViewModel.IsFreqProgressParametersOk = true;
-        //    var freqProgressAnnotation = RecreateAnnotation();
-        //    timeAnotations.Add(freqProgressAnnotation);
-        //    freqProgressPlotModel.Annotations.Add(freqProgressAnnotation);
-        //    //10 is just subtitution for max
-        //    var maxYOfFreqProgress = 10;// comps.Max(comp => comp.Algorithm.Results.FreqProgress.Max());
-
-        //    freqProgressPlotModel.Axes.Add(new LinearAxis() { Maximum = maxYOfFreqProgress * 1.1, Minimum = 0, MajorTickSize = 2, MinorTickSize = 0.5, Position = AxisPosition.Left, Key = "Vertical" });
-        //    PlotModelsContainerViewModel.PlotModels.First(x => x.DataSeriesType == DataSeriesType.FreqProgress).PlotModel = freqProgressPlotModel;
-        //    //PlotModelsContainerViewModel.PlotModels.First(x => x.DataSeriesType == DataSeriesType.FreqProgress).PlotModel.InvalidatePlot(true);
-        //    if (isSoloCaller)
-        //        RaisePropertyChanged(nameof(PlotModelsContainerViewModel));
-
-        //}
+        //
 
 
         List<LineAnnotation> timeAnotations = new List<LineAnnotation>();
@@ -253,8 +216,7 @@ namespace TremAn3.ViewModels
         public double Maximum
         {
             get => _maximum;
-            set
-            {
+            set {
                 if (_maximum == value) return;
                 _maximum = value;
                 RaisePropertyChanged();
@@ -278,8 +240,7 @@ namespace TremAn3.ViewModels
         public double Minrange
         {
             get => _minrange;
-            set
-            {
+            set {
 
                 if (_minrange == value) return;
                 if (Maxrange - value >= 1)
@@ -299,8 +260,7 @@ namespace TremAn3.ViewModels
         public double Maxrange
         {
             get => _maxrange;
-            set
-            {
+            set {
 
                 if (_maxrange == value) return;
                 if (value - Minrange >= 1)
@@ -322,8 +282,7 @@ namespace TremAn3.ViewModels
                     ResetResultDisplay();
                 }
             }
-            else
-              if (0 == DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList().Where(x => x.IsRoiSameAsResult == false).Count())
+            else if (0 == DrawingRectanglesViewModel.SelectionRectanglesViewModels.Select(x => x.ComputationViewModel).ToList().Where(x => x.IsRoiSameAsResult == false).Count())
                 IsAllResultsNotObsolete = true;//all results are same as roi
 
         }
@@ -348,8 +307,7 @@ namespace TremAn3.ViewModels
         public bool IsComputationInProgress
         {
             get => _IsComputationInProgress;
-            set
-            {
+            set {
                 if (Set(ref _IsComputationInProgress, value))
                     if (value)
                         ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.ComputationInProgress;
@@ -372,8 +330,7 @@ namespace TremAn3.ViewModels
         public double SliderPlotValue
         {
             get => _SliderPlotValue;
-            set
-            {
+            set {
 
 
                 if (Set(ref _SliderPlotValue, value) && !MediaControllingViewModel.IsPositionChangeFromMethod && !isRangeInSettingProcess)
@@ -381,6 +338,11 @@ namespace TremAn3.ViewModels
             }
         }
         private MediaControllingViewModel MediaControllingViewModel { get => ViewModelLocator.Current.MediaControllingViewModel; }
+
+
+
+
+
 
 
         public async Task DisplaySpectralAnalysisInfo()

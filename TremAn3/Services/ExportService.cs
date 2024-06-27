@@ -75,15 +75,28 @@ public class ExportService
                 headers.Add($"{dataSeriesType}__{roi}");
             }
         }
-        var roi1Roi2Coherence = ViewModelLocator.Current.MainViewModel.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.DataResultsDict[DataSeriesType.Coherence];
+         var currentGlobal = ViewModelLocator.Current.MainViewModel.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel;
+        var roi1Roi2Coherence = currentGlobal.DataResultsDict[DataSeriesType.Coherence];
         if (roi1Roi2Coherence.IsOk)
         {
             values.Add(roi1Roi2Coherence.X);
             headers.Add("freq[Hz]_coherence_roi1_roi2");
+
             values.Add(roi1Roi2Coherence.Y);
             headers.Add("coherence_roi1_roi2");
-            values.Add([ViewModelLocator.Current.MainViewModel.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.CoherenceAverage]);
-            headers.Add("coherence_roi1_roi2_average");
+
+
+            values.Add(currentGlobal.CoherenceMeasurementResults.Select(x => x.MinHz).ToList());
+            headers.Add("coherence_minFreq[Hz]");
+
+            values.Add(currentGlobal.CoherenceMeasurementResults.Select(x => x.MaxHz).ToList());
+            headers.Add("coherence_maxFreq[Hz]");
+
+            values.Add(currentGlobal.CoherenceMeasurementResults.Select(x => x.Average).ToList());
+            headers.Add("coherence_average");
+
+            // values.Add([ViewModelLocator.Current.MainViewModel.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.CoherenceAverage]);
+            // headers.Add("coherence_roi1_roi2_average");
 
         }
 

@@ -66,6 +66,10 @@ namespace TremAn3.Helpers
 
         public static string DoubleFormatter(double val) => $"{val:0.00}";
 
+        public static string DoubleToStringHz(double val) => $"{val:00.000} Hz ";
+        public static string DoubleToString3Decimals(double val) => $"{val:00.000}";
+
+
 
 
 

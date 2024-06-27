@@ -90,22 +90,22 @@ namespace TremAn3.Services
             return (mruToken, falToken);
         }
 
-     
+
 
         internal async Task<StorageFolder> SaveMeasurementResults(MeasurementModel measurementModel, VideoFileModel vfm)
         {
             //resultsViewModel.Id = resultsViewModel.Id == Guid.Empty ? Guid.NewGuid(): resultsViewModel.Id;
             var allMeasurementsFolder = await GetFolder_AllMeasurements();
             StorageFolder measurementsFolderForVideo = await GetFolderForVideo(allMeasurementsFolder, vfm);
-            string measurementFolderAndFIleName = $"m_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.ff}_{measurementModel.Id.ToString().Substring(0,8)}";
+            string measurementFolderAndFIleName = $"m_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.ff}_{measurementModel.Id.ToString().Substring(0, 8)}";
             StorageFolder folderForMeasurement = await measurementsFolderForVideo.CreateFolderAsync(measurementFolderAndFIleName, CreationCollisionOption.OpenIfExists);
             await SaveMeasurementResults(measurementModel, folderForMeasurement);//csvs will have similar structure of filename
-            return folderForMeasurement;                                                                                 
+            return folderForMeasurement;
         }
 
 
 
-      
+
 
 
         /// <summary>
@@ -114,21 +114,31 @@ namespace TremAn3.Services
         /// <param name="measurementModel"></param>
         /// <param name="folderForMeasurement"></param>
         /// <returns></returns>
-        internal static async Task SaveMeasurementResults(MeasurementModel measurementModel, StorageFolder folderForMeasurement,bool saveOnlyTopLevelData = false)
+        internal static async Task SaveMeasurementResults(MeasurementModel measurementModel, StorageFolder folderForMeasurement, bool saveOnlyTopLevelData = false)
         {
             await JsonServices.WriteToJsonFile(folderForMeasurement, GetMeasurementFileName(folderForMeasurement), measurementModel);//saves toplevel
             //saves vector data to special folder
-            if(!saveOnlyTopLevelData)
-            await JsonServices.WriteToJsonFile(folderForMeasurement, GetMeasurementVectorDataFileName(folderForMeasurement), measurementModel.VectorsDataModel);
+            if (!saveOnlyTopLevelData)
+            {
+                await JsonServices.WriteToJsonFile(folderForMeasurement, GetMeasurementVectorDataFileName(folderForMeasurement), measurementModel.VectorsDataModel);
+                await SaveAdditionalResults( measurementModel.AdditionalResultsModel, folderForMeasurement);
+            }
         }
 
-        private static string GetMeasurementFileName (StorageFolder continerFolder) => $"{continerFolder.Name}.json";
-        private static string GetVideoModelFileName (StorageFolder videoFolder) => $"{videoFolder.Name}.json";
-        private static string GetMeasurementVectorDataFileName (StorageFolder continerFolder) => $"{continerFolder.Name}_vectorData.json";
+        public static async Task SaveAdditionalResults( AdditionalResultsModel additionalResultsModel,StorageFolder folderForMeasurement)
+        {
+            await JsonServices.WriteToJsonFile(folderForMeasurement, GetMeasurementAdditionalResultsFileName(folderForMeasurement), additionalResultsModel);
+        }
+
+        private static string GetMeasurementFileName(StorageFolder continerFolder) => $"{continerFolder.Name}.json";
+        private static string GetVideoModelFileName(StorageFolder videoFolder) => $"{videoFolder.Name}.json";
+        private static string GetMeasurementVectorDataFileName(StorageFolder continerFolder) => $"{continerFolder.Name}_vectorData.json";
+        private static string GetMeasurementAdditionalResultsFileName(StorageFolder continerFolder) => $"{continerFolder.Name}_additionalResults.json";
+
 
         internal async Task DeleteAllMeasurements()
         {
-          await  (await GetFolder_AllMeasurements()).DeleteAsync();
+            await (await GetFolder_AllMeasurements()).DeleteAsync();
         }
 
 
@@ -148,6 +158,17 @@ namespace TremAn3.Services
             var vectorsDataModels = await JsonServices.ReadFromJsonFile<VectorsDataModel>(jsonFile);
             model.VectorsDataModel = vectorsDataModels;
         }
+
+
+        internal async Task LoadAdditionalResultsToModel(MeasurementModel model, StorageFolder folderForMeasurement)
+        {
+            StorageFile jsonFile;
+            jsonFile = await folderForMeasurement.GetFileAsync(GetMeasurementAdditionalResultsFileName(folderForMeasurement));
+            if (jsonFile is null) throw new FileNotFoundException($"No vectorData file ({jsonFile}) in {folderForMeasurement.Name} folder");
+            var vectorsDataModels = await JsonServices.ReadFromJsonFile<AdditionalResultsModel>(jsonFile);
+            model.AdditionalResultsModel = vectorsDataModels?? new();
+        }
+
 
         private StorageFolder _measurementsFolderForVideo;
         //public async Task<List<MeasurementViewModel>> GetPastMeasurementsForVideo(StorageFile currentStorageFile, VideoFileModel videoFileModel)
@@ -173,7 +194,7 @@ namespace TremAn3.Services
         {
             var measurementsViewModels = new List<MeasurementViewModel>();
             var allMeasurementsFolder = await GetFolder_AllMeasurements();
-           var videoFolders =await   allMeasurementsFolder.GetFoldersAsync();
+            var videoFolders = await allMeasurementsFolder.GetFoldersAsync();
 
             foreach (var videoFolder in videoFolders)
             {
@@ -187,7 +208,7 @@ namespace TremAn3.Services
                     var jsonFile = await mesFolder.GetFileAsync(GetMeasurementFileName(mesFolder));
                     if (jsonFile is null) continue;
                     MeasurementModel measModel = await JsonServices.ReadFromJsonFile<MeasurementModel>(jsonFile);
-                    MeasurementViewModel vm = new MeasurementViewModel(measModel,vfm);
+                    MeasurementViewModel vm = new MeasurementViewModel(measModel, vfm);
                     measurementsViewModels.Add(vm);
                     vm.FolderForMeasurement = mesFolder;
                 }
@@ -206,7 +227,7 @@ namespace TremAn3.Services
         /// </summary>
         private async Task<StorageFolder> GetFolderForVideo(StorageFolder measurementsFolder, VideoFileModel videoFileModel)
         {
-            string videoFolderName = $"v_{GetPathToSourceForFileName(videoFileModel.Name)}_{videoFileModel.FalToken.ToString().Trim(new char[] {'{','}' })}";
+            string videoFolderName = $"v_{GetPathToSourceForFileName(videoFileModel.Name)}_{videoFileModel.FalToken.ToString().Trim(new char[] { '{', '}' })}";
             StorageFolder videoFolder = await measurementsFolder.CreateFolderAsync(videoFolderName, CreationCollisionOption.OpenIfExists);
 
             //when getting folder, also check for video file. This file is used for loading basic video properties
@@ -214,7 +235,7 @@ namespace TremAn3.Services
             var videoFile = await videoFolder.TryGetItemAsync(GetVideoModelFileName(videoFolder));
             if (videoFile is null)//do nothing when already created
             {
-               var vf = await videoFolder.CreateFileAsync(GetVideoModelFileName(videoFolder), CreationCollisionOption.FailIfExists);
+                var vf = await videoFolder.CreateFileAsync(GetVideoModelFileName(videoFolder), CreationCollisionOption.FailIfExists);
                 await JsonServices.WriteToJsonFile(vf, videoFileModel);
             }
 
@@ -249,7 +270,7 @@ namespace TremAn3.Services
             await vm.FolderForMeasurement.DeleteAsync();
         }
 
-      
+
 
     }
 

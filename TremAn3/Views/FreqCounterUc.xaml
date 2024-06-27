@@ -11,8 +11,8 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:mux="using:Microsoft.UI.Xaml.Controls"
     xmlns:vm="using:TremAn3.ViewModels"
-    xmlns:core="using:TremAn3.Core"
-
+    xmlns:core="using:TremAn3.Core" xmlns:numberformatting="using:Windows.Globalization.NumberFormatting"
+    Loaded="UserControl_Loaded"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -44,7 +44,7 @@
         </mux:TeachingTip>
         <ControlTemplate x:Key="TrackerTemplate">
             <oxyplot:TrackerControl
-                                    Position="{Binding Position}" LineExtents="{Binding PlotModel.PlotArea}">
+                Position="{Binding Position}" LineExtents="{Binding PlotModel.PlotArea}">
                 <oxyplot:TrackerControl.Background>
                     <SolidColorBrush Color="#55aaaa00" />
                 </oxyplot:TrackerControl.Background>
@@ -161,7 +161,7 @@
                                              IsEnabled="False" />
                     </Button.KeyboardAccelerators>
                 </Button>
-                <TextBlock Foreground="{ThemeResource SystemAccentColor}" TextWrapping="Wrap"
+                <TextBlock Foreground="{ThemeResource SystemControlForegroundAccentBrush}" TextWrapping="Wrap"
                            Visibility="{x:Bind h:StaticConverters.BoolToVisiblityInverse(ViewModel.ParentVm.IsVideoFileLoaded),Mode=OneWay}">
                     Video file is no longer available. It has probably been deleted or moved.<LineBreak />
                     <Run FontWeight="Bold">You can still review the measurement.</Run>
@@ -195,8 +195,9 @@
                     <ToggleButton Style="{StaticResource BiggerButtonStule}" x:Name="XComToggleBigger" Content="Bigger" />
 
                 </Grid>
-                <oxyplot:PlotView x:Name="XComPlotView" Height="100" DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
-                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.ComX ), Mode=OneWay}"/>
+                <oxyplot:PlotView x:Name="XComPlotView" Height="100"
+                                  DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.ComX ), Mode=OneWay}" />
 
                 <!-- <TextBlock Text="{x:Bind ViewModel.PlotModelsContainerViewModel.CurrentDataPointString, Mode=OneWay}" /> -->
 
@@ -212,7 +213,8 @@
                     <TextBlock Text="CoM Y movement:" />
                     <ToggleButton Style="{StaticResource BiggerButtonStule}" x:Name="YComToggleBigger" Content="Bigger" />
                 </Grid>
-                <oxyplot:PlotView x:Name="YComPlotView" Height="100" DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                <oxyplot:PlotView x:Name="YComPlotView" Height="100"
+                                  DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
                                   Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.ComY ), Mode=OneWay}" />
 
 
@@ -224,7 +226,9 @@
 
                 <Line Margin="5,10,5,0" />
 
-                <mux:TabView x:Name="SpectralAnalysisTabView" SelectedIndex="{x:Bind SettingsViewModel.SpectralAnalysisSelectedIndex, Mode=TwoWay}" TabWidthMode="SizeToContent"
+                <mux:TabView x:Name="SpectralAnalysisTabView"
+                             SelectedIndex="{x:Bind SettingsViewModel.SpectralAnalysisSelectedIndex, Mode=TwoWay}"
+                             TabWidthMode="SizeToContent"
                              IsAddTabButtonVisible="False">
                     <mux:TabView.Resources>
                         <ResourceDictionary>
@@ -257,7 +261,8 @@
                     <mux:TabView.TabItems>
 
                         <mux:TabViewItem Header="PSD" IsClosable="False">
-                            <oxyplot:PlotView x:Name="PsdPlotView" DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                            <oxyplot:PlotView x:Name="PsdPlotView"
+                                              DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
                                               Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
                                               Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Psd ), Mode=OneWay}" />
                         </mux:TabViewItem>
@@ -269,21 +274,99 @@
                         </mux:TabViewItem>
 
                         <mux:TabViewItem Header="Amp Spectrum" IsClosable="False">
-                            <oxyplot:PlotView x:Name="AmpSpecPlotView" DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                            <oxyplot:PlotView x:Name="AmpSpecPlotView"
+                                              DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
                                               Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
                                               Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.AmpSpec ), Mode=OneWay}" />
                         </mux:TabViewItem>
 
-                        <mux:TabViewItem Header="Coherence" IsClosable="False">
+                        <mux:TabViewItem Header="Coherence" IsClosable="False" >
                             <StackPanel Orientation="Vertical">
 
-                            <oxyplot:PlotView DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
-                                              Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
-                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetGlobalScopedPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Coherence ), Mode=OneWay}" />
-                            <TextBlock >
-                                <Run Text="Average:"/>
-                                <Run Text="{x:Bind h:StaticConverters.DoubleFormatter(ViewModel.CurrentGlobalScopedResultsViewModel.CoherenceAverage), Mode=OneWay}"/>
-                            </TextBlock>
+                                <oxyplot:PlotView DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                                                  Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
+                                                  Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetGlobalScopedPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Coherence ), Mode=OneWay}" />
+
+                                <StackPanel Visibility="{x:Bind h:StaticConverters.BoolToVisibility(ViewModel.CurrentGlobalScopedResultsViewModel.IsCoherenceOk), Mode=OneWay}" Orientation="Vertical">
+
+                                    <TextBlock > Current view:</TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="From (Hz):"></TextBlock>
+                                        <mux:NumberBox ValueChanged="NumberBoxMinHz_OnValueChanged" SmallChange="0.5" LargeChange="1"
+                                                   Value="{x:Bind ViewModel.CurrentGlobalScopedResultsViewModel.CoherenceMinHz, Mode=TwoWay}">
+                                            <mux:NumberBox.NumberFormatter>
+                                                <numberformatting:DecimalFormatter FractionDigits="2"/>
+                                            </mux:NumberBox.NumberFormatter>
+                                        </mux:NumberBox>
+
+                                        <TextBlock Text="To (Hz):"></TextBlock>
+                                        <mux:NumberBox  ValueChanged="NumberBoxMaxHz_OnValueChanged " SmallChange="0.5" LargeChange="1" 
+                                                   Value="{x:Bind ViewModel.CurrentGlobalScopedResultsViewModel.CoherenceMaxHz, Mode=TwoWay}"
+
+                                                    >
+                                            <mux:NumberBox.NumberFormatter>
+                                                <numberformatting:DecimalFormatter FractionDigits="2"/>
+                                            </mux:NumberBox.NumberFormatter>
+                                        </mux:NumberBox>
+                                    </StackPanel>
+
+                                    <ListView Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                                          ItemsSource="{x:Bind ViewModel.CurrentGlobalScopedResultsViewModel.CoherenceMeasurementResults, Mode=OneWay}"
+                                          MaxHeight="300"
+                                          SelectionMode="Multiple"
+                                          x:Name="ListViewCoherenceResults"
+                                          
+                                          IsMultiSelectCheckBoxEnabled="False"
+                                          >
+
+                                        <ListView.Header>
+                                            <Grid Padding="15,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" MinWidth="100" />
+                                                    <ColumnDefinition MinWidth="100" Width="Auto" />
+                                                    <ColumnDefinition  MinWidth="100" Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="From (Hz)"  Grid.Column="0" FontWeight="Bold" />
+                                                <TextBlock Text="To (Hz)"  Grid.Column="1" Margin="10,0" FontWeight="Bold" />
+                                                <TextBlock Text="Average"  Grid.Column="2" FontWeight="Bold" />
+                                                <StackPanel Orientation="Horizontal" Grid.Column="3" HorizontalAlignment="Right">
+                                                    <Button Margin="0,0,10,0" Click="{x:Bind ViewModel.CurrentGlobalScopedResultsViewModel.DeleteAllMeasurements}" >
+                                                        Delete All
+                                                    </Button>
+                                                </StackPanel>
+                                            </Grid>
+                                        </ListView.Header>
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate  x:DataType="vm:CoherenceMeasurementResults" >
+                                                <Grid >
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" MinWidth="100" />
+                                                        <ColumnDefinition MinWidth="100" Width="Auto" />
+                                                        <ColumnDefinition  MinWidth="100" Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{x:Bind  h:StaticConverters.DoubleToStringHz(MinHz),  Mode=OneWay}" Grid.Column="0" />
+                                                    <TextBlock Margin="10,0" Text="{x:Bind  h:StaticConverters.DoubleToStringHz(MaxHz),  Mode=OneWay}" Grid.Column="1" />
+                                                    <TextBlock Text="{x:Bind  h:StaticConverters.DoubleToString3Decimals(Average),  Mode=OneWay}" Grid.Column="2" />
+
+                                                    <StackPanel Grid.Column="3" Orientation="Horizontal"
+                                                            HorizontalAlignment="Right" Padding="0">
+                                                        <Button Click="{x:Bind DeleteMe }" Padding="0"
+                                                            Background="#00000000" BorderThickness="0">
+                                                            <SymbolIcon Symbol="Delete" />
+                                                        </Button>
+                                                    </StackPanel>
+
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+
+                                </StackPanel >
+
+
+
                             </StackPanel>
                         </mux:TabViewItem>
 
@@ -338,7 +421,8 @@
                            x:Name="FreqProgressStatusMessageTxbl"
                            Text="{x:Bind ViewModel.FreqProgressViewModel.StatusMessage, Mode=OneWay}">
                 </TextBlock>
-                <oxyplot:PlotView x:Name="FreqProgressPlotView" Height="100" DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                <oxyplot:PlotView x:Name="FreqProgressPlotView" Height="100"
+                                  DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
                                   Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.FreqProgress ), Mode=OneWay}" />
 
                 <!--oxyplot bug numero dont know: it cannot be in grid or cannot be without height?? so it is separated from nodata-->

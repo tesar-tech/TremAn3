@@ -91,13 +91,19 @@ public class PastMeasurementsViewModel : ViewModelBase
 
 
 
-        if (value == null) return;
+        if (value == null)
+        {
+            ViewModelLocator.Current.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.ResetResults();
+            return;
+        }
        ViewModelLocator.Current.LoadingContentViewModel.Type = LoadingContentType.Generic;
+       
 
-        await Task.Delay(1);
+        // await Task.Delay(1);
         if (!value.IsVectorDataLoaded)
         {
             await _DataService.LoadVectorDataToModel(value.Model, value.FolderForMeasurement);
+            await _DataService.LoadAdditionalResultsToModel( value.Model, value.FolderForMeasurement );
             value.IsVectorDataLoaded = true;
         }
         if (isBasedOnViewModel)
@@ -264,6 +270,15 @@ public class MeasurementViewModel : ViewModelBase
             this.Model.Name = newName;
             await DataService.SaveMeasurementResults(Model, FolderForMeasurement, true);
         }
+    }
+
+    //this saves the result outsite of the new measurement.. Other results, like comx comy, coherence, etc are computed and then saved...
+    //this is different, because all the values are saved already and we only add new additional results.
+    public async Task SaveAdditionalResults()
+    {
+        Model.AdditionalResultsModel = ViewModelLocator.Current.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.GetAdditionalResultsModel();
+        if(FolderForMeasurement!=null)
+            await DataService.SaveAdditionalResults(Model.AdditionalResultsModel, FolderForMeasurement);
     }
 
 }
