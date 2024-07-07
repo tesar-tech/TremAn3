@@ -11,7 +11,8 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:mux="using:Microsoft.UI.Xaml.Controls"
     xmlns:vm="using:TremAn3.ViewModels"
-    xmlns:core="using:TremAn3.Core" xmlns:numberformatting="using:Windows.Globalization.NumberFormatting"
+    xmlns:core="using:TremAn3.Core"
+    xmlns:numberformatting="using:Windows.Globalization.NumberFormatting"
     Loaded="UserControl_Loaded"
     mc:Ignorable="d"
     d:DesignHeight="300"
@@ -115,22 +116,7 @@
             <VisualStateGroup x:Name="ComputationInProgressVisialStates">
                 <VisualState x:Name="NotInProggressVg" />
                 <VisualState x:Name="InProgressVg">
-                    <!--<Storyboard >
-                        <DoubleAnimation Storyboard.TargetName="ComputationInProgressTxbl"
-                     Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True"  Duration="0:0:1"/>
-                    </Storyboard>
-                    <VisualState.Setters>
-                        <Setter  Target="FreqCounterButton.Content" Value="Cancel"/>
-                        <Setter  Target="ListViewWithChbxsPlots.IsEnabled" Value="false"/>
-                        <Setter  Target="ProgressGrid.Visibility" Value="Visible"/>
-                        <Setter  Target="FreqProgressSettingButton.IsEnabled" Value="false"/>
-                        <Setter  Target="CancelComputationKeyBoardAccelerator.IsEnabled" Value="True"/>
-                        <Setter  Target="FreqCounterButton.BorderBrush" Value="#00000000"/>
-
-                    </VisualState.Setters>
-                    <VisualState.StateTriggers>
-                        <StateTrigger  IsActive="{x:Bind ViewModel.IsComputationInProgress, Mode=OneWay}" />
-                    </VisualState.StateTriggers>-->
+                    
                 </VisualState>
             </VisualStateGroup>
             <VisualStateGroup x:Name="FreqProgressIsParOkVStateG">
@@ -261,23 +247,37 @@
                     <mux:TabView.TabItems>
 
                         <mux:TabViewItem Header="PSD" IsClosable="False">
-                            <oxyplot:PlotView x:Name="PsdPlotView"
+                            <StackPanel Orientation="Vertical">
+
+                                <oxyplot:PlotView x:Name="PsdPlotView"
+                                              Tag="{x:Bind core:DataSeriesType.Psd}"
                                               DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
                                               Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
-                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Psd ), Mode=OneWay}" />
+                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Psd ), Mode=OneWay}"
+                                              PointerPressed="PlotView_PointerPressed"  />
+
+                                <local:PointsCollectorView ViewModel="{x:Bind  ViewModel.CurrentGlobalScopedResultsViewModel.GetPointsCollectorVm(core:DataSeriesType.Psd ), Mode=OneWay}"/>
+                            </StackPanel>
                         </mux:TabViewItem>
 
                         <mux:TabViewItem Header="Welch" IsClosable="False">
-                            <oxyplot:PlotView DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
+                            <StackPanel Orientation="Vertical">
+                                <oxyplot:PlotView DefaultTrackerTemplate="{StaticResource TrackerTemplate}" Tag="{x:Bind core:DataSeriesType.Welch}"
                                               Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
                                               Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Welch ), Mode=OneWay}" />
+                                <local:PointsCollectorView ViewModel="{x:Bind  ViewModel.CurrentGlobalScopedResultsViewModel.GetPointsCollectorVm(core:DataSeriesType.Welch ), Mode=OneWay}"/>
+                            </StackPanel>
                         </mux:TabViewItem>
 
                         <mux:TabViewItem Header="Amp Spectrum" IsClosable="False">
-                            <oxyplot:PlotView x:Name="AmpSpecPlotView"
+                            <StackPanel Orientation="Vertical">
+                                
+                            <oxyplot:PlotView x:Name="AmpSpecPlotView" Tag="{x:Bind core:DataSeriesType.AmpSpec}"
                                               DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
                                               Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
                                               Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.AmpSpec ), Mode=OneWay}" />
+                                <local:PointsCollectorView ViewModel="{x:Bind  ViewModel.CurrentGlobalScopedResultsViewModel.GetPointsCollectorVm(core:DataSeriesType.AmpSpec ), Mode=OneWay}"/>
+                            </StackPanel>
                         </mux:TabViewItem>
 
                         <mux:TabViewItem Header="Coherence" IsClosable="False" >

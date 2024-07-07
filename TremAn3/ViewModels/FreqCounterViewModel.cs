@@ -140,6 +140,21 @@ namespace TremAn3.ViewModels
                         pmwt.PlotModel.Axes.Add(new LinearAxis() { Maximum = maxYOfFreqProgress * 1.1, Minimum = 0, MajorTickSize = 2, MinorTickSize = 0.5, Position = AxisPosition.Left, Key = "Vertical" });
                         FreqProgressViewModel.StatusMessage = $"Frequency resolution: {comps.First().Algorithm.frameRate / FreqProgressViewModel.SegmnetSize:F2} Hz. Number of segments computed: {firstDatares.X.Count} ";
                     }
+
+
+                    if (ViewModelLocator.Current.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.PointsCollectors.TryGetValue(pmwt.DataSeriesType, out var collector))
+                    {
+                        foreach (var point in collector.Points)
+                        {
+                            var line = new LineAnnotation() { Type = LineAnnotationType.Vertical, ClipByXAxis = false, X = point.X, Color = OxyColors.Fuchsia };
+                            pmwt.PlotModel.Annotations.Add(line);
+                        }
+                    }
+
+
+
+                    
+
                 }
                 else
                     pmwt.PlotModel = new PlotModel { Title = firstDatares.ErrorMessage };
@@ -207,7 +222,7 @@ namespace TremAn3.ViewModels
         //
 
 
-        List<LineAnnotation> timeAnotations = new List<LineAnnotation>();
+        List<LineAnnotation> timeAnotations = [];
 
         LineAnnotation RecreateAnnotation() => new LineAnnotation() { Type = LineAnnotationType.Vertical, ClipByXAxis = false, X = 0, Color = OxyColors.Black };
 

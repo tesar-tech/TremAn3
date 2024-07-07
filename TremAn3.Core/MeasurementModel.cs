@@ -19,7 +19,7 @@ namespace TremAn3.Core
             Id = Guid.NewGuid();
             FrameRate = comAlgs.First().frameRate;//it is same for all the algs
             DateTime = DateTime.Now;
-           
+
         }
 
         public string Name { get; set; }
@@ -27,7 +27,7 @@ namespace TremAn3.Core
         public DateTime DateTime { get; set; }
         //public double Coherence { get; set; }
         [JsonIgnore]
-        public VectorsDataModel VectorsDataModel { get; set; } 
+        public VectorsDataModel VectorsDataModel { get; set; }
 
 
         [JsonIgnore]
@@ -42,7 +42,7 @@ namespace TremAn3.Core
 
         public void GetResults(IEnumerable<CenterOfMotionAlgorithm> algs, Dictionary<DataSeriesType, DataResult> dataResultsDict, AdditionalResultsModel additionalResultsModel)
         {
-            VectorsDataModel = new VectorsDataModel(algs,dataResultsDict);
+            VectorsDataModel = new VectorsDataModel(algs, dataResultsDict);
             AdditionalResultsModel = AdditionalResultsModel;
         }
 
@@ -67,7 +67,10 @@ namespace TremAn3.Core
             {
                 DataResultModel drm = new DataResultModel
                 {
-                    X = dr.Value.X, Y = dr.Value.Y, DataSeriesType = dr.Key, ErrorMessage = dr.Value.ErrorMessage
+                    X = dr.Value.X,
+                    Y = dr.Value.Y,
+                    DataSeriesType = dr.Key,
+                    ErrorMessage = dr.Value.ErrorMessage
                 };
                 GlobalScopedDataResultsModels.Add(drm);
             }
@@ -93,7 +96,7 @@ namespace TremAn3.Core
 
             foreach (var res in results.DataResultsDict)
             {
-                DataResultModel r = new DataResultModel { X = res.Value.X, Y = res.Value.Y, DataSeriesType = res.Key, ErrorMessage = res.Value.ErrorMessage};
+                DataResultModel r = new DataResultModel { X = res.Value.X, Y = res.Value.Y, DataSeriesType = res.Key, ErrorMessage = res.Value.ErrorMessage };
                 DataResultsModels.Add(r);
             }
         }
@@ -114,14 +117,14 @@ namespace TremAn3.Core
         public uint Y { get; set; }
         public uint Width { get; set; }
         public uint Height { get; set; }
-        
+
     }
 
     public class DataResultModel
     {
         public List<double> X { get; set; }
         public List<double> Y { get; set; }
-        public string  ErrorMessage { get; set; }
+        public string ErrorMessage { get; set; }
 
         public DataSeriesType DataSeriesType { get; set; }
     }
@@ -144,6 +147,8 @@ namespace TremAn3.Core
 
         public List<CoherenceAverageResultModel> CoherenceAverageResults { get; set; } = new List<CoherenceAverageResultModel>();
 
+        public List<PointsCollectorModel> PointsCollectors { get; set; } = new List<PointsCollectorModel>();
+
     }
 
     public class CoherenceAverageResultModel
@@ -154,5 +159,19 @@ namespace TremAn3.Core
         public double Average { get; set; }
 
 
+    }
+
+
+    public class PointsCollectorModel
+    {
+        public List<PointToCollectModel> Points { get; set; } = new List<PointToCollectModel>();
+
+        public DataSeriesType DataSeriesType { get; set; }
+    }
+
+    public class PointToCollectModel
+    {
+        public double X { get; set; }
+        public List< double> Ys { get; set; }
     }
 }

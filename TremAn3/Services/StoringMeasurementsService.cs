@@ -37,15 +37,26 @@ namespace TremAn3.Services
             ViewModelLocator.Current.DrawingRectanglesViewModel.RemoveRois();
             foreach (var roiRes in measurementModel.VectorsDataModel.RoiResultModels)
             {
-
                 //this creates roi on video
                 var selvm = ViewModelLocator.Current.DrawingRectanglesViewModel.CreateROIFromModel(roiRes);
 
                 //roi has alg inside, this alg hold data for plots
                 selvm.ComputationViewModel.Algorithm = new CenterOfMotionAlgorithm(roiRes, measurementModel.FrameRate);
             }
-            ResultsViewModel rvm = new ResultsViewModel();
-            rvm.AddedToCollection = mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.AddedToCollection;
+            ResultsViewModel rvm = mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel;
+
+            //collectors
+            //rvm.PointsCollectors.Clear(); <-- dont do this
+            foreach (var collectorModel in measurementModel.AdditionalResultsModel.PointsCollectors)
+            {
+                var collectorVm = rvm.PointsCollectors[collectorModel.DataSeriesType];
+                collectorVm.Points.Clear();
+                collectorModel.Points.ForEach(x => collectorVm.Points.Add(new PointToCollectVm(x.X,x.Ys ,collectorVm)));
+            }
+
+
+            //data results
+            rvm.DataResultsDict.Clear();
 
             foreach (var gsdm in measurementModel.VectorsDataModel.GlobalScopedDataResultsModels)
             {
@@ -57,6 +68,8 @@ namespace TremAn3.Services
                 };
                 rvm.DataResultsDict.Add(gsdm.DataSeriesType, dr);
             }
+
+            //coherence
             rvm.CoherenceMeasurementResults.Clear();
             foreach (var item in measurementModel.AdditionalResultsModel.CoherenceAverageResults)
                 rvm.CoherenceMeasurementResults.Add(new CoherenceMeasurementResults() { Average = item.Average, MaxHz = item.MaxHz, MinHz = item.MinHz });
@@ -74,11 +87,8 @@ namespace TremAn3.Services
             }
 
 
-            mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel = rvm;
             rvm.SetIsCoherenceOk();
             rvm.IsComputationPaused = false;
-            //await mainVm.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.ComputeAdditionalResults();
-
 
             await mainVm.FreqCounterViewModel.DisplayPlots(false);
 

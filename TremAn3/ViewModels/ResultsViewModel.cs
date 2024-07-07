@@ -9,8 +9,10 @@ using Windows.UI.Core;
 
 namespace TremAn3.ViewModels;
 
+using OxyPlot;
 using Services;
 using System.Collections.ObjectModel;
+using TremAn3.Views;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;
 
@@ -124,18 +126,25 @@ public class ResultsViewModel : ViewModelBase
         additionalResultsModel.CoherenceAverageResults =
              CoherenceMeasurementResults.Select(x => new CoherenceAverageResultModel() { Average = x.Average, MaxHz = x.MaxHz, MinHz = x.MinHz })
              .ToList();
+
+        additionalResultsModel.PointsCollectors = PointsCollectors.Select(x => new PointsCollectorModel()
+        {
+            DataSeriesType = x.Key,
+            Points = x.Value.Points.Select(y => new PointToCollectModel() { X = y.X, Ys = y.Ys }).ToList()
+        }).ToList();
+
         return additionalResultsModel;
 
     }
 
-     public bool isSettingRangeDontCompute;
+    public bool isSettingRangeDontCompute;
 
     private double _CoherenceMinHz;
     public double CoherenceMinHz
     {
         get => _CoherenceMinHz;
-        set =>Set(ref _CoherenceMinHz, value);
-        
+        set => Set(ref _CoherenceMinHz, value);
+
     }
     private double _CoherenceMaxHz;
     public double CoherenceMaxHz
@@ -144,6 +153,17 @@ public class ResultsViewModel : ViewModelBase
         set => Set(ref _CoherenceMaxHz, value);
     }
 
+
+    public Dictionary<DataSeriesType, PointsCollectorVm> PointsCollectors { get; set; } = new() {
+        { DataSeriesType.Psd, new()},
+        { DataSeriesType.AmpSpec, new()},
+        { DataSeriesType.Welch, new()},
+        };
+
+    public PointsCollectorVm GetPointsCollectorVm(DataSeriesType type)
+    {
+        return PointsCollectors[type];
+    }
 
 
     public async void DeleteAllMeasurements()
