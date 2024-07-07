@@ -209,6 +209,7 @@
     <Compile Include="ViewModels\PastMeasurementsViewModel.cs" />
     <Compile Include="ViewModels\PlotModelsContainerViewModel.cs" />
     <Compile Include="ViewModels\PlotModelWithTypeViewModel.cs" />
+    <Compile Include="ViewModels\PointsCollectorVm.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
     <Compile Include="ViewModels\SchemeActivationSampleViewModel.cs" />
     <Compile Include="ViewModels\SelectionRectangleComputationViewModel.cs" />
@@ -243,6 +244,9 @@
     </Compile>
     <Compile Include="Views\PastMeasurementsUc.xaml.cs">
       <DependentUpon>PastMeasurementsUc.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PointsCollectorView.xaml.cs">
+      <DependentUpon>PointsCollectorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SchemeActivationSamplePage.xaml.cs">
       <DependentUpon>SchemeActivationSamplePage.xaml</DependentUpon>
@@ -337,6 +341,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PastMeasurementsUc.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PointsCollectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

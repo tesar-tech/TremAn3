@@ -62,12 +62,21 @@ public class ExportService
         List<string> headers = [];
 
         List<DataSeriesType> toExportDataSeries = [DataSeriesType.Psd, DataSeriesType.AmpSpec, DataSeriesType.Welch, DataSeriesType.FreqProgress];
+        var currentGlobal = ViewModelLocator.Current.MainViewModel.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel;
         foreach (var dataSeriesType in toExportDataSeries)
         {
             var roi0DataResult = rois[0].ComputationViewModel.Algorithm.Results.DataResultsDict[dataSeriesType];
-            if(!roi0DataResult.IsOk) continue;
+            if (!roi0DataResult.IsOk) continue;
             values.Add(roi0DataResult.X);
             headers.Add($"freq[Hz]_{dataSeriesType}");
+
+
+            if (currentGlobal.PointsCollectors.ContainsKey(dataSeriesType) && currentGlobal.PointsCollectors[dataSeriesType].Points.Any())
+            {
+                values.Add(currentGlobal.PointsCollectors[dataSeriesType].Points.Select(x => x.X).ToList());
+                headers.Add($"{dataSeriesType}_selected_points[Hz]");
+            }
+
             foreach (var roi in rois)
             {
                 List<double> yValues = roi.ComputationViewModel.Algorithm.Results.DataResultsDict[dataSeriesType].Y;
@@ -75,7 +84,6 @@ public class ExportService
                 headers.Add($"{dataSeriesType}__{roi}");
             }
         }
-         var currentGlobal = ViewModelLocator.Current.MainViewModel.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel;
         var roi1Roi2Coherence = currentGlobal.DataResultsDict[DataSeriesType.Coherence];
         if (roi1Roi2Coherence.IsOk)
         {
@@ -99,6 +107,9 @@ public class ExportService
             // headers.Add("coherence_roi1_roi2_average");
 
         }
+
+
+
 
         var str = CsvBuilder.GetCsvFromListOfLists(values: values,
         (ViewModelLocator.Current.SettingsViewModel.DecimalSeparator, ViewModelLocator.Current.SettingsViewModel.CsvElementSeparator), headers: headers);

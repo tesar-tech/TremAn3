@@ -1,0 +1,81 @@
+﻿<UserControl
+    x:Class="TremAn3.Views.PointsCollectorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TremAn3.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:TremAn3.ViewModels"
+    mc:Ignorable="d"
+    xmlns:h="using:TremAn3.Helpers"
+
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <StackPanel Orientation="Vertical">
+
+
+        
+        <ListView Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      ItemsSource="{x:Bind ViewModel.Points, Mode=OneWay}"
+      MaxHeight="300"
+      SelectionMode="Multiple"
+      x:Name="ListViewCoherenceResults"
+      
+      IsMultiSelectCheckBoxEnabled="False"
+      >
+
+            <ListView.Header>
+                <Grid Padding="15,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="100" />
+                        <!--<ColumnDefinition MinWidth="100" Width="Auto" />-->
+                        <!--<ColumnDefinition  MinWidth="100" Width="Auto" />-->
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Frequency (Hz)"  Grid.Column="0" FontWeight="Bold" />
+                    <!--<TextBlock Text="To (Hz)"  Grid.Column="1" Margin="10,0" FontWeight="Bold" />-->
+                    <!--<TextBlock Text="Average"  Grid.Column="2" FontWeight="Bold" />-->
+                    <StackPanel Orientation="Horizontal" Grid.Column="3" HorizontalAlignment="Right">
+                        <Button Margin="0,0,10,0" Click="{x:Bind ViewModel.DeleteAllPoints}" >
+                            Delete All
+                        </Button>
+                        <Button Click="{x:Bind ViewModel.ChangeCollecting}" Margin="0,0,10,0" >
+                            <TextBlock Text="{x:Bind ViewModel.CollectingText, Mode=OneWay}"/>
+                        </Button>
+
+                    </StackPanel>
+                </Grid>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate  x:DataType="vm:PointToCollectVm" >
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="100" />
+                            <!--<ColumnDefinition MinWidth="100" Width="Auto" />-->
+                            <!--<ColumnDefinition  MinWidth="100" Width="Auto" />-->
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{x:Bind  h:StaticConverters.DoubleFormatter(X),  Mode=OneWay}" Grid.Column="0" />
+                        <!--<TextBlock Margin="10,0" Text="{x:Bind  h:StaticConverters.DoubleToStringHz(MaxHz),  Mode=OneWay}" Grid.Column="1" />
+                        <TextBlock Text="{x:Bind  h:StaticConverters.DoubleToString3Decimals(Average),  Mode=OneWay}" Grid.Column="2" />-->
+
+                        <StackPanel Grid.Column="3" Orientation="Horizontal"
+                        HorizontalAlignment="Right" Padding="0">
+                            <Button Click="{x:Bind DeleteMe }" Padding="0"
+                        Background="#00000000" BorderThickness="0">
+                                <SymbolIcon Symbol="Delete" />
+                            </Button>
+                        </StackPanel>
+
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+
+
+
+
+    </StackPanel>
+</UserControl>

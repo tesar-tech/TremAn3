@@ -19,10 +19,13 @@ using Windows.UI.Xaml.Navigation;
 namespace TremAn3.Views
 {
     using Microsoft.UI.Xaml.Controls;
+    using OxyPlot.Series;
+    using OxyPlot;
     using OxyPlot.Windows;
     using System.Collections.Specialized;
     using Windows.Globalization.NumberFormatting;
     using Windows.System;
+    using TremAn3.Core;
 
     public sealed partial class FreqCounterUc : UserControl
     {
@@ -58,15 +61,47 @@ namespace TremAn3.Views
 
         private void ScrollToEndOfCoherenceResults()
         {
-            if(ListViewCoherenceResults.Items.Count>0)
-            ListViewCoherenceResults.ScrollIntoView(ListViewCoherenceResults.Items[ListViewCoherenceResults.Items.Count - 1]);
+            if (ListViewCoherenceResults.Items.Count > 0)
+                ListViewCoherenceResults.ScrollIntoView(ListViewCoherenceResults.Items[ListViewCoherenceResults.Items.Count - 1]);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
 
-            
+
             ViewModelLocator.Current.FreqCounterViewModel.CurrentGlobalScopedResultsViewModel.AddedToCollection = ScrollToEndOfCoherenceResults;
         }
+
+
+
+        private async void PlotView_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            var plotView = sender as PlotView;
+            DataSeriesType? dataSeriesType = (DataSeriesType?)plotView.Tag;
+            var collector = ViewModel.CurrentGlobalScopedResultsViewModel.GetPointsCollectorVm((DataSeriesType)dataSeriesType);
+            if (!collector.IsInCollectingState) return;
+            
+
+            if (plotView?.Model != null)
+            {
+                var position = e.GetCurrentPoint(plotView).Position;
+                double? xCoord= GetXCoordinate(plotView, position);
+                if (xCoord != null)
+                {
+                    await collector.AddPoint(xCoord.Value);
+                }
+            }
+        }
+        private double? GetXCoordinate(PlotView plotView, Windows.Foundation.Point position)
+        {
+            var actualModel = plotView.ActualModel;
+            if (actualModel != null)
+            {
+                var inverseTransform = plotView.ActualModel.DefaultXAxis.InverseTransform(position.X);
+                return inverseTransform;
+            }
+            return null;
+        }
+
     }
 }
