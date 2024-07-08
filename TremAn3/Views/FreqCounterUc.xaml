@@ -264,7 +264,9 @@
                             <StackPanel Orientation="Vertical">
                                 <oxyplot:PlotView DefaultTrackerTemplate="{StaticResource TrackerTemplate}" Tag="{x:Bind core:DataSeriesType.Welch}"
                                               Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
-                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Welch ), Mode=OneWay}" />
+                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.Welch ), Mode=OneWay}"
+                                                PointerPressed="PlotView_PointerPressed"
+                                                  />
                                 <local:PointsCollectorView ViewModel="{x:Bind  ViewModel.CurrentGlobalScopedResultsViewModel.GetPointsCollectorVm(core:DataSeriesType.Welch ), Mode=OneWay}"/>
                             </StackPanel>
                         </mux:TabViewItem>
@@ -275,7 +277,9 @@
                             <oxyplot:PlotView x:Name="AmpSpecPlotView" Tag="{x:Bind core:DataSeriesType.AmpSpec}"
                                               DefaultTrackerTemplate="{StaticResource TrackerTemplate}"
                                               Height="{x:Bind h:StaticConverters.SpectralAnalysisBiggerToggleToSizeOfPlot(SpectralAnalysisToggleBigger.IsChecked),Mode=OneWay}"
-                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.AmpSpec ), Mode=OneWay}" />
+                                              Model="{x:Bind ViewModel.PlotModelsContainerViewModel.GetPlotModelByDsTypeOrCreateNew(core:DataSeriesType.AmpSpec ), Mode=OneWay}"
+                                                PointerPressed="PlotView_PointerPressed"
+                                              />
                                 <local:PointsCollectorView ViewModel="{x:Bind  ViewModel.CurrentGlobalScopedResultsViewModel.GetPointsCollectorVm(core:DataSeriesType.AmpSpec ), Mode=OneWay}"/>
                             </StackPanel>
                         </mux:TabViewItem>
